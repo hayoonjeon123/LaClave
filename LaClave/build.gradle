@@ -39,7 +39,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	
 	// Oracle JDBC
-    implementation 'com.oracle.database.jdbc:ojdbc11:23.3.0.23.09'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc
+    //   implementation 'org.springframework.boot:spring-boot-starter-jdbc:4.0.1'
+    // https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc11
+       implementation 'com.oracle.database.jdbc:ojdbc11:23.9.0.25.07'
+    
+    // security 접근 설정
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }
 
 tasks.named('test') {
