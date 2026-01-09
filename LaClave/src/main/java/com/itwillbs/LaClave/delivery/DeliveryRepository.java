@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
 public interface DeliveryRepository extends JpaRepository<MyDelivery, Integer>{
 	
 	// 주문별 배송 조회 

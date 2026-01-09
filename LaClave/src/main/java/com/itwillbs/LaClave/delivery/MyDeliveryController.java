@@ -1,5 +1,31 @@
 package com.itwillbs.LaClave.delivery;
 
-public class MyDeliveryController {
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+@RestController
+//@Controller
+@Log4j2
+@RequestMapping(value = "/api/myDelivery")
+@RequiredArgsConstructor //생성자 자동주입
+public class MyDeliveryController {
+	
+	//생성자 주입
+	private final MyDeliveryService myDeliveryService;
+	// http://localhost:8080/api/myDelivery
+	@GetMapping("/{deliveryIdx}")
+	public MyDelivery getMyDelivery(
+	        @PathVariable("deliveryIdx") Integer deliveryIdx) {
+	    log.info("배송 조회 요청 deliveryIdx={}", deliveryIdx);
+	    return myDeliveryService.getMyDelivery(deliveryIdx);
+	}
+	
+	
+	
 }

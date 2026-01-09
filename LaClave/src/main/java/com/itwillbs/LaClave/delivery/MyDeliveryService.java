@@ -1,8 +1,8 @@
 package com.itwillbs.LaClave.delivery;
 
-import org.springframework.stereotype.Service;
-
-@Service
-public class MyDeliveryService {
+public interface MyDeliveryService {
+	
+	//나의 배송지 데이터 들고오기용
+	MyDelivery getMyDelivery(Integer deliveryIdx);
 
 }
