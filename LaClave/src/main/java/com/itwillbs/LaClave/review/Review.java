@@ -26,6 +26,9 @@ public class Review {
 
     @Column(name = "ORDERS_IDX", nullable = false)
     private Integer ordersIdx;
+    
+    @Column(name = "PRODUCT_IDX", nullable = false)
+    private Integer productIdx;
 
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;

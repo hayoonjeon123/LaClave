@@ -19,7 +19,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // 테스트 편의를 위해 비활성화
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/signup", "/loginProc", "/css/**", "/js/**", "/images/**", "/auth/**", "/").permitAll() // 메인, 회원가입 등은 누구나
+                .requestMatchers("/login", "/signup", "/loginProc", "/css/**", "/js/**", "/images/**", "/auth/**", "/","/**").permitAll() // 메인, 회원가입 등은 누구나
                 .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자 전용
                 .anyRequest().authenticated() // 그 외 모든 페이지는 로그인 필수
             )
