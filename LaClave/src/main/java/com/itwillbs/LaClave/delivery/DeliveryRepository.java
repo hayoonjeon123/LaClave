@@ -13,4 +13,7 @@ public interface DeliveryRepository extends JpaRepository<MyDelivery, Integer>{
 	// 주문 여러개 조회하고싶을때
 	List<MyDelivery> findByOrderIdxIn(List<Integer> orderIdxList);
 	
+	// 마이페이지 
+//	List<MyDelivery> findByMemberIdx(Integer memberIdx);
+	
 }

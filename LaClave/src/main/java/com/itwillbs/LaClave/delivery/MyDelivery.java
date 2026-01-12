@@ -27,6 +27,9 @@ public class MyDelivery {
     @Column(name = "ORDER_IDX", nullable = false)//주문 FK
     private Integer orderIdx;
 	
+//    @Column(name = "MEMBER_IDX", nullable = false)
+//    private Integer memberIdx;
+    
     @Column(name = "DELIVERY_STATUS_COMMON_IDX", nullable = false)
     private Integer deliveryStatusCommonIdx; //공통코드 pk참조idx
 	

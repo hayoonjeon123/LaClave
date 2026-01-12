@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WishlistRepository extends JpaRepository<Wishlist, Integer>{ 
 	
-	//회원별 위시 리스트 조회 //SELECT * FROM wishlist WHERE member_idx = ?
-	List<Wishlist> findByMemberIdx(Integer memberIdx);
+	//회원별 위시 리스트 조회 //SELECT * FROM wishlist WHERE member_idx = ? order by WishlistDate Desc
+	List<Wishlist> findByMemberIdxOrderByWishlistDateDesc(Integer memberIdx);
 	
 	//위시 리스트 중복 체크
 	boolean existsByMemberIdxAndProductIdx(Integer memberIdx, Integer productIdx);
