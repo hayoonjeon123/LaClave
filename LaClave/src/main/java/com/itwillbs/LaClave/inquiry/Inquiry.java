@@ -2,6 +2,8 @@ package com.itwillbs.LaClave.inquiry;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +36,8 @@ public class Inquiry {
 	private Integer inquiryTypeCommonIdx;
 	@Column(name = "INQUIRY_STATUS", nullable = false, length = 30)
 	private String inquiryStatus;
+	
+	@CreationTimestamp
 	@Column(name = "CREATED_AT", nullable = false)
 	private LocalDateTime createdAt;
 	

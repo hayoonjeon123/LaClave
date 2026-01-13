@@ -18,6 +18,17 @@ public class InquiryServiceImpl implements InquiryService{
         return inquiryRepository.findByMemberIdx(memberIdx);
     }
     
+    //문의작성
+    public void createInquiry(Integer memberIdx, InquiryCreateRequest request) {
+        Inquiry inquiry = new Inquiry();
+        inquiry.setMemberIdx(memberIdx);
+        inquiry.setInquiryTitle(request.getInquiryTitle());
+        inquiry.setInquiryContent(request.getInquiryContent());
+        inquiry.setInquiryTypeCommonIdx(request.getInquiryTypeCommonIdx());
+        inquiry.setInquiryStatus("WAIT");
+        
+        inquiryRepository.save(inquiry);
+    }
     //문의 수정
     @Transactional
     @Override

@@ -19,6 +19,7 @@ public class MyDeliveryController {
 	
 	private final MyDeliveryService myDeliveryService;
 	
+	//배송 조회
 	// http://localhost:8080/api/myDelivery/{deliveryIdx}
 	@GetMapping("/{deliveryIdx}")
 	public MyDelivery getMyDelivery(
