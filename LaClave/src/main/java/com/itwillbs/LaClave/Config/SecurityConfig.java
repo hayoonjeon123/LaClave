@@ -28,7 +28,7 @@ public class SecurityConfig {
 	                return config;
 	            }))
 	            .authorizeHttpRequests(auth -> auth
-	                .requestMatchers("/login", "/signup", "/loginProc", "/**").permitAll()
+	                .requestMatchers("/login", "/signup", "/loginProc", "/**","/email-send", "/email-verify").permitAll()
 	                .anyRequest().authenticated()
 	            )
 	            .formLogin(form -> form

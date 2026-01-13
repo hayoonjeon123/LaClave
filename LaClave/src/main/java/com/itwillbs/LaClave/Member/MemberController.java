@@ -1,6 +1,7 @@
 package com.itwillbs.LaClave.Member;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.itwillbs.LaClave.Mail.MailService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,6 +34,8 @@ public class MemberController {
 	private final ModelMapper modelMapper;
 
 	private final MemberRepository memebRepository;
+	
+	private final MailService mailService;
 	
 
 	// 테스트용 회원 저장
@@ -104,4 +109,43 @@ public class MemberController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
+ // 1. 인증번호 발송 버튼 클릭 시
+    @PostMapping("/email-send")
+    public ResponseEntity<?> sendEmail(@RequestBody MemberDTO dto) {
+        mailService.sendAuthCode(dto.getEmail());
+        return ResponseEntity.ok("인증번호가 발송되었습니다.");
+    }
+
+    // 2. 인증번호 확인 버튼 클릭 시
+    @PostMapping("/email-verify")
+    public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> request) {
+        boolean isOk = mailService.verifyCode(request.get("email"), request.get("authCode"));
+        if (isOk) {
+            return ResponseEntity.ok("인증 성공!");
+        } else {
+            return ResponseEntity.badRequest().body("인증번호가 틀렸습니다.");
+        }
+    }
+    
+    
+    @PostMapping("/save-ai-info")
+    public String saveAiInfo(@RequestBody AiInfoRequest request) {
+        memberService.saveOrUpdateAiProfile(request);
+        return "저장 완료";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

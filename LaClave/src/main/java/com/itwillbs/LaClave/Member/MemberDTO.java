@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MemberDTO {
-    // 1. 사용자가 입력하는 필수 필드만 남깁니다.
 	private String memberId;
     private String memberPw;
     private String memberName;

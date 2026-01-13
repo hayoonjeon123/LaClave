@@ -45,6 +45,12 @@ dependencies {
     
     //ModelMapper 사용
     implementation 'org.modelmapper:modelmapper:3.1.1'
+    
+    //이메일 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    
+    //ai 저장
+    implementation 'com.google.code.gson:gson:2.10.1'
 }
 
 tasks.named('test') {
