@@ -8,4 +8,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
 	Optional<Member> findByMemberId(String memberId);
 	
+	//아이디 찾기
+	Optional<Member> findByMemberNameAndEmail(String memberName, String email);
+	
+	Optional<Member> findByMemberIdAndMemberNameAndEmail(String memberId, String memberName, String email);
+	
 }

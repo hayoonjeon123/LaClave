@@ -30,6 +30,9 @@ public class MemberController {
 	
 	private final ModelMapper modelMapper;
 
+	private final MemberRepository memebRepository;
+	
+
 	// 테스트용 회원 저장
 	@GetMapping("/member/test")
 	@ResponseBody
@@ -55,6 +58,7 @@ public class MemberController {
 		return "SignUp";
 	}
 
+	//회원가입
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody MemberDTO dto) {
 		log.info("회원가입 시도 아이디: {}", dto.getMemberId());
@@ -74,6 +78,30 @@ public class MemberController {
         } catch (Exception e) {
             log.error("서버 오류: ", e);
             return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다.");
+        }
+    }
+	
+	// 1. 아이디 찾기 요청
+    @PostMapping("/find-id")
+    public ResponseEntity<?> findId(@RequestBody MemberDTO dto) {
+        try {
+            // 이름과 이메일만 사용
+            String foundId = memberService.findId(dto.getMemberName(), dto.getEmail());
+            return ResponseEntity.ok("찾으신 아이디는 [" + foundId + "] 입니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // 2. 비밀번호 찾기 요청 (임시 비번 발급)
+    @PostMapping("/find-pw")
+    public ResponseEntity<?> findPw(@RequestBody MemberDTO dto) {
+        try {
+            // 아이디, 이름, 이메일 모두 사용
+            String tempPw = memberService.findPw(dto.getMemberId(), dto.getMemberName(), dto.getEmail());
+            return ResponseEntity.ok("임시 비밀번호가 발급되었습니다: [" + tempPw + "]");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
