@@ -19,12 +19,17 @@ public class ProductOption {
     @Column(name = "OPTION_IDX")
     private Long optionIdx;
 
+ // 색상 카테고리 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COLOR_COMMON_IDX", insertable = false, updatable = false)
+    private Category ColorCategory; 
+//    private Category ColorCategory; 
 
-    @Column(name = "COLOR_COMMON_IDX")
-    private Long colorCommonIdx;
-    
-    @Column(name = "SIZE_COMMON_IDX")
-    private Long sizeCommonIdx;
+    // 사이즈 카테고리 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SIZE_COMMON_IDX", insertable = false, updatable = false)
+    private Category sizeCategory;
+//    private Category sizeCommonIdx;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_IDX")

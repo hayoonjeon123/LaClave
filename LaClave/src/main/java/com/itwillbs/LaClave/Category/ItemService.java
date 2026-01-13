@@ -19,8 +19,6 @@ public class ItemService {
 
     public List<CategoryResponseDto> getItemsBycommonIdx(Long commonIdx) {
     	List<Item> items = itemRepository.findByCategory_commonIdx(commonIdx);
-    	
-    	
         return items.stream()
                     .map(CategoryResponseDto::new)
                     .collect(Collectors.toList());

@@ -2,8 +2,10 @@ package com.itwillbs.LaClave.Member;
 
 import java.time.LocalDateTime;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,15 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-//@RestController("/auth") 
-@Controller
+@RestController("/")
 @RequestMapping
 @RequiredArgsConstructor
 @Log4j2
 public class MemberController {
 
 	@Autowired
-	private MemberService memberService;
+	private final MemberService memberService;
+
+	private final BCryptPasswordEncoder passwordEncoder;
+	
+	private final ModelMapper modelMapper;
 
 	// 테스트용 회원 저장
 	@GetMapping("/member/test")
@@ -49,41 +54,26 @@ public class MemberController {
 	public String signup() {
 		return "SignUp";
 	}
-	
+
 	@PostMapping("/signup")
-    public String signup(MemberDTO dto) {
+	public ResponseEntity<?> signup(@RequestBody MemberDTO dto) {
+		log.info("회원가입 시도 아이디: {}", dto.getMemberId());
+        
+        try {
+            // 1. DTO -> Entity 자동 변환 (ModelMapper)
+            Member member = modelMapper.map(dto, Member.class);
 
-		System.out.println("컨트롤러 진입 완료: " + dto.getMemberId());
-	    
-	    Member member = new Member();
-	    member.setMemberId(dto.getMemberId());
-	    member.setMemberPw(dto.getMemberPw());
-	    member.setMemberName(dto.getMemberName());
-	    member.setNickname(dto.getNickname());
+            // 2. 서비스 호출 및 저장
+            memberService.saveMember(member);
 
-	    member.setGender(dto.getGender());
-	    member.setPostCode(dto.getPostCode());
-	    member.setAddress(dto.getAddress());
-	    member.setAddressDetail(dto.getAddressDetail());
-	    member.setBirth(dto.getBirth());
-	    member.setEmail(dto.getEmail());
-
-	    member.setSignupDate(dto.getSignupDate());
-	    member.setUpdatedAt(dto.getUpdateAt());
-
-	    member.setMemberStatus(dto.getMemberStatus());
-	    member.setMailAuthStatus(dto.getMailAuthStatus());
-	    member.setMarketingAgree(dto.getMarketingAgree());
-	    member.setPoint(dto.getPoint());
-	    
-	    member.setSignupDate(LocalDateTime.now()); 
-	    member.setUpdatedAt(LocalDateTime.now());
-
-	    member.setMemberRole("ROLE_USER");
-	    
-	    memberService.saveMember(member); 
-		
-		return "redirect:/login";
+            return ResponseEntity.ok("회원가입 성공");
+            
+        } catch (RuntimeException e) {
+            // 중복 아이디 등 비즈니스 예외 처리
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            log.error("서버 오류: ", e);
+            return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다.");
+        }
     }
-
 }

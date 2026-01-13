@@ -16,8 +16,10 @@ public class CategoryResponseDto {
     private int productPrice;
     
     private List<Long> colorCommonIdx;
+    private List<String> colors;
     
-    private List<Long> sizeCommonIdx; 
+    private List<String> sizes; 
+//    private List<Long> sizeCommonIdx; 
     
     private double averageRating;
     
@@ -29,10 +31,21 @@ public class CategoryResponseDto {
         
 //        this.averageRating = (avgRating != null) ? avgRating : 0.0;
 
-        this.colorCommonIdx = extractIdxs(item, opt -> opt.getColorCommonIdx());
-        this.sizeCommonIdx = extractIdxs(item, opt -> opt.getSizeCommonIdx());
+        this.colors = extractNames(item, opt -> opt.getColorCategory().getCode());
+        this.sizes = extractNames(item, opt -> opt.getSizeCategory().getCode());
+         
+        // idx로 가져오기
+//      this.colorCommonIdx = extractIdxs(item, opt -> opt.getColorCommonIdx());
+//      this.sizeCommonIdx = extractIdxs(item, opt -> opt.getSizeCommonIdx());
     }
     
+    private List<String> extractNames(Item item, Function<ProductOption, String> mapper) {
+        return item.getOptions().stream()
+                .map(mapper)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .toList();
+    }
     // 색상, 사이즈 리스트 만들기
     private List<Long> extractIdxs(Item item, Function<ProductOption, Long> mapper) {
         return item.getOptions().stream()

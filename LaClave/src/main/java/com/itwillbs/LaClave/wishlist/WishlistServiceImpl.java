@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.LaClave.Category.ItemRepository;
+import com.itwillbs.LaClave.Member.MemberRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class WishlistServiceImpl implements WishlistService{
 	
 	private final WishlistRepository wishlistRepository;
+	
 	@Override
 	public List<Wishlist> getWishlistBymember(Integer memberIdx) {
 		

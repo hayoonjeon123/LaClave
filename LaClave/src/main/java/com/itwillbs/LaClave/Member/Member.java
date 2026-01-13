@@ -1,12 +1,13 @@
 package com.itwillbs.LaClave.Member;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails; 
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,15 +15,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @Table(name = "MEMBER")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Member implements UserDetails {
 	
 	@Id
@@ -56,7 +59,7 @@ public class Member implements UserDetails {
     private String addressDetail;
 
     @Column(name = "BIRTH")
-    private LocalDateTime birth;
+    private LocalDate birth;
 
     @Column(name = "EMAIL", length = 100)
     private String email;
@@ -81,7 +84,6 @@ public class Member implements UserDetails {
 
     @Column(name = "NICKNAME", length = 50)
     private String nickname;
-    
 	
     /* --- UserDetails 인터페이스 구현 메서드 --- */
     
@@ -90,8 +92,6 @@ public class Member implements UserDetails {
         return List.of(new SimpleGrantedAuthority(this.memberRole));
     }
 
-
-    
     @Override
     public String getPassword() {
     	return this.memberPw;

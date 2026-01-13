@@ -1,7 +1,7 @@
 package com.itwillbs.LaClave.Member;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MemberDTO {
-    private String memberId;
+    // 1. 사용자가 입력하는 필수 필드만 남깁니다.
+	private String memberId;
     private String memberPw;
     private String memberName;
     private String email;
@@ -20,13 +21,8 @@ public class MemberDTO {
     private String postCode;
     private String address;
     private String addressDetail;
-    private LocalDateTime birth;
-    private LocalDateTime signupDate;
-    private Integer memberStatus;
-    private LocalDateTime updateAt;
-    private Integer mailAuthStatus;
-    private Integer marketingAgree;
-    private Integer point;
+    private LocalDate birth;
     private String nickname;
-    private Integer memberRole;
+    private Integer marketingAgree;
+
 }
