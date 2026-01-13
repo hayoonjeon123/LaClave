@@ -29,16 +29,16 @@ public class CategoryResponseDto {
         
 //        this.averageRating = (avgRating != null) ? avgRating : 0.0;
 
-//        this.colorCommonIdx = extractIdxs(item, opt -> opt.getColorCommonIdx());
-//        this.sizeCommonIdx = extractIdxs(item, opt -> opt.getSizeCommonIdx());
+        this.colorCommonIdx = extractIdxs(item, opt -> opt.getColorCommonIdx());
+        this.sizeCommonIdx = extractIdxs(item, opt -> opt.getSizeCommonIdx());
     }
     
     // 색상, 사이즈 리스트 만들기
-//    private List<Long> extractIdxs(Item item, Function<ProductOption, Long> mapper) {
-//        return item.getOptions().stream()
-//                .map(mapper)
-//                .distinct()
-//                .toList();
-//    }
+    private List<Long> extractIdxs(Item item, Function<ProductOption, Long> mapper) {
+        return item.getOptions().stream()
+                .map(mapper)
+                .distinct()
+                .toList();
+    }
 }
 
