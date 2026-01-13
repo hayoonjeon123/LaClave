@@ -15,30 +15,41 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) // 테스트 편의를 위해 비활성화
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/signup", "/loginProc", "/css/**", "/js/**", "/images/**", "/auth/**", "/","/**").permitAll() // 메인, 회원가입 등은 누구나
-                .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자 전용
-                .anyRequest().authenticated() // 그 외 모든 페이지는 로그인 필수
-            )
-            .formLogin(form -> form
-                .loginPage("/login") // 사용자가 만든 로그인 페이지가 있다면 설정
-                .loginProcessingUrl("/loginProc") // 시큐리티가 로그인을 낚아챌 주소
-                .usernameParameter("memberId") 
-                .passwordParameter("memberPw") 
-                .defaultSuccessUrl("/") // 로그인 성공 시 이동할 곳
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/")
-            );
-
-        
-        return http.build();
-    }
+	 @Bean
+	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	        http
+	            .csrf(csrf -> csrf.disable())
+	            .cors(cors -> cors.configurationSource(request -> {
+	                var config = new org.springframework.web.cors.CorsConfiguration();
+	                config.setAllowedOrigins(java.util.List.of("http://localhost:5173")); // 리액트 주소
+	                config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	                config.setAllowedHeaders(java.util.List.of("*"));
+	                config.setAllowCredentials(true);
+	                return config;
+	            }))
+	            .authorizeHttpRequests(auth -> auth
+	                .requestMatchers("/login", "/signup", "/loginProc", "/**").permitAll()
+	                .anyRequest().authenticated()
+	            )
+	            .formLogin(form -> form
+	                .loginProcessingUrl("/loginProc")
+	                .usernameParameter("memberId")
+	                .passwordParameter("memberPw")
+	                // 성공 시 리다이렉트 대신 200 OK 응답 (리액트용)
+	                .successHandler((request, response, authentication) -> {
+	                    response.setStatus(200);
+	                    response.getWriter().write("{\"status\":\"success\"}");
+	                })
+	                // 실패 시 401 Unauthorized 응답
+	                .failureHandler((request, response, exception) -> {
+	                    response.setStatus(401);
+	                    response.getWriter().write("{\"status\":\"fail\"}");
+	                })
+	                .permitAll()
+	            )
+	            .logout(logout -> logout.logoutSuccessUrl("/"));
+	        return http.build();
+	    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
