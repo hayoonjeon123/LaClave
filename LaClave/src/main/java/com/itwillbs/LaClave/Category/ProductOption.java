@@ -13,27 +13,29 @@ import lombok.Data;
 
 @Entity
 @Table(name = "PRODUCT_OPTION")
-@Data
+@Getter
+@Setter
+@ToString(exclude = "item")
+@EqualsAndHashCode(exclude = "item")
 public class ProductOption {
     @Id
     @Column(name = "OPTION_IDX")
     private Long optionIdx;
 
- // 색상 카테고리 연결
+    // 색상 카테고리 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COLOR_COMMON_IDX", insertable = false, updatable = false)
-    private Category colorCategory; 
-//    private Category ColorCategory; 
+    private Category colorCategory;
+    // private Category ColorCategory;
 
     // 사이즈 카테고리 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SIZE_COMMON_IDX", insertable = false, updatable = false)
     private Category sizeCategory;
-//    private Category sizeCommonIdx;
-    
+    // private Category sizeCommonIdx;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_IDX")
     private Item item;
-    
 
 }
