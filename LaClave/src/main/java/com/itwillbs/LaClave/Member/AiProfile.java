@@ -15,16 +15,16 @@ public class AiProfile {
     
 	@Id
 	@Column(name = "MEMBER_IDX")
-    private Long memberIdx; // Member 테이블의 PK를 그대로 사용
+    private Long memberIdx; 
 
 	@Column(name = "HEIGHT")
-    private Double height; // NULL 허용 (Double 사용)
+    private Double height;
 	
 	@Column(name = "WEIGHT")
-    private Double weight; // NULL 허용
+    private Double weight; 
 
     @Column(name = "PREF_STYLES")
-    private String prefStyles; // ["데일리", "시크"] 형태의 JSON 문자열 저장
+    private String prefStyles;
     
 
 }

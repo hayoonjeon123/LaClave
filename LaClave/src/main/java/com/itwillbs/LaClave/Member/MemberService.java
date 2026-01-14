@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.google.gson.Gson;
 
@@ -25,11 +28,12 @@ public class MemberService implements UserDetailsService {
 
 	private final PasswordEncoder passwordEncoder;
 
-	private AiProfileRepository aiProfileRepository;
+	private final AiProfileRepository aiProfileRepository;
+
 
 	// 회원 저장 (회원가입 시 사용)
 	@Transactional
-	public Member saveMember(Member member) {
+	public Member saveMember(Member member, MemberDTO dto) {
 		// 1. 아이디 중복 체크 (아이디가 이미 있으면 예외 발생)
 		memberRepository.findByMemberId(member.getMemberId()).ifPresent(m -> {
 			throw new RuntimeException("이미 사용 중인 아이디입니다.");
@@ -56,7 +60,25 @@ public class MemberService implements UserDetailsService {
 		// 3. 비밀번호 암호화
 		member.setMemberPw(passwordEncoder.encode(member.getMemberPw()));
 
-		return memberRepository.save(member);
+		Member savedMember = memberRepository.save(member);
+
+		// 3. AI 프로필 저장 로직 추가
+		AiProfile aiProfile = new AiProfile();
+		aiProfile.setMemberIdx(savedMember.getMemberIdx().longValue()); // 저장된 회원의 PK를 가져옴
+		aiProfile.setHeight(dto.getHeight());
+		aiProfile.setWeight(dto.getWeight());
+
+		// 스타일 리스트가 있다면 문자열로 변환 (예: "Modern,Casual")
+		if (dto.getPrefStyles() != null && !dto.getPrefStyles().isEmpty()) {
+	        String joinedStyles = String.join(",", dto.getPrefStyles());
+	        aiProfile.setPrefStyles(joinedStyles); 
+	    }
+
+			// aiProfileRepository를 통해 최종 저장
+			aiProfileRepository.save(aiProfile);
+
+			return savedMember;
+		
 	}
 
 	// 로그인
@@ -111,19 +133,4 @@ public class MemberService implements UserDetailsService {
 		return adj + noun + randomNumber;
 	}
 
-	// ai 저장
-	@Transactional
-	public void saveOrUpdateAiProfile(AiInfoRequest dto) {
-		// JSON 변환 및 저장 로직을 여기서 처리
-		String jsonStyles = new Gson().toJson(dto.getStyles());
-
-		AiProfile profile = aiProfileRepository.findById(dto.getMemberIdx()).orElse(new AiProfile());
-
-		profile.setMemberIdx(dto.getMemberIdx());
-		profile.setHeight(dto.getHeight());
-		profile.setWeight(dto.getWeight());
-		profile.setPrefStyles(jsonStyles);
-
-		aiProfileRepository.save(profile);
-	}
 }
