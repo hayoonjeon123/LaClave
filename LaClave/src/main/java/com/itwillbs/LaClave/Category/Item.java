@@ -24,7 +24,13 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PRODUCT_IDX") 
     private Long productIdx;
+	
+	 @Column(name = "PRODUCT_COMMON_IDX") 
+	    private Long productCommonIdx;
 
+	@Column(name = "PRODUCT_CATEGORY_IDX", insertable = false, updatable = false )
+	private Long productCategoryIdx;
+	
     @Column(name = "STATUS_COMMON_IDX", nullable = false) 
     private Long statusCommonIdx;
 
@@ -60,6 +66,9 @@ public class Item {
 
     @Column(name = "UPDATED_AT", nullable = false) 
     private java.time.LocalDateTime updatedAt;
+    
+//    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+//    private List<ProductOption> images;
 
     // 카테고리와의 연결 
     @ManyToOne(fetch = FetchType.LAZY)

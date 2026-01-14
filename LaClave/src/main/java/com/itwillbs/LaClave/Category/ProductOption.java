@@ -22,7 +22,7 @@ public class ProductOption {
  // 색상 카테고리 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COLOR_COMMON_IDX", insertable = false, updatable = false)
-    private Category ColorCategory; 
+    private Category colorCategory; 
 //    private Category ColorCategory; 
 
     // 사이즈 카테고리 연결

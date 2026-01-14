@@ -13,14 +13,15 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/")
 @Log4j2
 public class CategoryController {
-    private final ItemService itemService;
+	private final ItemService itemService;
 
-    public CategoryController(ItemService itemService) {
-        this.itemService = itemService;
-    }
+	public CategoryController(ItemService itemService) {
+		this.itemService = itemService;
+	}
 
-    @GetMapping("/category/{commonIdx}")
-    public List<CategoryResponseDto> getCategoryItems(@PathVariable("commonIdx") Long commonIdx) {
-        return itemService.getItemsBycommonIdx(commonIdx);
-    }
+	// 카테고리 조회
+	@GetMapping("/category/{categoryIdx}") 
+	public List<CategoryResponseDto> getCategoryItems(@PathVariable("categoryIdx") Long categoryIdx) {
+		return itemService.getItems(categoryIdx);
+	}
 }
