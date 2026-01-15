@@ -22,10 +22,10 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     @Transactional(readOnly = true)
     public List<MyOrderResponseDto> getMyOrderList(CustomUserDetails user) {
-        Long memberIdx = user.getMemberIdx();
+    	Long  memberIdx = user.getMemberIdx();
 
         // 1️⃣ 주문 + 상세 목록 fetch join
-        List<Orders> orders = ordersRepository.findAllWithDetailsByMemberIdx(memberIdx);
+        List<Orders> orders = ordersRepository.findAllByMemberIdxNative(memberIdx);
 
         // 2️⃣ 회원 기본 배송지 조회
         Memberaddress delivery = memberAddressRepository.findDefaultByMemberIdx(memberIdx);
@@ -35,4 +35,6 @@ public class OrdersServiceImpl implements OrdersService {
                      .map(order -> new MyOrderResponseDto(order, order.getOrderDetails(), delivery))
                      .collect(Collectors.toList());
     }
+    
+    
 }

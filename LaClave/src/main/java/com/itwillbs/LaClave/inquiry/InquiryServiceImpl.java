@@ -18,7 +18,7 @@ public class InquiryServiceImpl implements InquiryService{
     // 회원별 문의 목록 조회 (로그인 사용자 기준)
     @Override
     public List<Inquiry> getMyInquiryList(CustomUserDetails user) {
-    	Long memberIdx = user.getMemberIdx();
+    	Long  memberIdx = user.getMemberIdx();
         return inquiryRepository
                 .findByMemberIdxOrderByCreatedAtDesc(memberIdx);
     }

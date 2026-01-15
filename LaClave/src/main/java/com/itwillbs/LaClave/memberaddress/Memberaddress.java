@@ -2,7 +2,6 @@ package com.itwillbs.LaClave.memberaddress;
 
 import java.time.LocalDateTime;
 
-import com.itwillbs.LaClave.wishlist.Wishlist;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,8 +9,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -19,6 +20,8 @@ import lombok.Setter;
 @Setter
 @Builder
 @Table(name = "MEMBER_ADDRESS")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Memberaddress {
 	
 	

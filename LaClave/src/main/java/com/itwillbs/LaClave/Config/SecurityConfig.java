@@ -29,7 +29,7 @@ public class SecurityConfig {
 	                return config;
 	            }))
 	            .authorizeHttpRequests(auth -> auth
-	                .requestMatchers("/login", "/signup", "/loginProc","/email-send","/email-verify","/api/my/**").permitAll()
+	                .requestMatchers("/login", "/signup", "/loginProc","/email-send","/email-verify","/api/my/**","/api/orders").permitAll()
 	                .anyRequest().authenticated()
 	                
 	            )

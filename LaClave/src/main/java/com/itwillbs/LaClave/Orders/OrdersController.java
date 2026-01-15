@@ -22,12 +22,29 @@ public class OrdersController {
 
     //http://localhost:8080/api/my/orders?memberIdx=1
     // 마이페이지 주문내역 조회
+//    @GetMapping("/orders")
+//    public ResponseEntity<List<MyOrderResponseDto>> getMyOrders(
+//            @AuthenticationPrincipal CustomUserDetails user
+//    ) {
+//
+//        List<MyOrderResponseDto> orders = ordersService.getMyOrderList(user);
+//        System.out.println("Logged in memberIdx: " + user.getMemberIdx());
+//        System.out.println("user memberIdx = " + user.getMemberIdx());
+//        return ResponseEntity.ok(orders);
+//    }
     @GetMapping("/orders")
-    public ResponseEntity<List<MyOrderResponseDto>> getMyOrders(
-            @AuthenticationPrincipal CustomUserDetails user
-    ) {
-
+    public List<MyOrderResponseDto> getOrders(@AuthenticationPrincipal CustomUserDetails user) {
+        if(user == null) {
+            System.out.println("CustomUserDetails is NULL!");
+            return List.of(); // 빈 리스트
+        }
         List<MyOrderResponseDto> orders = ordersService.getMyOrderList(user);
-        return ResponseEntity.ok(orders);
+        System.out.println("Logged in memberIdx: " + user.getMemberIdx());
+        // 여기서 몇 개 가져왔는지 확인
+        System.out.println("orders.size() = " + orders.size());
+        return ordersService.getMyOrderList(user);
+        
     }
+
+
 }

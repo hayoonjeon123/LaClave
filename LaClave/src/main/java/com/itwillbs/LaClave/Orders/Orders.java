@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,12 +28,13 @@ public class Orders {
     .IDENTITY) 
     @Column(name = "ORDERS_IDX")
     private Long ordersIdx;
+    
     // === 주문 상세 연관관계 추가 ===
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrdersDetail> orderDetails;
 
     @Column(name = "MEMBER_IDX")
-    private Long memberIdx;
+    private Long  memberIdx;
 
     @Column(name = "ORDERS_DATE")
     private LocalDateTime ordersDate;

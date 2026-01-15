@@ -29,15 +29,27 @@ public class ReviewController {
 	private final ReviewService reviewService;
 	
 	
-	//http://localhost:8080/api/review
-	// 회원이 쓴 리뷰 목록
+	  /**
+     * [마이페이지] 회원이 작성한 리뷰 목록 조회
+     * 반환 타입을 List<Review>에서 List<MyReviewResponseDTO>로 변경합니다.
+     */
     @GetMapping("/my")
-    public ResponseEntity<List<Review>> getMyReviews(
+    public ResponseEntity<List<MyReviewResponseDTO>> getMyReviews(
             @AuthenticationPrincipal CustomUserDetails user
     ) {
-    	log.info("user: {}" ,user);
-    	Long memberIdx = user.getMemberIdx();
-        return ResponseEntity.ok(reviewService.getReviewBymember(memberIdx));
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        log.info("로그인한 회원 IDX: {}", user.getMemberIdx());
+        
+        // CustomUserDetails의 memberIdx가 Long이라면 intValue()로 변환 (Review 엔티티가 Integer인 경우)
+        Long memberIdx = (long) user.getMemberIdx().intValue();
+        
+        // 서비스에서 가공된 DTO 리스트를 가져옵니다.
+        List<MyReviewResponseDTO> myReviews = reviewService.getMyReviews(memberIdx);
+        
+        return ResponseEntity.ok(myReviews);
     }
     
 	//http://localhost:8080/api/review/product/{productIdx}
@@ -61,12 +73,12 @@ public class ReviewController {
      * 특정 상품의 상세 정보 + 옵션 + 리뷰 조회
      * URL 예: /api/product/123/reviews
      */
-    @GetMapping("/product/{productIdx}/reviews")
-    @ResponseBody
-    public ReviewResponseDTO getProductWithReviews(@PathVariable("productIdx") Long productIdx) {
-        return reviewService.getProductWithReviews(productIdx);
-    }
-    
+//    @GetMapping("/product/{productIdx}/reviews")
+//    @ResponseBody
+//    public ReviewResponseDTO getProductWithReviews(@PathVariable("productIdx") Long productIdx) {
+//        return reviewService.getProductWithReviews(productIdx);
+//    }
+//    
 //    @PostMapping
 //    public ResponseEntity<Review> createReview(@RequestBody Review review){
 //        Review saved = reviewService.createReview(review);
@@ -84,7 +96,7 @@ public class ReviewController {
 //        reviewService.deleteReview(reviewIdx);
 //        return ResponseEntity.ok().build();
 //    }	
-	
+//	
 	
 
 }

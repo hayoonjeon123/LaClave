@@ -7,5 +7,7 @@ import com.itwillbs.LaClave.security.CustomUserDetails;
 public interface OrdersService {
 	
 	List<MyOrderResponseDto> getMyOrderList(CustomUserDetails user);
+	
+//    List<MyOrderResponseDto> getMyOrderList(Integer memberIdx);
 
 }

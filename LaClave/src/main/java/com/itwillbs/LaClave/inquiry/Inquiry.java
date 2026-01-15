@@ -25,7 +25,7 @@ public class Inquiry {
 	private Long inquiryIdx;
 	
 	@Column(name = "MEMBER_IDX", nullable = false)
-	private Long memberIdx;
+	private Long  memberIdx;
 	
 	@Column(name = "INQUIRY_TITLE",nullable = false, length = 50)
 	private String inquiryTitle;

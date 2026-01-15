@@ -9,12 +9,11 @@ import org.springframework.data.repository.query.Param;
 public interface MemberAddressRepository extends JpaRepository<Memberaddress, Long> {
 	
 	/* 회원별 배송지 목록*/ //SELECT * FROM member_address WHERE member_idx = ?
-	List <Memberaddress> findByMemberIdx(Long memberIdx);
+	List <Memberaddress> findByMemberIdx(Integer memberIdx);
 	
-//	void findByMemberIdx(Long memberIdx)
 
 	
     @Query("SELECT m FROM Memberaddress m WHERE m.memberIdx = :memberIdx")
-    Memberaddress findDefaultByMemberIdx(@Param("memberIdx") Long memberIdx);
+    Memberaddress findDefaultByMemberIdx(@Param("memberIdx") Long  memberIdx);
 
 }

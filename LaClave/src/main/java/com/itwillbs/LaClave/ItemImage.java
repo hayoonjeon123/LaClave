@@ -42,4 +42,9 @@ public class ItemImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TARGET_IDX", referencedColumnName = "PRODUCT_IDX")
     private Item item;
+
+	public String getImagePath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

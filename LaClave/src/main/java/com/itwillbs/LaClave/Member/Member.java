@@ -31,7 +31,7 @@ public class Member implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "MEMBER_IDX")
-    private Long memberIdx;
+    private Long  memberIdx;
 	
 	@Column(name = "MEMBER_NAME", nullable = false)
 	private String memberName;
