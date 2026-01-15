@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.itwillbs.LaClave.ItemImage;
+import com.itwillbs.LaClave.Cart.ItemImage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

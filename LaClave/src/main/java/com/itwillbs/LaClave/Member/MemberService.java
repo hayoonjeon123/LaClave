@@ -30,7 +30,6 @@ public class MemberService implements UserDetailsService {
 
 	private final AiProfileRepository aiProfileRepository;
 
-
 	// 회원 저장 (회원가입 시 사용)
 	@Transactional
 	public Member saveMember(Member member, MemberDTO dto) {
@@ -70,15 +69,15 @@ public class MemberService implements UserDetailsService {
 
 		// 스타일 리스트가 있다면 문자열로 변환 (예: "Modern,Casual")
 		if (dto.getPrefStyles() != null && !dto.getPrefStyles().isEmpty()) {
-	        String joinedStyles = String.join(",", dto.getPrefStyles());
-	        aiProfile.setPrefStyles(joinedStyles); 
-	    }
+			String joinedStyles = String.join(",", dto.getPrefStyles());
+			aiProfile.setPrefStyles(joinedStyles);
+		}
 
-			// aiProfileRepository를 통해 최종 저장
-			aiProfileRepository.save(aiProfile);
+		// aiProfileRepository를 통해 최종 저장
+		aiProfileRepository.save(aiProfile);
 
-			return savedMember;
-		
+		return savedMember;
+
 	}
 
 	// 로그인
@@ -120,6 +119,21 @@ public class MemberService implements UserDetailsService {
 		String tempPw = UUID.randomUUID().toString().substring(0, 8);
 		member.setMemberPw(passwordEncoder.encode(tempPw));
 		return tempPw;
+	}
+
+	public MemberInfoResponse getMemberInfo(String memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
+				.orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+
+		return MemberInfoResponse.builder()
+				.memberName(member.getMemberName())
+				.memberId(member.getMemberId())
+				.email(member.getEmail())
+				.postCode(member.getPostCode())
+				.address(member.getAddress())
+				.addressDetail(member.getAddressDetail())
+				.point(member.getPoint())
+				.build();
 	}
 
 	private String generateRandomNickname() {
