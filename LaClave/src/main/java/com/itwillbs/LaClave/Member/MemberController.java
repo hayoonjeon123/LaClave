@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,61 +24,45 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@RestController("/")
+@RestController
 @RequestMapping
 @RequiredArgsConstructor
 @Log4j2
 public class MemberController {
 
-	@Autowired
-	private final MemberService memberService;
+    private final MemberService memberService;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
+    private final MemberRepository memberRepository;
+    private final MailService mailService;
 
-	private final BCryptPasswordEncoder passwordEncoder;
-	
-	private final ModelMapper modelMapper;
+    // 회원가입
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody MemberDTO dto, BindingResult bindingResult) {
+        log.info("회원가입 시도 아이디: {}", dto.getMemberId());
 
-	private final MemberRepository memebRepository;
-	
-	private final MailService mailService;
-	
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            log.warn("유효성 검사 실패: {}", errorMessage);
 
-	@GetMapping("/login")
-	public String login() {
-		return "Login";
-	}
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
 
-	@GetMapping("/signup")
-	public String signup() {
-		return "SignUp";
-	}
+        try {
+            Member member = modelMapper.map(dto, Member.class);
+            memberService.saveMember(member, dto);
 
-	//회원가입
-	@PostMapping("/signup")
-	public ResponseEntity<?> signup(@Valid @RequestBody MemberDTO dto, BindingResult bindingResult) {
-		log.info("회원가입 시도 아이디: {}", dto.getMemberId());
-        
-	    if (bindingResult.hasErrors()) {
-	        String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
-	        log.warn("유효성 검사 실패: {}", errorMessage);
-	        
-	        return ResponseEntity.badRequest().body(errorMessage);
-	    }
+            return ResponseEntity.ok("회원가입 성공");
 
-	    try {
-	        Member member = modelMapper.map(dto, Member.class);
-	        memberService.saveMember(member, dto);
-
-	        return ResponseEntity.ok("회원가입 성공");
-	        
-	    } catch (RuntimeException e) {
-	        return ResponseEntity.badRequest().body(e.getMessage());
-	    } catch (Exception e) {
-	        log.error("서버 오류: ", e);
-	        return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다.");
-	    }
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            log.error("서버 오류: ", e);
+            return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다.");
+        }
     }
-	
-	// 1. 아이디 찾기 요청
+
+    // 1. 아이디 찾기 요청
     @PostMapping("/find-id")
     public ResponseEntity<?> findId(@RequestBody MemberDTO dto) {
         try {
@@ -99,8 +85,8 @@ public class MemberController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
- // 1. 인증번호 발송 버튼 클릭 시
+
+    // 1. 인증번호 발송 버튼 클릭 시
     @PostMapping("/email-send")
     public ResponseEntity<?> sendEmail(@RequestBody MemberDTO dto) {
         mailService.sendAuthCode(dto.getEmail());
@@ -117,16 +103,12 @@ public class MemberController {
             return ResponseEntity.badRequest().body("인증번호가 틀렸습니다.");
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    @GetMapping("/info")
+    public ResponseEntity<MemberInfoResponse> getMemberInfo(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(memberService.getMemberInfo(userDetails.getUsername()));
+    }
 }

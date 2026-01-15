@@ -4,13 +4,13 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository extends JpaRepository<Member, Integer> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	Optional<Member> findByMemberId(String memberId);
-	
-	//아이디 찾기
+
+	// 아이디 찾기
 	Optional<Member> findByMemberNameAndEmail(String memberName, String email);
-	
+
 	Optional<Member> findByMemberIdAndMemberNameAndEmail(String memberId, String memberName, String email);
-	
+
 }

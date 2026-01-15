@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.BatchSize;
 
-import com.itwillbs.LaClave.ItemImage;
+import com.itwillbs.LaClave.Cart.ItemImage;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

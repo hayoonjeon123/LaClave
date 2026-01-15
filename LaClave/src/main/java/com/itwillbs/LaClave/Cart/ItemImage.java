@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave;
+package com.itwillbs.LaClave.Cart;
 
 import com.itwillbs.LaClave.Category.Item;
 
@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-//@Entity
+@Entity
 @Getter
 @Setter
 @ToString(exclude = "item")
@@ -42,9 +42,4 @@ public class ItemImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TARGET_IDX", referencedColumnName = "PRODUCT_IDX")
     private Item item;
-
-	public String getImagePath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

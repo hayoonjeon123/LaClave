@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,14 +19,13 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
 	private final MemberRepository memberRepository;
 
 	private final PasswordEncoder passwordEncoder;
 
 	private final AiProfileRepository aiProfileRepository;
-
 
 	// 회원 저장 (회원가입 시 사용)
 	@Transactional
@@ -70,27 +66,15 @@ public class MemberService implements UserDetailsService {
 
 		// 스타일 리스트가 있다면 문자열로 변환 (예: "Modern,Casual")
 		if (dto.getPrefStyles() != null && !dto.getPrefStyles().isEmpty()) {
-	        String joinedStyles = String.join(",", dto.getPrefStyles());
-	        aiProfile.setPrefStyles(joinedStyles); 
-	    }
+			String joinedStyles = String.join(",", dto.getPrefStyles());
+			aiProfile.setPrefStyles(joinedStyles);
+		}
 
-			// aiProfileRepository를 통해 최종 저장
-			aiProfileRepository.save(aiProfile);
+		// aiProfileRepository를 통해 최종 저장
+		aiProfileRepository.save(aiProfile);
 
-			return savedMember;
-		
-	}
+		return savedMember;
 
-	// 로그인
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Member member = memberRepository.findByMemberId(username)
-				.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자 아이디입니다: " + username));
-
-		return org.springframework.security.core.userdetails.User.builder().username(member.getMemberId()) // 사용자 아이디
-				.password(member.getMemberPw()) // DB에 저장된 '암호화된' 비밀번호
-				.roles("USER") // 권한 설정 (ROLE_USER)
-				.build();
 	}
 
 	// 아이디 비번찾기
@@ -120,6 +104,21 @@ public class MemberService implements UserDetailsService {
 		String tempPw = UUID.randomUUID().toString().substring(0, 8);
 		member.setMemberPw(passwordEncoder.encode(tempPw));
 		return tempPw;
+	}
+
+	public MemberInfoResponse getMemberInfo(String memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
+				.orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+
+		return MemberInfoResponse.builder()
+				.memberName(member.getMemberName())
+				.memberId(member.getMemberId())
+				.email(member.getEmail())
+				.postCode(member.getPostCode())
+				.address(member.getAddress())
+				.addressDetail(member.getAddressDetail())
+				.point(member.getPoint())
+				.build();
 	}
 
 	private String generateRandomNickname() {

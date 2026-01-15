@@ -60,7 +60,7 @@ public class ReviewServiceImpl implements ReviewService{
 
 	            // 5. 이미지 URL 추출 (첫 번째 이미지)
 	            String imageUrl = (item != null && !item.getImages().isEmpty())
-	                    ? item.getImages().iterator().next().getImagePath()
+	                    ? item.getImages().iterator().next().getUrl()
 	                    : "default_image_url"; // 기본 이미지 경로
 
 	            // 6. DTO 조립
