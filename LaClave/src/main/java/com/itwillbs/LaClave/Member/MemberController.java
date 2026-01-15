@@ -24,32 +24,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@RestController("/")
+@RestController
 @RequestMapping
 @RequiredArgsConstructor
 @Log4j2
 public class MemberController {
 
-    @Autowired
     private final MemberService memberService;
-
     private final BCryptPasswordEncoder passwordEncoder;
-
     private final ModelMapper modelMapper;
-
     private final MemberRepository memberRepository;
-
     private final MailService mailService;
-
-    @GetMapping("/login")
-    public String login() {
-        return "Login";
-    }
-
-    @GetMapping("/signup")
-    public String signup() {
-        return "SignUp";
-    }
 
     // 회원가입
     @PostMapping("/signup")

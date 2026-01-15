@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/cart")
+@RequestMapping({ "/cart", "/api/cart" })
 @RequiredArgsConstructor
 public class CartController {
 
@@ -33,7 +33,7 @@ public class CartController {
 
 		return ResponseEntity.ok("장바구니에 담겼습니다.");
 	}
-	
+
 	// 장바구니 조회
 	@GetMapping("/list")
 	public ResponseEntity<java.util.List<CartResponseDto>> getCartList(

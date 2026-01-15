@@ -20,8 +20,16 @@ public class CategoryController {
 	}
 
 	// 카테고리 조회
-	@GetMapping("/category/{categoryIdx}") 
+	@GetMapping("/category/{categoryIdx}")
 	public List<CategoryResponseDto> getCategoryItems(@PathVariable("categoryIdx") Long categoryIdx) {
 		return itemService.getItems(categoryIdx);
 	}
+
+	// 상품 상세 조회
+	@GetMapping({ "/product/{productIdx}", "/api/product/{productIdx}" })
+	public CategoryResponseDto getProductDetail(@PathVariable("productIdx") Long productIdx) {
+		log.info("상품 상세 조회 요청 - ID: {}", productIdx);
+		return itemService.getItem(productIdx);
+	}
+
 }

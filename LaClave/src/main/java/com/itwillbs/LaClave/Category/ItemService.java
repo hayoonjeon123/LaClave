@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.LaClave.Cart.ItemImage;
 
@@ -61,5 +62,20 @@ public class ItemService {
 		}
 
 		return responseList;
+	}
+
+	@Transactional
+	public CategoryResponseDto getItem(Long productIdx) {
+		log.info("ItemService - getItem 호출: {}", productIdx);
+		Item item = itemRepository.findById(productIdx)
+				.orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다. (ID: " + productIdx + ")"));
+
+		log.info("ItemService - 상품 조회 성공: {}, 옵션 개수: {}", item.getProductName(),
+				item.getOptions() != null ? item.getOptions().size() : 0);
+
+		CategoryResponseDto dto = new CategoryResponseDto(item);
+		log.info("ItemService - DTO 변환 완료: {}", dto.getProductName());
+
+		return dto;
 	}
 }

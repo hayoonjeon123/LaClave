@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +19,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
 	private final MemberRepository memberRepository;
 
@@ -78,18 +75,6 @@ public class MemberService implements UserDetailsService {
 
 		return savedMember;
 
-	}
-
-	// 로그인
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Member member = memberRepository.findByMemberId(username)
-				.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자 아이디입니다: " + username));
-
-		return org.springframework.security.core.userdetails.User.builder().username(member.getMemberId()) // 사용자 아이디
-				.password(member.getMemberPw()) // DB에 저장된 '암호화된' 비밀번호
-				.roles("USER") // 권한 설정 (ROLE_USER)
-				.build();
 	}
 
 	// 아이디 비번찾기

@@ -27,17 +27,35 @@ public class CategoryResponseDto {
     private List<String> sizes;
     // private List<Long> sizeCommonIdx;
 
+    private int discount;
+
     private double averageRating;
 
     private String mainImageUrl; // 목록
 
     private List<String> detailImages; // 상세
 
+    private String productDetailDesc; // 상세 설명 (HTML/Text)
+
+    private String productShortDesc; // 짧은 설명
+
+    private String productMaterial; // 소재 정보
+
+    private int reviewCount; // 리뷰 개수
+
     // 카테고리 항목 가져오기
     public CategoryResponseDto(Item item) {
         this.productIdx = item.getProductIdx();
         this.productName = item.getProductName();
         this.productPrice = item.getProductPrice();
+        this.discount = item.getProductDiscountRate();
+        this.productDetailDesc = item.getProductDetailDesc();
+        this.productShortDesc = item.getProductShortDesc();
+        this.productMaterial = item.getProductMaterial();
+
+        // 리뷰 관련 (실제 연동 전에는 0 또는 기본값)
+        this.averageRating = 0.0;
+        this.reviewCount = 0;
 
         System.out.println("=== DTO 생성 시작: " + item.getProductName() + " (ID: " + item.getProductIdx() + ") ===");
         System.out.println("Images 개수: " + (item.getImages() != null ? item.getImages().size() : "null"));
@@ -80,10 +98,14 @@ public class CategoryResponseDto {
         return item.getOptions().stream()
                 .map(opt -> {
                     if (opt.getColorCategory() != null) {
-                        // code_desc에 hex 값이 있으면 사용, 없으면 code 사용
+                        // codeDesc에 hex 값(#RRGGBB)이 있으면 사용
                         String colorHex = opt.getColorCategory().getCodeDesc();
+                        System.out.println("색상 카테고리 - code: " + opt.getColorCategory().getCode() +
+                                ", codeDesc: " + colorHex);
+
                         if (colorHex != null && !colorHex.isEmpty()) {
-                            return colorHex;
+                            // hex 값이면 그대로 반환, 아니면 code 반환
+                            return colorHex.startsWith("#") ? colorHex : opt.getColorCategory().getCode();
                         }
                         return opt.getColorCategory().getCode();
                     }
