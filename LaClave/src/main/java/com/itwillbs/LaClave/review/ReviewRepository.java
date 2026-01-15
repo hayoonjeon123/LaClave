@@ -17,4 +17,6 @@ public interface ReviewRepository extends JpaRepository<Review,Integer>{
     // 상품별 평균 점수 조회
     @Query("SELECT ROUND(AVG(r.score), 1) FROM Review r WHERE r.productIdx = :productIdx AND r.status = 'ACTIVE'")
     Double getAverageScoreByProduct(@Param("productIdx") Integer productIdx);
+
+	List<Review> findByProductIdx(int intValue);
 }

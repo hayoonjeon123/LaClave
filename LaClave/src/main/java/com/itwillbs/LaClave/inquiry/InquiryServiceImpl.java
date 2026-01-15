@@ -15,7 +15,7 @@ public class InquiryServiceImpl implements InquiryService{
 	//회원별 문의 목록 조회
     @Override
     public List<Inquiry> getInquiryListByMember(Integer memberIdx) {
-        return inquiryRepository.findByMemberIdx(memberIdx);
+        return inquiryRepository.findByMemberIdxOrderByCreatedAtDesc(memberIdx);
     }
     
     //문의작성
