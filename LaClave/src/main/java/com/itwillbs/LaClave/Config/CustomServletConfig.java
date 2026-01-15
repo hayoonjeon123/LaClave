@@ -25,9 +25,12 @@ public class CustomServletConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		
 		registry.addMapping("/**")			// 어떤 주소(URL)에 접속 허용여부   /** 모든주소
-		        .allowedOrigins("*")   		// 어떤 도메인에서 접근 혀용여부	* 모든출처 (개발용)
+//		        .allowedOrigins("*")   		// 어떤 도메인에서 접근 혀용여부	* 모든출처 (개발용)
+//		        .allowedOrigins("*")   		// 어떤 도메인에서 접근 혀용여부	* 모든출처 (개발용)
+				.allowedOriginPatterns("http://localhost:517*")
 		        //.allowedOrigins("https://myapp.com","https://admin.myapp.com")    (실제 운영)
 		        .allowedMethods("GET","POST","PUT","DELETE","HEAD","OPTIONS")   // 허용하는 HTTP 메서드의 종류
+		        .allowCredentials(true)
 		        .maxAge(300)                // Preflight (OPTIONS) 요청시 결과 처리 캐싱 시간(초)
 		        .allowedHeaders("Authorization","Cache-Control","Content-Type"); // 요청시 허용할 해더 정보
 		        

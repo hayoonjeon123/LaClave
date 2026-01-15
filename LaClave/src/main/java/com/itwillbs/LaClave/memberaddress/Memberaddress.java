@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@Table(name = "MEMBER_ADDRESS")
 public class Memberaddress {
 	
 	
@@ -24,10 +26,10 @@ public class Memberaddress {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ADDRESS_IDX")
-	private Integer addressIdx;
+	private Long addressIdx;
 	
 	@Column(name = "MEMBER_IDX" ,nullable = false)
-	private Integer memberIdx;
+	private Long memberIdx;
 	
 	@Column(name ="RECIPIENT_NAME", nullable = false, length = 100)
 	private String recipientName;

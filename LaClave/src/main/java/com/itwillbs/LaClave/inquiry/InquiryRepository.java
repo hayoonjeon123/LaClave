@@ -4,15 +4,17 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface InquiryRepository extends JpaRepository<Inquiry, Integer>{
+import com.itwillbs.LaClave.security.CustomUserDetails;
+
+public interface InquiryRepository extends JpaRepository<Inquiry, Long>{
 	
 	// 회원별 문의 내역
-	List<Inquiry> findByMemberIdxOrderByCreatedAtDesc(Integer memberIdx);
+	List<Inquiry> findByMemberIdxOrderByCreatedAtDesc(Long memberIdx);
 	
 	// 문의 상태별 조회
 	List<Inquiry> findByInquiryStatus(String inquiryStatus);
 	
 	// 회원 + 상태 조건
-	List<Inquiry> findByMemberIdxAndInquiryStatus(Integer memberIdx, String inquiryStatus);
+	List<Inquiry> findByMemberIdxAndInquiryStatus(Long memberIdx, String inquiryStatus);
 	
 }

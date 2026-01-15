@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.LaClave.security.CustomUserDetails;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -12,16 +14,19 @@ import lombok.RequiredArgsConstructor;
 public class InquiryServiceImpl implements InquiryService{
 	private final InquiryRepository inquiryRepository;
 	
-	//회원별 문의 목록 조회
+
+    // 회원별 문의 목록 조회 (로그인 사용자 기준)
     @Override
-    public List<Inquiry> getInquiryListByMember(Integer memberIdx) {
-        return inquiryRepository.findByMemberIdxOrderByCreatedAtDesc(memberIdx);
+    public List<Inquiry> getMyInquiryList(CustomUserDetails user) {
+    	Long memberIdx = user.getMemberIdx();
+        return inquiryRepository
+                .findByMemberIdxOrderByCreatedAtDesc(memberIdx);
     }
     
     //문의작성
-    public void createInquiry(Integer memberIdx, InquiryCreateRequest request) {
+    public void createInquiry(CustomUserDetails user, InquiryCreateRequest request) {
         Inquiry inquiry = new Inquiry();
-        inquiry.setMemberIdx(memberIdx);
+        inquiry.setMemberIdx(user.getMemberIdx());
         inquiry.setInquiryTitle(request.getInquiryTitle());
         inquiry.setInquiryContent(request.getInquiryContent());
         inquiry.setInquiryTypeCommonIdx(request.getInquiryTypeCommonIdx());
@@ -32,7 +37,7 @@ public class InquiryServiceImpl implements InquiryService{
     //문의 수정
     @Transactional
     @Override
-    public void updateInquiry(Integer inquiryIdx, InquiryUpdateRequest request) {
+    public void updateInquiry(Long inquiryIdx, InquiryUpdateRequest request) {
     	Inquiry inquiry = inquiryRepository.findById(inquiryIdx)
     		.orElseThrow(() -> new IllegalArgumentException("문의없음"));
 
@@ -43,7 +48,7 @@ public class InquiryServiceImpl implements InquiryService{
     //문의 삭제
     @Transactional
     @Override
-    public void deleteInquiry(Integer inquiryIdx) {
+    public void deleteInquiry(Long inquiryIdx) {
     	inquiryRepository.deleteById(inquiryIdx);
     }
     

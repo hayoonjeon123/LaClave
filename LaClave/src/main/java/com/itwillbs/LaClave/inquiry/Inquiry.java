@@ -22,10 +22,10 @@ public class Inquiry {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "INQUIRY_IDX")
-	private Integer inquiryIdx;
+	private Long inquiryIdx;
 	
 	@Column(name = "MEMBER_IDX", nullable = false)
-	private Integer memberIdx;
+	private Long memberIdx;
 	
 	@Column(name = "INQUIRY_TITLE",nullable = false, length = 50)
 	private String inquiryTitle;

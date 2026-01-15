@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final CustomUserDetailsService customUserDetailsService;
 
 	 @Bean
 	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -23,13 +24,14 @@ public class SecurityConfig {
 	                var config = new org.springframework.web.cors.CorsConfiguration();
 	                config.setAllowedOrigins(java.util.List.of("http://localhost:5173")); // 리액트 주소
 	                config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-	                config.setAllowedHeaders(java.util.List.of("*"));
-	                config.setAllowCredentials(true);
+	                config.setAllowedHeaders(java.util.List.of("*")); // 모든 헤더 허용
+	                config.setAllowCredentials(true); // 세션/쿠키 허용
 	                return config;
 	            }))
 	            .authorizeHttpRequests(auth -> auth
-	                .requestMatchers("/login", "/signup", "/loginProc", "/**","/email-send", "/email-verify").permitAll()
+	                .requestMatchers("/login", "/signup", "/loginProc","/email-send","/email-verify","/api/my/**").permitAll()
 	                .anyRequest().authenticated()
+	                
 	            )
 	            .formLogin(form -> form
 	                .loginProcessingUrl("/loginProc")
@@ -47,7 +49,8 @@ public class SecurityConfig {
 	                })
 	                .permitAll()
 	            )
-	            .logout(logout -> logout.logoutSuccessUrl("/"));
+	            .logout(logout -> logout.logoutSuccessUrl("/"))
+	            .userDetailsService(customUserDetailsService); // 여기서 등록
 	        return http.build();
 	    }
 

@@ -19,17 +19,17 @@ public class ReviewServiceImpl implements ReviewService{
 	private final ItemRepository itemRepository;
 	
 	@Override
-	public List<Review> getReviewBymember(Integer memberIdx) {
+	public List<Review> getReviewBymember(Long memberIdx) {
 		return reviewRepository.findByMemberIdx(memberIdx);
 		
 	}
 	
-	public List<Review> getReviewByProduct(Integer productIdx,String status) {
+	public List<Review> getReviewByProduct(Long productIdx,String status) {
 		return reviewRepository.findByProductIdxAndStatus(productIdx, status);
 		
 	}
 	
-	public Double getProductAverageScore(Integer productIdx) {
+	public Double getProductAverageScore(Long productIdx) {
 		 Double avg = reviewRepository.getAverageScoreByProduct(productIdx);
 		 return avg != null ? avg : 0.0; //리뷰 평점이 없으면 0.0 반환
 	}

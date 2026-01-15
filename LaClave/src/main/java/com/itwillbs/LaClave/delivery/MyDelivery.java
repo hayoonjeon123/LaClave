@@ -22,10 +22,10 @@ public class MyDelivery {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name ="DELIVERY_IDX")
-	private Integer deliveryIdx; // 배송지 idx
+	private Long deliveryIdx; // 배송지 idx
 	
     @Column(name = "ORDER_IDX", nullable = false)//주문 FK
-    private Integer orderIdx;
+    private Long orderIdx;
 	
 //    @Column(name = "MEMBER_IDX", nullable = false)
 //    private Integer memberIdx;

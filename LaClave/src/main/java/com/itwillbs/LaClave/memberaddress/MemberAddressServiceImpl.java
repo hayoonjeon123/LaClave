@@ -15,7 +15,7 @@ public class MemberAddressServiceImpl implements MemberAddressService  {
 	private final MemberAddressRepository memberAddressRepository;
 	
 	@Override
-    public Integer register(Memberaddress memberaddress) {
+    public Long register(Memberaddress memberaddress) {
 		
 		Memberaddress saved = memberAddressRepository.save(memberaddress);
 		
@@ -23,7 +23,7 @@ public class MemberAddressServiceImpl implements MemberAddressService  {
     }
 
 	@Override
-	public Memberaddress get(Integer addressIdx) {
+	public Memberaddress get(Long addressIdx) {
 		
 		return memberAddressRepository.findById(addressIdx).orElseThrow();
 	}
@@ -34,7 +34,7 @@ public class MemberAddressServiceImpl implements MemberAddressService  {
 	}
 
 	@Override
-	public void remove(Integer addressIdx) {
+	public void remove(Long addressIdx) {
 		
 	}
 	
