@@ -1,8 +1,10 @@
 package com.itwillbs.LaClave.PayMent;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.itwillbs.LaClave.Member.Member;
 import com.itwillbs.LaClave.Orders.Orders;
 import com.itwillbs.LaClave.Orders.OrdersDetail;
 
@@ -13,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,9 +35,6 @@ public class PayMent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PAYMENT_IDX")
     private Long paymentIdx;
-
-    @Column(name = "MEMBER_IDX")
-    private Long memberIdx;
 
     @Column(name = "PAYMENT_DATE")
     private LocalDateTime paymentDate = LocalDateTime.now();
@@ -56,6 +56,11 @@ public class PayMent {
 
     @Column(name = "EXTERNAL_TRANSACTION", length = 100)
     private String externalTransaction;
+    
+    //멤버 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_IDX")
+    private Member member;
     
     //주문 테이블 연결
     @OneToOne(fetch = FetchType.LAZY)

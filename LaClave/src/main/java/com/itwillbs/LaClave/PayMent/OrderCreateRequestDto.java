@@ -3,6 +3,7 @@ package com.itwillbs.LaClave.PayMent;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.itwillbs.LaClave.Member.Member;
 import com.itwillbs.LaClave.Orders.Orders;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
 
@@ -21,12 +22,13 @@ public class OrderCreateRequestDto {
 
     private List<OrderDetailRequestDto> orderItems;
 
-    public Orders toOrderEntity(Long memberIdx, Memberaddress addr, String orderNo) {
+    public Orders toOrderEntity(Member member, Memberaddress addr, String orderNo) {
+    	
         return Orders.builder()
-                .memberIdx(memberIdx)
+                .member(member)
                 .orderNo(orderNo)
                 .ordersDate(LocalDateTime.now())
-                .ordersStatus(74L)
+                .ordersStatus(160L)
                 .totalPrice(this.totalPrice)
                 .usedPoint(this.usedPoint)
                 .recipientName(addr.getRecipientName())

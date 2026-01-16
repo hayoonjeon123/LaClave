@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.itwillbs.LaClave.Member.Member;
 import com.itwillbs.LaClave.Orders.Orders;
 import com.itwillbs.LaClave.Orders.OrdersDetail;
 import com.itwillbs.LaClave.Orders.OrdersRepository;
@@ -28,13 +29,13 @@ public class PaymentService {
     /**
      * 주문 생성 (배송지 정보 복사 포함)
      */
-    public String createOrder(Long memberIdx, OrderCreateRequestDto dto) {
+    public String createOrder(Member member, OrderCreateRequestDto dto) {
         // 1. 배송지 조회
         Memberaddress addr = memberAddressRepository.findById(dto.getAddrIdx())
                 .orElseThrow(() -> new RuntimeException("배송지 없음"));
 
         // 2. 주문 엔티티 생성 (Builder 활용)
-        Orders order = dto.toOrderEntity(memberIdx, addr, generateOrderNo());
+        Orders order = dto.toOrderEntity(member, addr, generateOrderNo());
 
         // 3. 주문 상세 생성 및 연결
         List<OrdersDetail> details = dto.getOrderItems().stream()

@@ -1,8 +1,14 @@
 package com.itwillbs.LaClave.PayMent;
 
+import groovy.transform.builder.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentApprovalRequestDto {
 	private String orderNo;             // 우리가 만든 주문번호
     private String externalTransaction; // 이니시스 거래번호(TID)

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itwillbs.LaClave.Member.Member;
 import com.itwillbs.LaClave.PayMent.OrderCreateRequestDto;
 import com.itwillbs.LaClave.PayMent.PayMent;
 import com.itwillbs.LaClave.PayMent.PaymentApprovalRequestDto;
@@ -41,10 +42,11 @@ public class OrdersServiceImpl implements OrdersService {
                 .collect(Collectors.toList());
     }
 
-    public String createOrder(Long memberIdx, OrderCreateRequestDto dto) {
+    @Override
+    public String createOrder(Member member, OrderCreateRequestDto dto) {
         try {
             System.out.println("=== 주문 생성 시작 ===");
-            System.out.println("memberIdx: " + memberIdx);
+            System.out.println("memberIdx: " + member);
             System.out.println("addrIdx: " + dto.getAddrIdx());
             System.out.println("totalPrice: " + dto.getTotalPrice());
             System.out.println("orderItems 개수: " + (dto.getOrderItems() != null ? dto.getOrderItems().size() : 0));
@@ -62,7 +64,7 @@ public class OrdersServiceImpl implements OrdersService {
             String orderNo = generateOrderNo();
             System.out.println("생성된 주문번호: " + orderNo);
 
-            Orders order = dto.toOrderEntity(memberIdx, addr, orderNo);
+            Orders order = dto.toOrderEntity(member, addr, orderNo);
             System.out.println("주문 엔티티 생성 완료 - ordersStatus: " + order.getOrdersStatus());
 
             // 상세 아이템 연결
@@ -86,6 +88,12 @@ public class OrdersServiceImpl implements OrdersService {
             throw e;
         }
     }
+    // 결제 주문번호 찾기
+    @Override
+    public Orders findByOrderNo(String orderNo) {
+        return ordersRepository.findByOrderNo(orderNo)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문번호입니다: " + orderNo));
+    }
 
     // 2. 결제 승인 메서드 구현
     @Override
@@ -96,7 +104,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         PayMent payment = PayMent.builder()
                 .order(order)
-                .memberIdx(order.getMemberIdx())
+                .member(order.getMember())
                 .totalPrice(dto.getAmount())
                 .payStatus("74")
                 .payWay("157") //

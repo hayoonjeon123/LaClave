@@ -3,6 +3,8 @@ package com.itwillbs.LaClave.Orders;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.itwillbs.LaClave.Member.Member;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +12,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -33,12 +37,6 @@ public class Orders {
     // 비즈니스용 주문번호 (예: 20260116-0001)
     @Column(name = "ORDER_NO", length = 50)
     private String orderNo;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrdersDetail> orderDetails;
-
-    @Column(name = "MEMBER_IDX")
-    private Long memberIdx;
 
     @Builder.Default
     @Column(name = "ORDERS_DATE")
@@ -77,4 +75,11 @@ public class Orders {
     @Builder.Default
     @Column(name = "DELIVERY_FEE")
     private Integer deliveryFee = 0;
+    
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrdersDetail> orderDetails;
+    
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @JoinColumn(name = "MEMBER_IDX")  
+    private Member member;
 }
