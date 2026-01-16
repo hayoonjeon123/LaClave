@@ -29,8 +29,8 @@ public class Cart {
     @Column(name = "MEMBER_IDX", nullable = false) // 이미지의 MEMBER_IDX와 매칭
     private Long memberIdx;
 
-    @Column(name = "CREATED_AT")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "CREATE_AT")
+    private LocalDateTime createAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> CartItems = new ArrayList<>();

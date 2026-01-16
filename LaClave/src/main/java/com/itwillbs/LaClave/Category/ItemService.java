@@ -78,4 +78,33 @@ public class ItemService {
 
 		return dto;
 	}
+
+	// 베스트 상품 조회 (전체 상품 조회)
+	@Transactional
+	public List<CategoryResponseDto> getBestProducts() {
+		log.info("베스트 상품 조회");
+
+		// 모든 상품 조회
+		List<Item> items = itemRepository.findAll();
+
+		if (items.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		// DTO로 변환
+		List<CategoryResponseDto> responseList = new ArrayList<>();
+		for (Item item : items) {
+			// 강제로 컬렉션 초기화
+			if (item.getImages() != null) {
+				item.getImages().size();
+			}
+			if (item.getOptions() != null) {
+				item.getOptions().size();
+			}
+			responseList.add(new CategoryResponseDto(item));
+		}
+
+		log.info("베스트 상품 조회 완료: {} 개", responseList.size());
+		return responseList;
+	}
 }

@@ -18,4 +18,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
     Optional<Item> findById(Long productIdx);
+
+    @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
+    List<Item> findAll();
 }

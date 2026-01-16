@@ -1,15 +1,22 @@
 package com.itwillbs.LaClave.Orders;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "ORDERS_DETAIL")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrdersDetail {
 
     @Id
@@ -25,21 +32,34 @@ public class OrdersDetail {
     @Column(name = "PRODUCT_IDX")
     private Long productIdx;
 
-    @Column(name = "COLOR_CODE")
-    private Integer colorCode;
+    @Column(name = "PRODUCT_NAME", length = 200)
+    private String productName;
 
-    @Column(name = "SIZE_CODE")
-    private Integer sizeCode;
+    @Column(name = "COLOR_CODE", length = 30)
+    private Long colorCode;
+
+    @Column(name = "SIZE_CODE", length = 30)
+    private Long sizeCode;
 
     @Column(name = "QUANTITY")
-    private Integer quantity;
+    private Long quantity;
 
     @Column(name = "PRICE")
-    private Integer price;
+    private Long price;
 
-    @Column(name = "DISCOUNT_PRICE")
-    private Integer discountPrice;
+//    @Column(name = "DISCOUNT_PRICE")
+//    private Long discountPrice;
 
-    @Column(name = "TOTAL_PRICE")
-    private Integer totalPrice;
+    @Column(name = "TOTAL_PRICE", insertable = false, updatable = false)
+    private Long totalPrice;
+
+    // 추가: 상세 상태 (예: 결제완료, 배송중, 반품신청 등)
+    @Builder.Default
+    @Column(name = "DETAIL_STATUS", length = 30)
+    private String detailStatus = "pay_01";
+
+    // 추가: 리뷰 작성 여부 (Y/N)
+    @Builder.Default
+    @Column(name = "REVIEW_STATUS", insertable = false, updatable = false)
+    private String reviewStatus = "N";
 }

@@ -32,4 +32,11 @@ public class CategoryController {
 		return itemService.getItem(productIdx);
 	}
 
+	// 베스트 상품 조회
+	@GetMapping("/products/best")
+	public List<CategoryResponseDto> getBestProducts() {
+		log.info("베스트 상품 조회 요청");
+		return itemService.getBestProducts();
+	}
+
 }

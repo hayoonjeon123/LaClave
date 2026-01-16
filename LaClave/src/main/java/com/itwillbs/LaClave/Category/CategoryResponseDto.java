@@ -25,7 +25,7 @@ public class CategoryResponseDto {
     private List<String> colors;
 
     private List<String> sizes;
-    // private List<Long> sizeCommonIdx;
+     private List<Long> sizeCommonIdx;
 
     private int discount;
 
@@ -81,8 +81,14 @@ public class CategoryResponseDto {
         }
 
         // 색상 처리 - hex 값으로 변환
-        this.colors = extractColors(item);
+        this.colors = extractColors(item); 
+        this.colorCommonIdx = extractIdxs(item, opt -> 
+            opt.getColorCategory() != null ? opt.getColorCategory().getCommonIdx() : null);
+
+        // 2. 사이즈 정보 추출
         this.sizes = extractSizes(item);
+        this.sizeCommonIdx = extractIdxs(item, opt -> 
+            opt.getSizeCategory() != null ? opt.getSizeCategory().getCommonIdx() : null);
 
         System.out.println("색상 개수: " + (this.colors != null ? this.colors.size() : "null"));
         System.out.println("사이즈 개수: " + (this.sizes != null ? this.sizes.size() : "null"));
