@@ -113,6 +113,8 @@ public class MemberService {
 		return MemberInfoResponse.builder()
 				.memberName(member.getMemberName())
 				.memberId(member.getMemberId())
+				.nickname(member.getNickname()) 
+				.birth(member.getBirth())
 				.email(member.getEmail())
 				.postCode(member.getPostCode())
 				.address(member.getAddress())
@@ -132,5 +134,41 @@ public class MemberService {
 		return adj + noun + randomNumber;
 	}
 	
+	//회원정보 수정
+		@Transactional
+		public void updateMemberInfo(Long memberIdx, MemberUpdateDto dto) {
+		    Member member = memberRepository.findById(memberIdx)
+		            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+		    if (dto.getMemberName() != null) member.setMemberName(dto.getMemberName());
+		    if (dto.getNickname() != null) member.setNickname(dto.getNickname());
+		    if (dto.getBirth() != null) member.setBirth(dto.getBirth());
+		    if (dto.getPostCode() != null) member.setPostCode(dto.getPostCode());
+		    if (dto.getAddress() != null) member.setAddress(dto.getAddress());
+		    if (dto.getAddressDetail() != null) member.setAddressDetail(dto.getAddressDetail());
+
+		    member.setUpdatedAt(LocalDateTime.now());
+
+		    memberRepository.save(member);
+		}
+
+		// 비밀번호 수정
+		@Transactional
+		public void updatePassword(Long memberIdx, PasswordUpdateDto dto) {
+		    Member member = memberRepository.findById(memberIdx)
+		            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+		    // 1️⃣ 현재 비밀번호 확인
+		    if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getMemberPw())) {
+		        throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+		    }
+
+		    // 2️⃣ 새 비밀번호 암호화 후 저장
+		    member.setMemberPw(passwordEncoder.encode(dto.getNewPassword()));
+		    member.setUpdatedAt(LocalDateTime.now());
+
+		    memberRepository.save(member);
+		}
+		
 
 }

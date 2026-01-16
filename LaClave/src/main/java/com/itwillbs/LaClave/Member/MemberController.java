@@ -13,12 +13,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itwillbs.LaClave.Mail.MailService;
+import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -111,4 +113,24 @@ public class MemberController {
         }
         return ResponseEntity.ok(memberService.getMemberInfo(userDetails.getUsername()));
     }
+    
+    //회원 정보수정
+    @PutMapping("/update-info")
+    public String updateMemberInfo(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody MemberUpdateDto dto) {
+
+        memberService.updateMemberInfo(user.getMemberIdx(), dto);
+        return "회원정보가 수정되었습니다.";
+    }
+    // 비밀번호 수정
+    @PutMapping("/update-password")
+    public ResponseEntity<String> updatePassword(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody PasswordUpdateDto dto) {
+
+        memberService.updatePassword(user.getMemberIdx(), dto);
+        return ResponseEntity.ok("비밀번호가 변경되었습니다.");
+    }
+    
 }

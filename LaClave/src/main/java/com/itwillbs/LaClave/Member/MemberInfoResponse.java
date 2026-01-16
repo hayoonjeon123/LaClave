@@ -1,5 +1,8 @@
 package com.itwillbs.LaClave.Member;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberInfoResponse {
     private String memberName;
+    private String nickname;
     private String memberId;
     private String email;
+    private LocalDate birth;
     private String postCode;
     private String address;
     private String addressDetail;
