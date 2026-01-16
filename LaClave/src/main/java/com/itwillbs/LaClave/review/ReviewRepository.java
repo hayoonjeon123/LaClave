@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ReviewRepository extends JpaRepository<Review,Long>{
+public interface ReviewRepository extends JpaRepository<Review,Integer>{
 	
 	// 내가쓴 리뷰 목록
 	List<Review> findAllByMemberIdx(Long memberIdx);

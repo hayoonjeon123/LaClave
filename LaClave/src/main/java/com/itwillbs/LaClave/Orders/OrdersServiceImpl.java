@@ -25,7 +25,8 @@ public class OrdersServiceImpl implements OrdersService {
     private final MemberAddressRepository memberAddressRepository;
 
     private final PaymentRepository paymentRepository;
-
+    
+    // 주문 내역 조회
     @Override
     @Transactional(readOnly = true)
     public List<MyOrderResponseDto> getMyOrderList(CustomUserDetails user) {
@@ -34,12 +35,9 @@ public class OrdersServiceImpl implements OrdersService {
         // 1️⃣ 주문 + 상세 목록 fetch join
         List<Orders> orders = ordersRepository.findAllByMemberIdxNative(memberIdx);
 
-        // 2️⃣ 회원 기본 배송지 조회
-        Memberaddress delivery = memberAddressRepository.findDefaultByMemberIdx(memberIdx);
-
-        // 3️⃣ DTO 변환
+        // 2️⃣ DTO 변환 (배송 정보는 Orders에서 직접 가져오기)
         return orders.stream()
-                .map(order -> new MyOrderResponseDto(order, order.getOrderDetails(), delivery))
+                .map(MyOrderResponseDto::new) // 이제 생성자가 Orders만 받음
                 .collect(Collectors.toList());
     }
 

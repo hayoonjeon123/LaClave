@@ -2,6 +2,10 @@ package com.itwillbs.LaClave.review;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.itwillbs.LaClave.security.CustomUserDetails;
+
 public interface ReviewService {
 	
 //	List<Review> getReviewBymember(Long memberIdx);
@@ -13,6 +17,17 @@ public interface ReviewService {
 	
 	
 	Double getProductAverageScore(Long productIdx);
+	
+	
+    void createReview(
+            CustomUserDetails user,
+            ReviewCreateRequest dto,
+            MultipartFile image
+        );
+	
+	void updateReview(CustomUserDetails user, Integer reviewIdx, ReviewUpdateRequest request);
+
+	void deleteReview(CustomUserDetails user,Integer reviewIdx);
 	
 	
 	

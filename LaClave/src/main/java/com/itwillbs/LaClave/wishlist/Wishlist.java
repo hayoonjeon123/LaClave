@@ -26,7 +26,7 @@ public class Wishlist {
     private Integer wishlistIdx;
 
     @Column(name = "MEMBER_IDX", nullable = false)
-    private Integer memberIdx;
+    private Long memberIdx;
 
     @Column(name = "PRODUCT_IDX", nullable = false)
     private Integer productIdx;
