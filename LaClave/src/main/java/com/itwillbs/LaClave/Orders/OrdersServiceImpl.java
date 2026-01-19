@@ -26,7 +26,7 @@ public class OrdersServiceImpl implements OrdersService {
     private final MemberAddressRepository memberAddressRepository;
 
     private final PaymentRepository paymentRepository;
-    
+
     // 주문 내역 조회
     @Override
     @Transactional(readOnly = true)
@@ -88,6 +88,7 @@ public class OrdersServiceImpl implements OrdersService {
             throw e;
         }
     }
+
     // 결제 주문번호 찾기
     @Override
     public Orders findByOrderNo(String orderNo) {
@@ -99,24 +100,40 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     @Transactional
     public boolean approvePayment(PaymentApprovalRequestDto dto) {
-        Orders order = ordersRepository.findByOrderNo(dto.getOrderNo())
-                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+        System.out.println("=== approvePayment 시작: orderNo = " + dto.getOrderNo());
+        try {
+            Orders order = ordersRepository.findByOrderNo(dto.getOrderNo())
+                    .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
-        PayMent payment = PayMent.builder()
-                .order(order)
-                .member(order.getMember())
-                .totalPrice(dto.getAmount())
-                .payStatus("74")
-                .payWay("157") //
-                .payType("158")
-                .payReference("159")
-                .externalTransaction(dto.getExternalTransaction()) //
-                .build();
+            System.out.println("주문 조회 성공: ordersIdx = " + order.getOrdersIdx());
 
-        paymentRepository.save(payment);
-        order.setOrdersStatus(75L); // 결제 완료 상태 (공통코드 PK)
+            // 결제 정보 생성 및 저장
+            PayMent payment = PayMent.builder()
+                    .order(order)
+                    .member(order.getMember())
+                    .totalPrice(dto.getAmount())
+                    .payStatus(74) 
+                    .payWay(157) 
+                    .payType(158) 
+                    .payReference(159) 
+                    .externalTransaction(dto.getExternalTransaction())
+                    .paymentDate(java.time.LocalDateTime.now())
+                    .build();
 
-        return true;
+            PayMent savedPayment = paymentRepository.save(payment);
+            System.out.println("결제 정보 저장 성공: paymentIdx = " + savedPayment.getPaymentIdx());
+
+            order.setOrdersStatus(74L); 
+            ordersRepository.save(order);
+            System.out.println("주문 상태 업데이트 완료: 75L");
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("=== 결제 승인 중 치명적 오류 발생 ===");
+            System.err.println("오류 메시지: " + e.getMessage());
+            e.printStackTrace();
+            throw e; // 500 에러를 발생시켜 프론트에서 인지하게 함
+        }
     }
 
     // 주문번호 생성 로직

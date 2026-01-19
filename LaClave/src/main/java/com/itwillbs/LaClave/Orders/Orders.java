@@ -75,11 +75,11 @@ public class Orders {
     @Builder.Default
     @Column(name = "DELIVERY_FEE")
     private Integer deliveryFee = 0;
-    
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrdersDetail> orderDetails;
-    
-    @ManyToOne(fetch = FetchType.LAZY) 
-    @JoinColumn(name = "MEMBER_IDX")  
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_IDX")
     private Member member;
 }

@@ -36,10 +36,12 @@ public class SecurityConfig {
 								"/category/**", "/product/**",
 								"/api/category/**", "/api/product/**",
 								"/api/review/**",
+								"/api/items/**", "/items/**",
 								"/api/cart/**", "/cart/**",
 								"/api/orders/create", "/api/orders/**",
-								"/orders/**" // 프록시가 /api 제거하므로 추가
-						).permitAll()
+								"/orders/**",
+								"/api/payment/**", "/payment/**")
+						.permitAll()
 						.anyRequest().authenticated())
 				.formLogin(form -> form
 						.loginProcessingUrl("/loginProc")

@@ -1,6 +1,5 @@
 package com.itwillbs.LaClave.PayMent;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "PAYMENT")
 @Data
 @Builder
-@NoArgsConstructor 
+@NoArgsConstructor
 @AllArgsConstructor
 public class PayMent {
 
@@ -43,26 +42,26 @@ public class PayMent {
     private Integer totalPrice;
 
     @Column(name = "PAY_STATUS", length = 30)
-    private String payStatus;
+    private Integer payStatus;
 
     @Column(name = "PAY_WAY", length = 30)
-    private String payWay;
+    private Integer payWay;
 
     @Column(name = "PAY_TYPE", length = 30)
-    private String payType;
+    private Integer payType;
 
     @Column(name = "PAY_REFERENCE", length = 30)
-    private String payReference;
+    private Integer payReference;
 
-    @Column(name = "EXTERNAL_TRANSACTION", length = 100)
+    @Column(name = "EXTERNAL_TRANSACTION_IDX", length = 100)
     private String externalTransaction;
-    
-    //멤버 연결
+
+    // 멤버 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_IDX")
     private Member member;
-    
-    //주문 테이블 연결
+
+    // 주문 테이블 연결
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDERS_IDX")
     private Orders order;

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.LaClave.Cart.ItemImage;
+import com.itwillbs.LaClave.review.Review;
+import com.itwillbs.LaClave.review.ReviewRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +20,8 @@ import lombok.extern.log4j.Log4j2;
 public class ItemService {
 
 	private final ItemRepository itemRepository;
+	
+	private final ReviewRepository reviewRepository;
 
 	public List<CategoryResponseDto> getItemsByProductCategoryIdx(Long productCategoryIdx) {
 		List<Item> items = itemRepository.findByProductCategoryIdx(productCategoryIdx);
@@ -33,7 +37,6 @@ public class ItemService {
 			items = itemRepository.findByProductCategoryIdx(productCommonIdx);
 		}
 
-		// 2. 에러 방지용: 아이템이 없으면 바로 빈 리스트 반환
 		if (items.isEmpty())
 			return new ArrayList<>();
 
@@ -107,4 +110,23 @@ public class ItemService {
 		log.info("베스트 상품 조회 완료: {} 개", responseList.size());
 		return responseList;
 	}
+	
+	// 상품 상세페이지 리뷰 
+	public CategoryProductReviewResponse getProductReviewData(Integer productIdx) {
+	    Double avgScore = reviewRepository.getAverageScoreByProduct(productIdx.longValue());
+	    if (avgScore == null) avgScore = 0.0;
+
+	    List<Review> reviewEntities = reviewRepository.findByProductIdx(productIdx);
+	    
+	    List<CategoryProductReviewResponse.ReviewDetail> details = reviewEntities.stream()
+	            .map(CategoryProductReviewResponse.ReviewDetail::new) 
+	            .collect(Collectors.toList());
+
+	    return new CategoryProductReviewResponse(avgScore, details);
+	}
+
+    // 평균 점수
+    public Double getAverageScore(Long productIdx) {
+        return reviewRepository.getAverageScoreByProduct(productIdx);
+    }
 }

@@ -1,6 +1,4 @@
-package com.itwillbs.LaClave;
-
-import com.itwillbs.LaClave.Category.Item;
+package com.itwillbs.LaClave.Category;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,7 +42,6 @@ public class ItemImage {
     private Item item;
 
 	public String getImagePath() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

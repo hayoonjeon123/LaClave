@@ -1,6 +1,7 @@
 package com.itwillbs.LaClave.Cart;
 
 import com.itwillbs.LaClave.Category.Item;
+import com.itwillbs.LaClave.review.Review;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,4 +43,8 @@ public class ItemImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TARGET_IDX", referencedColumnName = "PRODUCT_IDX")
     private Item item;
+
+    // @ManyToOne
+    // @JoinColumn(name = "REVIEW_IDX") // DB에 추가한 컬럼명과 일치시켜주세요
+    // private Review review;
 }

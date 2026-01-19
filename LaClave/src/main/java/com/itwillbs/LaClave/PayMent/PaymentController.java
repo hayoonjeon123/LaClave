@@ -33,96 +33,111 @@ public class PaymentController {
 
 	@Autowired
 	private final OrdersService ordersService;
-	
+
 	@Autowired
-    private MemberRepository memberRepository;
+	private MemberRepository memberRepository;
 
 	// 1. 주문 생성 (결제창 띄우기 직전 호출)
 	@PostMapping("/create")
 	public ResponseEntity<?> createOrder(@AuthenticationPrincipal CustomUserDetails user,
 			@RequestBody OrderCreateRequestDto requestDto) {
 
-	    if (user == null) {
-	        return ResponseEntity.status(401).body("로그인이 필요합니다.");
-	    }
+		if (user == null) {
+			return ResponseEntity.status(401).body("로그인이 필요합니다.");
+		}
 
-	    try {
-	        // 2. 로그인한 사용자의 memberIdx로 실제 Member 객체 조회
-	        // memberService가 없다면 memberRepository를 직접 주입받아 사용해도 됩니다.
-	    	Member member = memberRepository.findById(user.getMemberIdx())
-                    .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+		try {
+			// 2. 로그인한 사용자의 memberIdx로 실제 Member 객체 조회
+			// memberService가 없다면 memberRepository를 직접 주입받아 사용해도 됩니다.
+			Member member = memberRepository.findById(user.getMemberIdx())
+					.orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
-	        // 3. 서비스 호출 시 member 객체를 첫 번째 인자로 전달
-	        // 이제 'The method createOrder(Member, ...)' 규격과 일치하게 됩니다.
-	        String orderNo = ordersService.createOrder(member, requestDto); 
-	        
-	        System.out.println("주문 생성 성공 - orderNo: " + orderNo);
-	        return ResponseEntity.ok(orderNo);
+			// 3. 서비스 호출 시 member 객체를 첫 번째 인자로 전달
+			// 이제 'The method createOrder(Member, ...)' 규격과 일치하게 됩니다.
+			String orderNo = ordersService.createOrder(member, requestDto);
 
-	    } catch (Exception e) {
-	        System.err.println("주문 생성 실패: " + e.getMessage());
-	        return ResponseEntity.status(500).body("주문 생성 오류: " + e.getMessage());
-	    }
+			System.out.println("주문 생성 성공 - orderNo: " + orderNo);
+			return ResponseEntity.ok(orderNo);
+
+		} catch (Exception e) {
+			System.err.println("주문 생성 실패: " + e.getMessage());
+			return ResponseEntity.status(500).body("주문 생성 오류: " + e.getMessage());
+		}
 	}
-	
+
 	@GetMapping("/payment/ini-request/{orderNo}")
 	public ResponseEntity<?> getInicisData(@PathVariable("orderNo") String orderNo) {
-	    // 1. DB에서 '대기' 상태인 주문 정보 조회
-	    Orders order = ordersService.findByOrderNo(orderNo);
-	    
-	    // 2. 이니시스 필수 정보 (테스트 환경)
-	    String mid = "INIpayTest"; 
-	    String signKey = "SU5JTElURV9URVNUX0s0S09fU0lHTktFWV9QUklWQVRF"; 
-	    String timestamp = String.valueOf(System.currentTimeMillis());
-	    
-	 // 🔍 디버깅 로그 추가
-	    System.out.println("=== 주문 정보 ===");
-	    System.out.println("orderNo: " + orderNo);
-	    System.out.println("totalPrice: " + order.getTotalPrice());  // ← 이 값 확인!
-	    System.out.println("timestamp: " + timestamp);
-	    
-	    // 3. 서명(Signature) 생성
-	    String signature = SignatureUtil.getSignature(orderNo, order.getTotalPrice(), timestamp);
-	    
-	    // 4. 프론트로 보낼 데이터 구성
-	    Map<String, Object> res = new HashMap<>();
-	    res.put("mid", mid);
-	    res.put("orderNo", orderNo);
-	    res.put("price", order.getTotalPrice());
-	    res.put("timestamp", timestamp);
-	    res.put("signature", signature);
-	    res.put("mKey", SignatureUtil.encryptSHA256(signKey)); 
-	    res.put("productName", order.getOrderDetails().get(0).getProductName() + " 외");
-	    res.put("buyerName", order.getMember().getMemberName()); 
-	    res.put("buyerEmail", order.getMember().getEmail());
+		// 1. DB에서 '대기' 상태인 주문 정보 조회
+		Orders order = ordersService.findByOrderNo(orderNo);
 
-	    return ResponseEntity.ok(res);
+		// 2. 이니시스 필수 정보 (테스트 환경)
+		String mid = "INIpayTest";
+		String signKey = "SU5JTElURV9UUklQTEVERVNfS0VZU1RS"; // 이니시스 공식 테스트 signKey
+		String timestamp = String.valueOf(System.currentTimeMillis());
+
+		// 🔍 디버깅 로그 추가
+		System.out.println("=== 주문 정보 ===");
+		System.out.println("orderNo: " + orderNo);
+		System.out.println("totalPrice: " + order.getTotalPrice()); // ← 이 값 확인!
+		System.out.println("timestamp: " + timestamp);
+
+		// 3. 서명(Signature) 생성
+		String signature = SignatureUtil.getSignature(signKey, orderNo, order.getTotalPrice(), timestamp);
+
+		// 4. 프론트로 보낼 데이터 구성
+		Map<String, Object> res = new HashMap<>();
+		res.put("mid", mid);
+		res.put("orderNo", orderNo);
+		res.put("price", order.getTotalPrice());
+		res.put("timestamp", timestamp);
+		res.put("signature", signature);
+		res.put("mKey", SignatureUtil.encryptSHA256(signKey));
+		res.put("productName", order.getOrderDetails().get(0).getProductName() + " 외");
+		res.put("buyerName", order.getMember().getMemberName());
+		res.put("buyerEmail", order.getMember().getEmail());
+		res.put("buyerTel", "01000000000"); // Member에 phone 필드가 없으므로 기본값 사용
+
+		return ResponseEntity.ok(res);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	// 이니시스 결제 완료 콜백
+	@PostMapping("/payment/callback")
+	public String paymentCallback(@RequestBody Map<String, String> params) {
+		log.info("=== 이니시스 결제 콜백 수신 ===");
+		log.info("결제 결과: {}", params);
+
+		String resultCode = params.get("resultCode");
+		String orderNo = params.get("MOID");
+
+		if ("0000".equals(resultCode)) {
+			// 결제 성공 - 주문 상태 업데이트
+			log.info("결제 성공 - 주문번호: {}", orderNo);
+			// TODO: ordersService.updateOrderStatus(orderNo, "PAID");
+			return "redirect:http://localhost:5173/order-complete?orderNo=" + orderNo;
+		} else {
+			// 결제 실패
+			log.error("결제 실패 - 주문번호: {}, 에러코드: {}", orderNo, resultCode);
+			return "redirect:http://localhost:5173/order-failed";
+		}
+	}
+
+	// 2. 결제 승인 요청 (포트원용)
+	@PostMapping("/approve")
+	public ResponseEntity<?> approvePayment(@RequestBody PaymentApprovalRequestDto requestDto) {
+		log.info("=== 결제 승인 요청 수신 (단순화된 경로) ===");
+		log.info("주문번호: {}, imp_uid: {}", requestDto.getOrderNo(), requestDto.getExternalTransaction());
+
+		try {
+			boolean result = ordersService.approvePayment(requestDto);
+			if (result) {
+				return ResponseEntity.ok("결제 승인 성공");
+			} else {
+				return ResponseEntity.status(500).body("결제 승인 실패");
+			}
+		} catch (Exception e) {
+			log.error("결제 승인 처리 중 에러: {}", e.getMessage());
+			return ResponseEntity.status(500).body("결제 승인 처리 중 에러: " + e.getMessage());
+		}
+	}
+
 }
