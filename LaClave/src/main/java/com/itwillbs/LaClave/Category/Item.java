@@ -17,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -80,6 +81,13 @@ public class Item {
 
     @Column(name = "UPDATED_AT", nullable = false)
     private java.time.LocalDateTime updatedAt;
+    
+    @Column(name = "STYLE_TAGS", nullable = false)
+    private String styleTags;
+    
+    @Lob
+    @Column(name = "PRODUCT_VECTOR")
+    private String productVector;
 
     // @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     // private List<ProductOption> images;
