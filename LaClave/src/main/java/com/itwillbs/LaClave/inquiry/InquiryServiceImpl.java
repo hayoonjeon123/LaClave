@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor //생성자 자동 생성
 public class InquiryServiceImpl implements InquiryService{
+	
 	private final InquiryRepository inquiryRepository;
 	
 

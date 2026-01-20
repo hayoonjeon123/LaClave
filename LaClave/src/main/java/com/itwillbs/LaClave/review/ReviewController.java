@@ -53,6 +53,21 @@ public class ReviewController {
 
 		return ResponseEntity.ok(myReviews);
 	}
+	
+    /**
+     * 2️⃣ 작성 가능 리뷰 조회 (마이페이지)
+     * - 아직 리뷰 작성하지 않은 주문 상품 목록
+     */
+    @GetMapping("/writable")
+    public ResponseEntity<List<ReviewResponseDto>> getWritableReviews(
+            @AuthenticationPrincipal CustomUserDetails user) {
+
+        Long memberIdx = user.getMemberIdx();
+        List<ReviewResponseDto> writable = reviewService.getWritableReviews(memberIdx);
+
+        return ResponseEntity.ok(writable);
+    }
+	
 
 	// http://localhost:8080/api/review/product/{productIdx}
 	// 상품별 리뷰 목록
@@ -93,11 +108,14 @@ public class ReviewController {
 	}
 
 	@PutMapping("/{reviewIdx}")
-	public ResponseEntity<Void> updateReview(@AuthenticationPrincipal CustomUserDetails user,
-			@PathVariable Integer reviewIdx, @RequestBody ReviewUpdateRequest request) {
-
-		reviewService.updateReview(user, reviewIdx, request);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<Void> updateReview(
+	    @AuthenticationPrincipal CustomUserDetails user,
+	    @PathVariable Integer reviewIdx,
+	    @RequestPart("review") ReviewUpdateRequest request,
+	    @RequestPart(value = "image", required = false) MultipartFile image
+	) {
+	    reviewService.updateReview(user, reviewIdx, request, image);
+	    return ResponseEntity.ok().build();
 	}
 	
 	
@@ -108,6 +126,6 @@ public class ReviewController {
 	    reviewService.deleteReview(user, reviewIdx);
 	    return ResponseEntity.ok().build();
 	}
-//	
+//		
 
 }

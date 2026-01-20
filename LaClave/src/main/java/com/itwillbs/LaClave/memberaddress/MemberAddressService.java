@@ -1,14 +1,19 @@
 package com.itwillbs.LaClave.memberaddress;
 
+import java.util.List;
+
+import com.itwillbs.LaClave.security.CustomUserDetails;
+
 public interface MemberAddressService {
+
+	List<MemberAddressDto> getMyAddressList(CustomUserDetails user);
 	
-	// 회원 배송지 작성하기
-	Long register(Memberaddress memberaddress);
-	//회원 배송지 조회
-	Memberaddress get(Long addressIdx);
-	// 회원 배송지 수정하기
-	void modify(Memberaddress memberaddress);
-	// 회원 배송지 삭제하기
-	void remove(Long addressIdx);
+	MemberAddressDto get(Long addressIdx, CustomUserDetails user);
+	
+	 void modify(Memberaddress updatedAddress, CustomUserDetails user);
+	 
+	 void remove(Long addressIdx, CustomUserDetails user);
+	 
+	  Long register(Memberaddress memberaddress, Long memberIdx); 
 
 }

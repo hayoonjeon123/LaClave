@@ -27,8 +27,8 @@ public class MyDelivery {
     @Column(name = "ORDER_IDX", nullable = false)//주문 FK
     private Long orderIdx;
 	
-//    @Column(name = "MEMBER_IDX", nullable = false)
-//    private Integer memberIdx;
+    @Column(name = "MEMBER_IDX", nullable = false)
+    private Integer memberIdx;
     
     @Column(name = "DELIVERY_STATUS_COMMON_IDX", nullable = false)
     private Integer deliveryStatusCommonIdx; //공통코드 pk참조idx
@@ -45,6 +45,7 @@ public class MyDelivery {
     @Column(name = "COURIER", length = 50)
 	private String courier; //배달 서비스회사
     @Column(name = "UPDATED_AT")
+    
 	private LocalDateTime updatedAt; // 업데이트 날짜
 	
 

@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface ReviewRepository extends JpaRepository<Review,Integer>{
 	
 	// 내가쓴 리뷰 목록
-	List<Review> findAllByMemberIdx(Long memberIdx);
+	List<Review> findAllByMemberIdxAndStatus(Long memberIdx, String status);
 	
 	// 상품별 리뷰 목록 조회 
     List<Review> findByProductIdxAndStatus(Long productIdx, String status);
@@ -19,4 +19,10 @@ public interface ReviewRepository extends JpaRepository<Review,Integer>{
     Double getAverageScoreByProduct(@Param("productIdx") Long productIdx);
     //
 	List<Review> findByProductIdx(int intValue);
+	
+	boolean existsByMember_MemberIdxAndOrdersIdxAndProductIdx(
+	        Long memberIdx,
+	        Integer ordersIdx,
+	        Integer productIdx
+	);
 }

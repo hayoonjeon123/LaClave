@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReviewCreateRequest {
+public class ReviewCreateRequest {	
 	private Integer ordersIdx;
     private Integer productIdx;
     private Double score;

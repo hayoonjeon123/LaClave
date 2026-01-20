@@ -20,6 +20,10 @@ public class CustomUserDetails implements UserDetails {
     public Long  getMemberIdx() {
         return member.getMemberIdx();
     }
+    
+    public Member getMember() {
+        return member;
+    }
 
     @Override
     public String getUsername() {
@@ -30,6 +34,8 @@ public class CustomUserDetails implements UserDetails {
     public String getPassword() {
         return member.getMemberPw();
     }
+    
+    
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -39,5 +45,9 @@ public class CustomUserDetails implements UserDetails {
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return true; }
+    @Override
+    public boolean isEnabled() {
+        return member.getMemberStatus() != null
+            && member.getMemberStatus() == 1;
+    }
 }

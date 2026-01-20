@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -169,6 +170,30 @@ public class MemberService {
 
 		    memberRepository.save(member);
 		}
+		
+		@Transactional
+		public void withdrawMemberWithPassword(Long memberIdx, String password) {
+
+		    Member member = memberRepository.findById(memberIdx)
+		            .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다."));
+
+		    // 이미 탈퇴한 회원 방어
+		    if (member.getMemberStatus() != null && member.getMemberStatus() == 2) {
+		        throw new RuntimeException("이미 탈퇴한 회원입니다.");
+		    }
+
+		    // 🔐 비밀번호 검증
+		    if (!passwordEncoder.matches(password, member.getMemberPw())) {
+		        throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+		    }
+
+		    // 탈퇴 처리
+		    member.setMemberStatus(2);
+		    member.setUpdatedAt(LocalDateTime.now());
+		    SecurityContextHolder.clearContext();
+		}
+		
+		
 		
 
 }

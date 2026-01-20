@@ -20,6 +20,18 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>{
 	
 	// 주문번호(String)로 주문 정보를 찾는 메서드 추가
     Optional<Orders> findByOrderNo(String orderNo);
+    
+    
+    @Query("""
+    	    SELECT od
+    	    FROM OrdersDetail od
+    	    LEFT JOIN Review r ON od.product.productIdx = r.product.productIdx
+    	        AND r.member.memberIdx = :memberIdx
+    	    WHERE od.order.member.memberIdx = :memberIdx
+    	      AND r.reviewIdx IS NULL
+    	""")
+    	List<OrdersDetail> findUnreviewedDetailsByMember(@Param("memberIdx") Long memberIdx);
 }
+
 
 

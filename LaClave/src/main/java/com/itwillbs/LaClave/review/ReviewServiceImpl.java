@@ -1,5 +1,6 @@
 package com.itwillbs.LaClave.review;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -13,8 +14,11 @@ import com.itwillbs.LaClave.Category.Category;
 import com.itwillbs.LaClave.Category.Item;
 import com.itwillbs.LaClave.Category.ItemRepository;
 import com.itwillbs.LaClave.Category.ProductOption;
+import com.itwillbs.LaClave.Member.Member;
+import com.itwillbs.LaClave.Member.MemberRepository;
 import com.itwillbs.LaClave.Orders.OrdersDetail;
 import com.itwillbs.LaClave.Orders.OrdersDetailRepository;
+import com.itwillbs.LaClave.Orders.OrdersRepository;
 import com.itwillbs.LaClave.inquiry.InquiryCreateRequest;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
@@ -29,6 +33,10 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final ItemRepository itemRepository;
 	private final OrdersDetailRepository ordersDetailRepository;
+	private final MemberRepository memberRepository;
+	private final OrdersRepository ordersRepository;
+	
+	
 	
 	//상품별 리뷰 조회
 	public List<Review> getReviewByProduct(Long productIdx, String status) {
@@ -47,7 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(readOnly = true)
 	public List<MyReviewResponseDTO> getMyReviews(Long memberIdx) {
 		// 1. 해당 회원의 리뷰 목록 조회
-		List<Review> reviews = reviewRepository.findAllByMemberIdx(memberIdx);
+		List<Review> reviews = reviewRepository.findAllByMemberIdxAndStatus(memberIdx,"ACTIVE");
 
 		return reviews.stream().map(review -> {
 			// 2. 상품 정보 조회 (상품명, 이미지용)
@@ -79,55 +87,100 @@ public class ReviewServiceImpl implements ReviewService {
 					.optionInfo(optionInfo).ordersIdx(review.getOrdersIdx()).build();
 		}).collect(Collectors.toList());
 	}
-
 	
+	// 작성 가능 리뷰
+	@Override
+	public List<ReviewResponseDto> getWritableReviews(Long memberIdx) {
+	    List<OrdersDetail> orderDetails = ordersRepository.findUnreviewedDetailsByMember(memberIdx);
+
+	    return orderDetails.stream()
+	        .map(detail -> new ReviewResponseDto(
+	                0L, // reviewIdx 없음
+	                detail.getProduct().getProductIdx(),
+	                detail.getProduct().getProductName(),
+	                "",
+	                "색상: " + detail.getColorCode() + ", 사이즈: " + detail.getSizeCode(),
+	                "",
+	                0,
+	                detail.getOrder().getOrdersIdx()
+	        ))
+	        .collect(Collectors.toList());
+	}
+	
+
 	//리뷰 작성
 	@Override
-	public void createReview(CustomUserDetails user, ReviewCreateRequest dto, MultipartFile image) {
-		Review review = Review.create(user.getMemberIdx(), dto.getProductIdx(), dto.getOrdersIdx(), dto.getScore(),
-				dto.getContent());
-		reviewRepository.save(review);
-	}
-
 	@Transactional
-	@Override
-	public void updateReview(CustomUserDetails user, Integer reviewIdx, ReviewUpdateRequest request) {
+	public void createReview(CustomUserDetails user, ReviewCreateRequest dto, MultipartFile image) {
 
-		Review review = reviewRepository.findById(reviewIdx)
-				.orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+	    boolean exists = reviewRepository
+	        .existsByMember_MemberIdxAndOrdersIdxAndProductIdx(
+	            user.getMemberIdx(),
+	            dto.getOrdersIdx(),
+	            dto.getProductIdx()
+	        );
 
-		// ✨ 본인 리뷰만 수정 가능
-		if (!review.getMemberIdx().equals(user.getMemberIdx().intValue())) {
-			throw new IllegalStateException("수정 권한이 없습니다.");
-		}
+	    if (exists) {
+	        throw new IllegalStateException("이미 리뷰를 작성한 상품입니다.");
+	    }
+	    
+	    
 
-		// ✨ 삭제된 리뷰 수정 방지
-		if ("DELETED".equals(review.getStatus())) {
-			throw new IllegalStateException("삭제된 리뷰는 수정할 수 없습니다.");
-		}
+	    Review review = Review.create(
+	        user.getMember(),          
+	        dto.getProductIdx(),
+	        dto.getOrdersIdx(),
+	        dto.getScore(),
+	        dto.getContent()
+	    );
 
-		review.setScore(request.getScore());
-		review.setContent(request.getContent());
-		review.setUpdatedAt(LocalDateTime.now());
+	    reviewRepository.save(review);
 	}
+	
+	
+	//리뷰 수정
+	@Transactional
+	public void updateReview(
+	        CustomUserDetails user,
+	        Integer reviewIdx,
+	        ReviewUpdateRequest request,
+	        MultipartFile image
+	) {
+	    Review review = reviewRepository.findById(reviewIdx)
+	            .orElseThrow(() -> new IllegalArgumentException("리뷰 없음"));
+
+	    // 🔒 작성자 검증 (member 기준으로 통일)
+	    if (!review.getMember().getMemberIdx().equals(user.getMemberIdx())) {
+	        throw new IllegalStateException("수정 권한이 없습니다.");
+	    }
+
+	    review.update(request.getScore(), request.getContent());
+	    review.setUpdatedAt(LocalDateTime.now());
+//
+//	    if (image != null && !image.isEmpty()) {
+//	        String imageUrl = upload(image); // 구현 필요
+//	        review.updateImage(imageUrl);
+//	    }
+	}
+	
+	
 	// 리뷰 삭제
 	@Override
 	@Transactional
 	public void deleteReview(CustomUserDetails user, Integer reviewIdx) {
-		Review review = reviewRepository.findById(reviewIdx)
-				.orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
 
-		log.info("삭제 시도 - 리뷰 작성자 memberIdx: {}, 로그인 사용자 memberIdx: {}", review.getMemberIdx(), user.getMemberIdx());
+	    Review review = reviewRepository.findById(reviewIdx)
+	            .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
 
-		log.info("review.getMemberIdx = {}, class = {}", review.getMemberIdx(), review.getMemberIdx().getClass());
-		log.info("user.getMemberIdx = {}, class = {}", user.getMemberIdx(), user.getMemberIdx().getClass());
+	    // 🔒 본인 리뷰인지 검증 (정석)
+	    if (!review.getMember().getMemberIdx().equals(user.getMemberIdx())) {
+	        throw new IllegalStateException("삭제 권한이 없습니다.");
+	    }
+	    
+	    review.delete();
 
-		if (!Objects.equals(review.getMemberIdx(), user.getMemberIdx())) {
-			throw new IllegalStateException("삭제 권한이 없습니다.");
-		}
-		review.setStatus("DELETED");
-		review.setUpdatedAt(LocalDateTime.now());
 
-		log.info("리뷰 삭제 완료 - reviewIdx: {}, memberIdx: {}", reviewIdx, user.getMemberIdx());
+	    log.info("리뷰 삭제 완료 - reviewIdx: {}, memberIdx: {}", 
+	             reviewIdx, user.getMemberIdx());
 	}
 }

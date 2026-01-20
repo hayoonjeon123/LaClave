@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 
 import com.itwillbs.LaClave.Cart.ItemImage;
+import com.itwillbs.LaClave.Category.Item;
 import com.itwillbs.LaClave.Member.Member;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +34,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +48,10 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "MEMBER_IDX")
     private Member member;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_IDX", insertable = false, updatable = false)
+    private Item product;
 
     @Column(name = "ORDERS_IDX", nullable = false)
     private Integer ordersIdx;
@@ -68,13 +75,13 @@ public class Review {
     private String status;
 
     public static Review create(
-            Long memberIdx,
+    		Member member,
             Integer productIdx,
             Integer ordersIdx,
             Double score,
             String content) {
         return Review.builder()
-                .memberIdx(memberIdx)
+        		.member(member)
                 .productIdx(productIdx)
                 .ordersIdx(ordersIdx)
                 .score(score)
@@ -82,6 +89,17 @@ public class Review {
                 .status("ACTIVE")
 
                 .build();
+    }
+    
+    public void update(Double score, String content) {
+        this.score = score;
+        this.content = content;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public void delete() {
+        this.status = "DELETED";
+        this.updatedAt = LocalDateTime.now();
     }
 
     // @OneToMany(mappedBy = "review")

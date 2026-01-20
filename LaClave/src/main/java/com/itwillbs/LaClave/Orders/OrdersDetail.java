@@ -3,6 +3,8 @@ package com.itwillbs.LaClave.Orders;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.itwillbs.LaClave.Category.Item;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,4 +64,8 @@ public class OrdersDetail {
     @Builder.Default
     @Column(name = "REVIEW_STATUS", insertable = false, updatable = false)
     private String reviewStatus = "N";
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_IDX", insertable = false, updatable = false)
+    private Item product;
 }
