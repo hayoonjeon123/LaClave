@@ -9,6 +9,9 @@ import org.hibernate.annotations.BatchSize;
 
 import com.itwillbs.LaClave.Cart.ItemImage;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -81,10 +84,10 @@ public class Item {
 
     @Column(name = "UPDATED_AT", nullable = false)
     private java.time.LocalDateTime updatedAt;
-    
+
     @Column(name = "STYLE_TAGS", nullable = false)
     private String styleTags;
-    
+
     @Lob
     @Column(name = "PRODUCT_VECTOR")
     private String productVector;
@@ -93,7 +96,9 @@ public class Item {
     // private List<ProductOption> images;
 
     // 카테고리와의 연결
+   
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "PRODUCT_CATEGORY_IDX")
     private Category category;
 
