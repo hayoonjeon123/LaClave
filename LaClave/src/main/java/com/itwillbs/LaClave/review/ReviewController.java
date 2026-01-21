@@ -110,7 +110,7 @@ public class ReviewController {
 	@PutMapping("/{reviewIdx}")
 	public ResponseEntity<Void> updateReview(
 	    @AuthenticationPrincipal CustomUserDetails user,
-	    @PathVariable Integer reviewIdx,
+	    @PathVariable("reviewIdx") Integer reviewIdx, 
 	    @RequestPart("review") ReviewUpdateRequest request,
 	    @RequestPart(value = "image", required = false) MultipartFile image
 	) {

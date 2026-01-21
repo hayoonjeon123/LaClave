@@ -19,6 +19,7 @@ import com.itwillbs.LaClave.Member.MemberRepository;
 import com.itwillbs.LaClave.Orders.OrdersDetail;
 import com.itwillbs.LaClave.Orders.OrdersDetailRepository;
 import com.itwillbs.LaClave.Orders.OrdersRepository;
+import com.itwillbs.LaClave.commoncode.CommonCodeService;
 import com.itwillbs.LaClave.inquiry.InquiryCreateRequest;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
@@ -35,6 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final OrdersDetailRepository ordersDetailRepository;
 	private final MemberRepository memberRepository;
 	private final OrdersRepository ordersRepository;
+	private final CommonCodeService commonCodeService;
 	
 	
 	
@@ -49,45 +51,56 @@ public class ReviewServiceImpl implements ReviewService {
 		return avg != null ? avg : 0.0; // 리뷰 평점이 없으면 0.0 반환
 	}
 	
-	
-	//리뷰 조회
 	@Override
 	@Transactional(readOnly = true)
 	public List<MyReviewResponseDTO> getMyReviews(Long memberIdx) {
-		// 1. 해당 회원의 리뷰 목록 조회
-		List<Review> reviews = reviewRepository.findAllByMemberIdxAndStatus(memberIdx,"ACTIVE");
 
-		return reviews.stream().map(review -> {
-			// 2. 상품 정보 조회 (상품명, 이미지용)
-			Item item = itemRepository.findById(review.getProductIdx().longValue()).orElse(null);
+	    List<Review> reviews =
+	            reviewRepository.findAllByMemberIdxAndStatus(memberIdx, "ACTIVE");
 
-			// 3. 주문 상세 정보 조회 (구매한 옵션 코드용)
-			// findByOrder_OrdersIdxAndProductIdx 같은 메서드가 Repository에 필요합니다.
-			OrdersDetail detail = ordersDetailRepository
-					.findByOrdersIdxAndProductIdx(review.getOrdersIdx().longValue(), review.getProductIdx().longValue())
-					.orElse(null);
+	    return reviews.stream().map(review -> {
 
-			// 4. 옵션 정보 문자열 생성
-			String optionInfo = "옵션 정보 없음";
-			if (detail != null) {
-				// 숫자 코드를 한글로 바꾸는 로직이 따로 없다면 우선 숫자로 표시
-				optionInfo = "Color: " + detail.getColorCode() + " / Size: " + detail.getSizeCode();
-			}
+	        // 1️⃣ 상품 정보
+	        Item item = itemRepository
+	                .findById(review.getProductIdx().longValue())
+	                .orElse(null);
 
-			// 5. 이미지 URL 추출 (첫 번째 이미지)
-			String imageUrl = (item != null && !item.getImages().isEmpty())
-					? item.getImages().iterator().next().getUrl()
-					: "default_image_url"; // 기본 이미지 경로
+	        // 2️⃣ 주문 상세 (옵션 코드용)
+	        OrdersDetail detail = ordersDetailRepository
+	                .findByOrdersIdxAndProductIdx(
+	                        review.getOrdersIdx().longValue(),
+	                        review.getProductIdx().longValue()
+	                )
+	                .orElse(null);
 
-			// 6. DTO 조립
-			return MyReviewResponseDTO.builder().reviewIdx(review.getReviewIdx()).content(review.getContent())
-					.score(review.getScore()).createdAt(review.getCreatedAt())
-					.productIdx(review.getProductIdx().longValue())
-					.productName(item != null ? item.getProductName() : "삭제된 상품").imageUrl(imageUrl)
-					.optionInfo(optionInfo).ordersIdx(review.getOrdersIdx()).build();
-		}).collect(Collectors.toList());
+	        // 3️⃣ 옵션 정보 생성 ✅ 여기!!
+	        String optionInfo = "옵션 정보 없음";
+	        if (detail != null) {
+	            String colorName = commonCodeService.getLabel(detail.getColorCode());
+	            String sizeName  = commonCodeService.getLabel(detail.getSizeCode());
+
+	            optionInfo = "색상 : " + colorName + " / 사이즈 : " + sizeName;
+	        }
+
+	        // 4️⃣ 이미지
+	        String imageUrl = (item != null && !item.getImages().isEmpty())
+	                ? item.getImages().iterator().next().getUrl()
+	                : "default_image_url";
+
+	        // 5️⃣ DTO 조립
+	        return MyReviewResponseDTO.builder()
+	                .reviewIdx(review.getReviewIdx())
+	                .productIdx(review.getProductIdx().longValue())
+	                .productName(item != null ? item.getProductName() : "삭제된 상품")
+	                .imageUrl(imageUrl)
+	                .optionInfo(optionInfo)   // ✅ 변환된 문자열
+	                .content(review.getContent())
+	                .score(review.getScore())
+	                .ordersIdx(review.getOrdersIdx())
+	                .build();
+
+	    }).collect(Collectors.toList());
 	}
-	
 	// 작성 가능 리뷰
 	@Override
 	public List<ReviewResponseDto> getWritableReviews(Long memberIdx) {

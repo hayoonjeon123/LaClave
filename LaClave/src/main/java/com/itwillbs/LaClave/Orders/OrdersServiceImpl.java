@@ -11,6 +11,7 @@ import com.itwillbs.LaClave.PayMent.OrderCreateRequestDto;
 import com.itwillbs.LaClave.PayMent.PayMent;
 import com.itwillbs.LaClave.PayMent.PaymentApprovalRequestDto;
 import com.itwillbs.LaClave.PayMent.PaymentRepository;
+import com.itwillbs.LaClave.commoncode.CommonCodeService;
 import com.itwillbs.LaClave.memberaddress.MemberAddressRepository;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
 import com.itwillbs.LaClave.security.CustomUserDetails;
@@ -26,22 +27,36 @@ public class OrdersServiceImpl implements OrdersService {
     private final MemberAddressRepository memberAddressRepository;
 
     private final PaymentRepository paymentRepository;
+    
+    private final CommonCodeService commonCodeService;
 
     // 주문 내역 조회
     @Override
     @Transactional(readOnly = true)
     public List<MyOrderResponseDto> getMyOrderList(CustomUserDetails user) {
+
         Long memberIdx = user.getMemberIdx();
 
-        // 1️⃣ 주문 + 상세 목록 fetch join
         List<Orders> orders = ordersRepository.findAllByMemberIdxNative(memberIdx);
 
-        // 2️⃣ DTO 변환 (배송 정보는 Orders에서 직접 가져오기)
-        return orders.stream()
-                .map(MyOrderResponseDto::new) // 이제 생성자가 Orders만 받음
+        List<MyOrderResponseDto> result = orders.stream()
+                .map(MyOrderResponseDto::new)
                 .collect(Collectors.toList());
-    }
 
+        // ⭐ 공통코드 변환
+        result.forEach(order -> {
+            order.getDetails().forEach(detail -> {
+                detail.setColorName(
+                    commonCodeService.getLabel(detail.getColorCode())
+                );
+                detail.setSizeName(
+                    commonCodeService.getLabel(detail.getSizeCode())
+                );
+            });
+        });
+
+        return result;
+    }
     @Override
     public String createOrder(Member member, OrderCreateRequestDto dto) {
         try {

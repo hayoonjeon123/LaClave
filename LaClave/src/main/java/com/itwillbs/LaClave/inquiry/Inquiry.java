@@ -41,6 +41,12 @@ public class Inquiry {
 	@Column(name = "CREATED_AT", nullable = false)
 	private LocalDateTime createdAt;
 	
+    @Column(name = "ANSWER_CONTENT", length = 2000)
+    private String answerContent;
+
+    @Column(name = "ANSWERED_AT")
+    private LocalDateTime answeredAt;
+	
 	
 	
 }
