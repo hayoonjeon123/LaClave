@@ -31,7 +31,8 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(
 								"/login", "/signup", "/loginProc",
-								"/email-send", "/email-verify",
+								"/email-send", "/email-verify", "/check-id", "/check-email",
+								"/find-id", "/find-pw",
 								"/api/my/**", "/api/orders",
 								"/category/**", "/product/**",
 								"/api/category/**", "/api/product/**",
@@ -41,7 +42,7 @@ public class SecurityConfig {
 								"/api/orders/create", "/api/orders/**",
 								"/orders/**",
 								"/api/payment/**", "/payment/**",
-								"/api/ai/**", "/ai/**","/api/myDelivery/**")
+								"/api/ai/**", "/ai/**", "/api/myDelivery/**")
 						.permitAll()
 						.anyRequest().authenticated())
 				.formLogin(form -> form

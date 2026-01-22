@@ -20,8 +20,9 @@ import lombok.extern.log4j.Log4j2;
 public class ItemService {
 
 	private final ItemRepository itemRepository;
-	
+
 	private final ReviewRepository reviewRepository;
+	private final com.itwillbs.LaClave.wishlist.WishlistRepository wishlistRepository;
 
 	public List<CategoryResponseDto> getItemsByProductCategoryIdx(Long productCategoryIdx) {
 		List<Item> items = itemRepository.findByProductCategoryIdx(productCategoryIdx);
@@ -77,7 +78,20 @@ public class ItemService {
 				item.getOptions() != null ? item.getOptions().size() : 0);
 
 		CategoryResponseDto dto = new CategoryResponseDto(item);
-		log.info("ItemService - DTO 변환 완료: {}", dto.getProductName());
+
+		// 리뷰 정보 추가
+		Double averageRating = reviewRepository.getAverageScoreByProduct(productIdx);
+		Integer reviewCount = reviewRepository.countByProductIdx(productIdx.intValue());
+
+		dto.setAverageRating(averageRating != null ? averageRating : 0.0);
+		dto.setReviewCount(reviewCount != null ? reviewCount : 0);
+
+		// 찜 개수 추가
+		Integer wishlistCount = wishlistRepository.countByProductIdx(productIdx.intValue());
+		dto.setWishlistCount(wishlistCount != null ? wishlistCount : 0);
+
+		log.info("ItemService - DTO 변환 완료: {}, 평균평점: {}, 리뷰수: {}, 찜수: {}",
+				dto.getProductName(), dto.getAverageRating(), dto.getReviewCount(), dto.getWishlistCount());
 
 		return dto;
 	}
@@ -110,23 +124,24 @@ public class ItemService {
 		log.info("베스트 상품 조회 완료: {} 개", responseList.size());
 		return responseList;
 	}
-	
-	// 상품 상세페이지 리뷰 
+
+	// 상품 상세페이지 리뷰
 	public CategoryProductReviewResponse getProductReviewData(Integer productIdx) {
-	    Double avgScore = reviewRepository.getAverageScoreByProduct(productIdx.longValue());
-	    if (avgScore == null) avgScore = 0.0;
+		Double avgScore = reviewRepository.getAverageScoreByProduct(productIdx.longValue());
+		if (avgScore == null)
+			avgScore = 0.0;
 
-	    List<Review> reviewEntities = reviewRepository.findByProductIdx(productIdx);
-	    
-	    List<CategoryProductReviewResponse.ReviewDetail> details = reviewEntities.stream()
-	            .map(CategoryProductReviewResponse.ReviewDetail::new) 
-	            .collect(Collectors.toList());
+		List<Review> reviewEntities = reviewRepository.findByProductIdx(productIdx);
 
-	    return new CategoryProductReviewResponse(avgScore, details);
+		List<CategoryProductReviewResponse.ReviewDetail> details = reviewEntities.stream()
+				.map(CategoryProductReviewResponse.ReviewDetail::new)
+				.collect(Collectors.toList());
+
+		return new CategoryProductReviewResponse(avgScore, details);
 	}
 
-    // 평균 점수
-    public Double getAverageScore(Long productIdx) {
-        return reviewRepository.getAverageScoreByProduct(productIdx);
-    }
+	// 평균 점수
+	public Double getAverageScore(Long productIdx) {
+		return reviewRepository.getAverageScoreByProduct(productIdx);
+	}
 }

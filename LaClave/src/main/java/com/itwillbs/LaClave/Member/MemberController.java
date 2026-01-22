@@ -44,24 +44,30 @@ public class MemberController {
         log.info("회원가입 시도 아이디: {}", dto.getMemberId());
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            log.warn("유효성 검사 실패: {}", errorMessage);
-
-            return ResponseEntity.badRequest().body(errorMessage);
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
 
         try {
-            Member member = modelMapper.map(dto, Member.class);
-            memberService.saveMember(member, dto);
-
+            memberService.registerNewMember(dto);
             return ResponseEntity.ok("회원가입 성공");
-
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             log.error("서버 오류: ", e);
             return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다.");
         }
+    }
+
+    // 아이디 중복 체크
+    @PostMapping("/check-id")
+    public ResponseEntity<Boolean> checkId(@RequestBody Map<String, String> request) {
+        return ResponseEntity.ok(memberService.existsByMemberId(request.get("memberId")));
+    }
+
+    // 이메일 중복 체크 (회원가입 전용)
+    @PostMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestBody Map<String, String> request) {
+        return ResponseEntity.ok(memberService.existsByEmail(request.get("email")));
     }
 
     // 1. 아이디 찾기 요청
@@ -88,9 +94,10 @@ public class MemberController {
         }
     }
 
-    // 1. 인증번호 발송 버튼 클릭 시
+    // 1. 인증번호 발송 버튼 클릭 시 (아이디 찾기/가입 공용)
     @PostMapping("/email-send")
     public ResponseEntity<?> sendEmail(@RequestBody MemberDTO dto) {
+        log.info("인증번호 발송 요청: {}", dto.getEmail());
         mailService.sendAuthCode(dto.getEmail());
         return ResponseEntity.ok("인증번호가 발송되었습니다.");
     }
@@ -113,8 +120,8 @@ public class MemberController {
         }
         return ResponseEntity.ok(memberService.getMemberInfo(userDetails.getUsername()));
     }
-    
-    //회원 정보수정
+
+    // 회원 정보수정
     @PutMapping("/update-info")
     public String updateMemberInfo(
             @AuthenticationPrincipal CustomUserDetails user,
@@ -123,6 +130,7 @@ public class MemberController {
         memberService.updateMemberInfo(user.getMemberIdx(), dto);
         return "회원정보가 수정되었습니다.";
     }
+
     // 비밀번호 수정
     @PutMapping("/update-password")
     public ResponseEntity<String> updatePassword(
@@ -132,8 +140,8 @@ public class MemberController {
         memberService.updatePassword(user.getMemberIdx(), dto);
         return ResponseEntity.ok("비밀번호가 변경되었습니다.");
     }
-    
-    //회원 탈퇴
+
+    // 회원 탈퇴
     @PutMapping("/withdraw")
     public ResponseEntity<String> withdrawMember(
             @AuthenticationPrincipal CustomUserDetails user,
@@ -141,10 +149,9 @@ public class MemberController {
 
         memberService.withdrawMemberWithPassword(
                 user.getMemberIdx(),
-                dto.getPassword()
-        );
+                dto.getPassword());
 
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
-    
+
 }

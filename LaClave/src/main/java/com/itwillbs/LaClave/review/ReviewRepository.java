@@ -6,23 +6,26 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ReviewRepository extends JpaRepository<Review,Integer>{
-	
+public interface ReviewRepository extends JpaRepository<Review, Integer> {
+
 	// 내가쓴 리뷰 목록
 	List<Review> findAllByMemberIdxAndStatus(Long memberIdx, String status);
-	
-	// 상품별 리뷰 목록 조회 
-    List<Review> findByProductIdxAndStatus(Long productIdx, String status);
-    
-    // 상품별 평균 점수 조회
-    @Query("SELECT ROUND(AVG(r.score), 1) FROM Review r WHERE r.productIdx = :productIdx AND r.status = 'ACTIVE'")
-    Double getAverageScoreByProduct(@Param("productIdx") Long productIdx);
-    //
-	List<Review> findByProductIdx(int intValue);
-	
+
+	// 상품별 리뷰 목록 조회
+	List<Review> findByProductIdxAndStatus(Long productIdx, String status);
+
+	// 상품별 평균 점수 조회
+	@Query("SELECT ROUND(AVG(r.score), 1) FROM Review r WHERE r.productIdx = :productIdx AND r.status = 'ACTIVE'")
+	Double getAverageScoreByProduct(@Param("productIdx") Long productIdx);
+
+	// 상품별 리뷰 개수 조회
+	@Query("SELECT COUNT(r) FROM Review r WHERE r.productIdx = :productIdx AND r.status = 'ACTIVE'")
+	Integer countByProductIdx(@Param("productIdx") Integer productIdx);
+
+	List<Review> findByProductIdx(Integer productIdx);
+
 	boolean existsByMember_MemberIdxAndOrdersIdxAndProductIdx(
-	        Long memberIdx,
-	        Integer ordersIdx,
-	        Integer productIdx
-	);
+			Long memberIdx,
+			Integer ordersIdx,
+			Integer productIdx);
 }

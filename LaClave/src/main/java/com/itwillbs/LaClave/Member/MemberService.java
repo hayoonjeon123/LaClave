@@ -28,54 +28,59 @@ public class MemberService {
 
 	private final AiProfileRepository aiProfileRepository;
 
-	// 회원 저장 (회원가입 시 사용)
-	@Transactional
-	public Member saveMember(Member member, MemberDTO dto) {
-		// 1. 아이디 중복 체크 (아이디가 이미 있으면 예외 발생)
-		memberRepository.findByMemberId(member.getMemberId()).ifPresent(m -> {
-			throw new RuntimeException("이미 사용 중인 아이디입니다.");
-		});
+	// 1. 중복 체크 공통 로직
+	public boolean existsByMemberId(String memberId) {
+		return memberRepository.existsByMemberId(memberId);
+	}
 
-		if (member.getNickname() == null || member.getNickname().isEmpty()) {
-			member.setNickname(generateRandomNickname());
+	public boolean existsByEmail(String email) {
+		return memberRepository.existsByEmail(email);
+	}
+
+	// 2. 통합 회원가입 로직 (중복 체크 포함)
+	@Transactional
+	public void registerNewMember(MemberDTO dto) {
+		// 최종 중복 검증
+		if (existsByMemberId(dto.getMemberId())) {
+			throw new RuntimeException("이미 사용 중인 아이디입니다.");
+		}
+		if (existsByEmail(dto.getEmail())) {
+			throw new RuntimeException("이미 사용 중인 이메일입니다.");
 		}
 
-		// 2. 시스템 기본값 설정
-		if (member.getMemberStatus() == null)
-			member.setMemberStatus(1); // 1: 활성 상태
-		if (member.getPoint() == null)
-			member.setPoint(0);
-		if (member.getMarketingAgree() == null)
-			member.setMarketingAgree(0);
-		if (member.getMailAuthStatus() == null)
-			member.setMailAuthStatus(0);
-
-		member.setMemberRole("ROLE_USER");
-		member.setSignupDate(LocalDateTime.now());
-		member.setUpdatedAt(LocalDateTime.now());
-
-		// 3. 비밀번호 암호화
-		member.setMemberPw(passwordEncoder.encode(member.getMemberPw()));
+		// DTO -> Entity 변환 및 저장
+		Member member = Member.builder()
+				.memberId(dto.getMemberId())
+				.memberPw(passwordEncoder.encode(dto.getMemberPw())) // 암호화 포함
+				.memberName(dto.getMemberName())
+				.email(dto.getEmail())
+				.gender(dto.getGender())
+				.birth(dto.getBirth())
+				.postCode(dto.getPostCode())
+				.address(dto.getAddress())
+				.addressDetail(dto.getAddressDetail())
+				.marketingAgree(dto.getMarketingAgree())
+				.memberStatus(1)
+				.point(0)
+				.mailAuthStatus(1) // 이메일 인증 통과 상태로 가입
+				.nickname(generateRandomNickname())
+				.signupDate(LocalDateTime.now())
+				.updatedAt(LocalDateTime.now())
+				.memberRole("ROLE_USER")
+				.build();
 
 		Member savedMember = memberRepository.save(member);
 
-		// 3. AI 프로필 저장 로직 추가
+		// AI 정보 저장
 		AiProfile aiProfile = new AiProfile();
-		aiProfile.setMemberIdx(savedMember.getMemberIdx().longValue()); // 저장된 회원의 PK를 가져옴
-		aiProfile.setHeight(dto.getHeight());
-		aiProfile.setWeight(dto.getWeight());
+		aiProfile.setMemberIdx(savedMember.getMemberIdx());
+		aiProfile.setHeight(dto.getHeight() != null ? dto.getHeight() : 0.0);
+		aiProfile.setWeight(dto.getWeight() != null ? dto.getWeight() : 0.0);
 
-		// 스타일 리스트가 있다면 문자열로 변환 (예: "Modern,Casual")
 		if (dto.getPrefStyles() != null && !dto.getPrefStyles().isEmpty()) {
-			String joinedStyles = String.join(",", dto.getPrefStyles());
-			aiProfile.setPrefStyles(joinedStyles);
+			aiProfile.setPrefStyles(String.join(",", dto.getPrefStyles()));
 		}
-
-		// aiProfileRepository를 통해 최종 저장
 		aiProfileRepository.save(aiProfile);
-
-		return savedMember;
-
 	}
 
 	// 아이디 비번찾기
@@ -93,13 +98,15 @@ public class MemberService {
 
 	// 2. 아이디 찾기 (재사용)
 	public String findId(String memberName, String email) {
-		return getMemberIfValid(null, memberName, email).getMemberId();
+		log.info("아이디 찾기 시도: name={}, email={}", memberName, email);
+		return getMemberIfValid(null, memberName.trim(), email.trim()).getMemberId();
 	}
 
 	// 3. 비밀번호 찾기 (재사용)
 	@Transactional
 	public String findPw(String memberId, String memberName, String email) {
-		Member member = getMemberIfValid(memberId, memberName, email);
+		log.info("비밀번호 찾기 시도: id={}, name={}, email={}", memberId, memberName, email);
+		Member member = getMemberIfValid(memberId.trim(), memberName.trim(), email.trim());
 
 		// 임시 비번 생성 및 저장 로직 진행
 		String tempPw = UUID.randomUUID().toString().substring(0, 8);
@@ -114,7 +121,7 @@ public class MemberService {
 		return MemberInfoResponse.builder()
 				.memberName(member.getMemberName())
 				.memberId(member.getMemberId())
-				.nickname(member.getNickname()) 
+				.nickname(member.getNickname())
 				.birth(member.getBirth())
 				.email(member.getEmail())
 				.postCode(member.getPostCode())
@@ -134,66 +141,69 @@ public class MemberService {
 
 		return adj + noun + randomNumber;
 	}
-	
-	//회원정보 수정
-		@Transactional
-		public void updateMemberInfo(Long memberIdx, MemberUpdateDto dto) {
-		    Member member = memberRepository.findById(memberIdx)
-		            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
-		    if (dto.getMemberName() != null) member.setMemberName(dto.getMemberName());
-		    if (dto.getNickname() != null) member.setNickname(dto.getNickname());
-		    if (dto.getBirth() != null) member.setBirth(dto.getBirth());
-		    if (dto.getPostCode() != null) member.setPostCode(dto.getPostCode());
-		    if (dto.getAddress() != null) member.setAddress(dto.getAddress());
-		    if (dto.getAddressDetail() != null) member.setAddressDetail(dto.getAddressDetail());
+	// 회원정보 수정
+	@Transactional
+	public void updateMemberInfo(Long memberIdx, MemberUpdateDto dto) {
+		Member member = memberRepository.findById(memberIdx)
+				.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
-		    member.setUpdatedAt(LocalDateTime.now());
+		if (dto.getMemberName() != null)
+			member.setMemberName(dto.getMemberName());
+		if (dto.getNickname() != null)
+			member.setNickname(dto.getNickname());
+		if (dto.getBirth() != null)
+			member.setBirth(dto.getBirth());
+		if (dto.getPostCode() != null)
+			member.setPostCode(dto.getPostCode());
+		if (dto.getAddress() != null)
+			member.setAddress(dto.getAddress());
+		if (dto.getAddressDetail() != null)
+			member.setAddressDetail(dto.getAddressDetail());
 
-		    memberRepository.save(member);
+		member.setUpdatedAt(LocalDateTime.now());
+
+		memberRepository.save(member);
+	}
+
+	// 비밀번호 수정
+	@Transactional
+	public void updatePassword(Long memberIdx, PasswordUpdateDto dto) {
+		Member member = memberRepository.findById(memberIdx)
+				.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+		// 1️⃣ 현재 비밀번호 확인
+		if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getMemberPw())) {
+			throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
 		}
 
-		// 비밀번호 수정
-		@Transactional
-		public void updatePassword(Long memberIdx, PasswordUpdateDto dto) {
-		    Member member = memberRepository.findById(memberIdx)
-		            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+		// 2️⃣ 새 비밀번호 암호화 후 저장
+		member.setMemberPw(passwordEncoder.encode(dto.getNewPassword()));
+		member.setUpdatedAt(LocalDateTime.now());
 
-		    // 1️⃣ 현재 비밀번호 확인
-		    if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getMemberPw())) {
-		        throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
-		    }
+		memberRepository.save(member);
+	}
 
-		    // 2️⃣ 새 비밀번호 암호화 후 저장
-		    member.setMemberPw(passwordEncoder.encode(dto.getNewPassword()));
-		    member.setUpdatedAt(LocalDateTime.now());
+	@Transactional
+	public void withdrawMemberWithPassword(Long memberIdx, String password) {
 
-		    memberRepository.save(member);
+		Member member = memberRepository.findById(memberIdx)
+				.orElseThrow(() -> new RuntimeException("회원 정보가 없습니다."));
+
+		// 이미 탈퇴한 회원 방어
+		if (member.getMemberStatus() != null && member.getMemberStatus() == 2) {
+			throw new RuntimeException("이미 탈퇴한 회원입니다.");
 		}
-		
-		@Transactional
-		public void withdrawMemberWithPassword(Long memberIdx, String password) {
 
-		    Member member = memberRepository.findById(memberIdx)
-		            .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다."));
-
-		    // 이미 탈퇴한 회원 방어
-		    if (member.getMemberStatus() != null && member.getMemberStatus() == 2) {
-		        throw new RuntimeException("이미 탈퇴한 회원입니다.");
-		    }
-
-		    // 🔐 비밀번호 검증
-		    if (!passwordEncoder.matches(password, member.getMemberPw())) {
-		        throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-		    }
-
-		    // 탈퇴 처리
-		    member.setMemberStatus(2);
-		    member.setUpdatedAt(LocalDateTime.now());
-		    SecurityContextHolder.clearContext();
+		// 🔐 비밀번호 검증
+		if (!passwordEncoder.matches(password, member.getMemberPw())) {
+			throw new RuntimeException("비밀번호가 일치하지 않습니다.");
 		}
-		
-		
-		
+
+		// 탈퇴 처리
+		member.setMemberStatus(2);
+		member.setUpdatedAt(LocalDateTime.now());
+		SecurityContextHolder.clearContext();
+	}
 
 }
