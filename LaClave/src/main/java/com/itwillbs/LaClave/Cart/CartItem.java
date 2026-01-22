@@ -32,11 +32,10 @@ public class CartItem {
     private Long productIdx;
 
     @Column(name = "COLOR_CODE", nullable = false)
-    private Long colorCode; // DB NUMBER 타입에 맞춰 Long 사용
+    private Long colorCode; 
 
     @Column(name = "SIZE_CODE", nullable = false)
-    private Long sizeCode; // DB NUMBER 타입에 맞춰 Long 사용
-
+    private Long sizeCode; 
     @Column(name = "QUANTITY", nullable = false)
     private int quantity;
 

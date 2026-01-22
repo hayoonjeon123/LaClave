@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryProductReviewResponse {
-    // 1. 전체 데이터 세트를 담을 필드들
+	
     private Double averageScore;
-    // 평균 점수
-    private List<ReviewDetail> reviewList; // 리뷰 리스트 (아래 내부 클래스 사용)
+    
+    private List<ReviewDetail> reviewList; 
 
-    // 2. 리뷰 한 건 한 건의 정보를 담을 내부 클래스 (파일 하나에 다 들어감)
-
+   
+    // 리뷰 한 건의 정보를 담을 내부 클래스
     @Data
     public static class ReviewDetail {
         private Integer reviewIdx;
@@ -36,7 +36,6 @@ public class CategoryProductReviewResponse {
             this.score = review.getScore();
 
             // 이미지 URL 리스트 처리
-            // 이미지 URL 리스트 처리 (임시 비활성화)
             // if (review.getImages() != null) {
             // this.imageUrls = review.getImages().stream()
             // .map(image -> image.getUrl())

@@ -10,10 +10,7 @@ import com.itwillbs.LaClave.Cart.ItemImage;
 
 @Repository
 public interface ItemImageRepository extends JpaRepository<ItemImage, Long> {
-
-    // TARGET_IDX(리뷰IDX)와 TARGET_CODE('REVIEW')로 이미지 조회
-    // reviewIdx가 Integer이므로 String이나 Long 변환 주의. DB 컬럼 타입에 따라 다름.
-    // 보통 TARGET_IDX는 숫자형일 것임.
+	// 이미지 조회
     @Query(value = "SELECT * FROM IMAGE WHERE TARGET_IDX = :targetIdx AND TARGET_CODE = :targetCode", nativeQuery = true)
     List<ItemImage> findByTargetIdxAndCode(@Param("targetIdx") Integer targetIdx,
             @Param("targetCode") String targetCode);

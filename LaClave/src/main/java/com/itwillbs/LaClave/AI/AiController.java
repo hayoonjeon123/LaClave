@@ -34,11 +34,9 @@
 //            throw new RuntimeException("로그인이 필요한 서비스입니다.");
 //        }
 //
-//        // 1. 사용자 AI 프로필 조회
 //        AiProfile profile = aiProfileRepository.findById(userDetails.getMemberIdx())
 //                .orElse(null);
 //
-//        // 2. 전체 상품 조회
 //        List<Item> allItems = itemRepository.findAll();
 //        if (allItems.isEmpty())
 //            return new ArrayList<>();
@@ -46,22 +44,20 @@
 //        List<Item> recommendedEntityList = new ArrayList<>();
 //
 //        if (profile != null && profile.getPrefStyles() != null && !profile.getPrefStyles().isBlank()) {
-//            // [키워드 매칭 방식] - 사용자가 선택한 키워드가 포함된 상품은 모두 추천
+//            // 사용자가 선택한 키워드가 포함된 상품 추천
 //            String userPrefStyles = profile.getPrefStyles();
 //            log.info("사용자 취향 발견: {}", userPrefStyles);
 //
-//            // 콤마로 구분된 스타일을 분리 (예: "빈티지,캐주얼" -> ["빈티지", "캐주얼"])
 //            String[] keywords = userPrefStyles.split(",");
 //
 //            for (Item item : allItems) {
 //                boolean isMatched = false;
-//                String itemTags = item.getStyleTags(); // 예: "#빈티지 #모던"
+//                String itemTags = item.getStyleTags(); 
 //
 //                if (itemTags != null) {
 //                    for (String keyword : keywords) {
 //                        String cleanKeyword = keyword.trim();
 //                        if (!cleanKeyword.isEmpty() && itemTags.contains(cleanKeyword)) {
-//                            // 태그에 키워드가 하나라도 포함되면 매칭 성공
 //                            isMatched = true;
 //                            break;
 //                        }
@@ -82,12 +78,10 @@
 //            }
 //
 //        } else {
-//            // [취향 정보 없을 때 - 기존 트렌드 방식 유지]
 //            log.info("취향 정보가 없어 AI 트렌드 추천을 진행합니다.");
 //            recommendByTrend(recommendedEntityList);
 //        }
 //
-//        // DTO 변환
 //        return recommendedEntityList.stream().map(item -> {
 //            List<Map<String, String>> imageList = new ArrayList<>();
 //            if (item.getImages() != null) {

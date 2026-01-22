@@ -5,15 +5,16 @@ import com.itwillbs.LaClave.Orders.OrdersDetail;
 
 import lombok.Data;
 
+// 주문 상품의 상세 정보 
 @Data
 public class OrderDetailRequestDto {
-    private Long productIdx; // 상품 PK
-    private String productName; // 상품명 (스냅샷용)
-    private String colorCode; // 선택한 색상
-    private String sizeCode; // 선택한 사이즈
-    private Integer quantity; // 수량
-    private Integer price; // 상품 단가
-    private Integer discountPrice; // 할인 금액
+    private Long productIdx; 
+    private String productName;
+    private String colorCode; 
+    private String sizeCode; 
+    private Integer quantity; 
+    private Integer price; 
+    private Integer discountPrice; 
 
     public OrdersDetail toDetailEntity(Orders order) {
         return OrdersDetail.builder()

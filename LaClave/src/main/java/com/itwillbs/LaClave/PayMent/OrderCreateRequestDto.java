@@ -10,6 +10,7 @@ import com.itwillbs.LaClave.memberaddress.Memberaddress;
 import groovy.transform.builder.Builder;
 import lombok.Data;
 
+//주문 전체 정보
 @Data
 public class OrderCreateRequestDto {
     private Long addrIdx;

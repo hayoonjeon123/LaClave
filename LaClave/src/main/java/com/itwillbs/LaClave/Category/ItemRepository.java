@@ -10,17 +10,19 @@ import org.springframework.data.repository.query.Param;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
+	//카테고리 번호 조회
     @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
     List<Item> findByProductCategoryIdx(Long productCategoryIdx);
-
+    
+    // 공통코드 조회
     @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
     List<Item> findByProductCommonIdx(Long productCommonIdx);
 
-    @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
-    Optional<Item> findById(Long productIdx);
+     // 더미 넣고 확인
+//   @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
+//   Optional<Item> findById(Long productIdx);
 
     @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
-
     List<Item> findAll();
 
     // ai 상품명 또는 스타일태그로 검색 (OR 조건)

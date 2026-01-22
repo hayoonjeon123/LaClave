@@ -12,34 +12,37 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString(exclude = "item")
 @EqualsAndHashCode(exclude = "item")
 @Table(name = "IMAGE")
 public class ItemImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IMAGE_IDX") // DB의 IMAGE_IDX와 매핑
+    @Column(name = "IMAGE_IDX") 
     private Long id;
 
     @Column(name = "TARGET_CODE")
-    private String targetCode; // 예: img_type
+    private String targetCode; 
 
     @Column(name = "TARGET_TYPE")
-    private String targetType; // 예: img_01, img_02 등
+    private String targetType; 
 
-    @Column(name = "IMAGE_URL") // DB의 IMAGE_URL과 매핑
+    @Column(name = "IMAGE_URL") 
     private String url;
 
-    // Item과의 연결 (TARGET_IDX가 PRODUCT_IDX를 참조)
+    // Item과의 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TARGET_IDX", referencedColumnName = "PRODUCT_IDX")
     private Item item;

@@ -37,7 +37,7 @@ public class PaymentController {
 	@Autowired
 	private MemberRepository memberRepository;
 
-	// 1. 주문 생성 (결제창 띄우기 직전 호출)
+	// 1. 주문 생성 (결제 대기)
 	@PostMapping("/create")
 	public ResponseEntity<?> createOrder(@AuthenticationPrincipal CustomUserDetails user,
 			@RequestBody OrderCreateRequestDto requestDto) {
@@ -47,44 +47,37 @@ public class PaymentController {
 		}
 
 		try {
-			// 2. 로그인한 사용자의 memberIdx로 실제 Member 객체 조회
-			// memberService가 없다면 memberRepository를 직접 주입받아 사용해도 됩니다.
 			Member member = memberRepository.findById(user.getMemberIdx())
 					.orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
-			// 3. 서비스 호출 시 member 객체를 첫 번째 인자로 전달
-			// 이제 'The method createOrder(Member, ...)' 규격과 일치하게 됩니다.
 			String orderNo = ordersService.createOrder(member, requestDto);
-
-			System.out.println("주문 생성 성공 - orderNo: " + orderNo);
+			log.info("주문 생성 성공 - orderNo:", orderNo);
 			return ResponseEntity.ok(orderNo);
 
 		} catch (Exception e) {
-			System.err.println("주문 생성 실패: " + e.getMessage());
+			log.info("주문 생성 실패:",e.getMessage());
 			return ResponseEntity.status(500).body("주문 생성 오류: " + e.getMessage());
 		}
 	}
 
+	//결제 중
 	@GetMapping("/payment/ini-request/{orderNo}")
 	public ResponseEntity<?> getInicisData(@PathVariable("orderNo") String orderNo) {
-		// 1. DB에서 '대기' 상태인 주문 정보 조회
 		Orders order = ordersService.findByOrderNo(orderNo);
 
-		// 2. 이니시스 필수 정보 (테스트 환경)
+		//이니시스 필수 정보 
 		String mid = "INIpayTest";
-		String signKey = "SU5JTElURV9UUklQTEVERVNfS0VZU1RS"; // 이니시스 공식 테스트 signKey
+		String signKey = "SU5JTElURV9UUklQTEVERVNfS0VZU1RS"; 
 		String timestamp = String.valueOf(System.currentTimeMillis());
 
-		// 🔍 디버깅 로그 추가
-		System.out.println("=== 주문 정보 ===");
-		System.out.println("orderNo: " + orderNo);
-		System.out.println("totalPrice: " + order.getTotalPrice()); // ← 이 값 확인!
-		System.out.println("timestamp: " + timestamp);
+		log.info("주문 정보");
+		log.info("orderNo:", orderNo);
+		log.info("totalPrice:", order.getTotalPrice());
+		log.info("timestamp:", timestamp);
 
-		// 3. 서명(Signature) 생성
 		String signature = SignatureUtil.getSignature(signKey, orderNo, order.getTotalPrice(), timestamp);
 
-		// 4. 프론트로 보낼 데이터 구성
+		// 화면 보낼 데이터 
 		Map<String, Object> res = new HashMap<>();
 		res.put("mid", mid);
 		res.put("orderNo", orderNo);
@@ -95,7 +88,7 @@ public class PaymentController {
 		res.put("productName", order.getOrderDetails().get(0).getProductName() + " 외");
 		res.put("buyerName", order.getMember().getMemberName());
 		res.put("buyerEmail", order.getMember().getEmail());
-		res.put("buyerTel", "01000000000"); // Member에 phone 필드가 없으므로 기본값 사용
+		res.put("buyerTel", "01000000000"); 
 
 		return ResponseEntity.ok(res);
 	}
@@ -112,7 +105,6 @@ public class PaymentController {
 		if ("0000".equals(resultCode)) {
 			// 결제 성공 - 주문 상태 업데이트
 			log.info("결제 성공 - 주문번호: {}", orderNo);
-			// TODO: ordersService.updateOrderStatus(orderNo, "PAID");
 			return "redirect:http://localhost:5173/order-complete?orderNo=" + orderNo;
 		} else {
 			// 결제 실패

@@ -45,7 +45,8 @@ public class CartController {
 
 		return ResponseEntity.ok(cartService.getCartItems(userDetails.getUsername()));
 	}
-
+	
+	// 장바구니 삭제
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteCartItem(@RequestBody java.util.Map<String, Long> payload,
 			@AuthenticationPrincipal UserDetails userDetails) {

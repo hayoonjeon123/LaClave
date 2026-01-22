@@ -26,7 +26,7 @@ public class Cart {
     @Column(name = "CART_IDX")
     private Long cartIdx;
 
-    @Column(name = "MEMBER_IDX", nullable = false) // 이미지의 MEMBER_IDX와 매칭
+    @Column(name = "MEMBER_IDX", nullable = false) 
     private Long memberIdx;
 
     @Column(name = "CREATE_AT")

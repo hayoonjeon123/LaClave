@@ -92,11 +92,7 @@ public class Item {
     @Column(name = "PRODUCT_VECTOR")
     private String productVector;
 
-    // @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    // private List<ProductOption> images;
-
     // 카테고리와의 연결
-   
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "PRODUCT_CATEGORY_IDX")
@@ -110,7 +106,9 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ItemImage> images = new LinkedHashSet<>();
 
-    public Set<ItemImage> getImages() {
-        return images;
-    }
+    // 더미 넣고 확인
+//    //이미지 테이블 연결 
+//    public Set<ItemImage> getImages() {
+//        return images;
+//    }
 }

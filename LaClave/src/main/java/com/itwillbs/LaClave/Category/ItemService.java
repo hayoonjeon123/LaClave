@@ -22,15 +22,18 @@ public class ItemService {
 	private final ItemRepository itemRepository;
 
 	private final ReviewRepository reviewRepository;
+	
 	private final com.itwillbs.LaClave.wishlist.WishlistRepository wishlistRepository;
-
-	public List<CategoryResponseDto> getItemsByProductCategoryIdx(Long productCategoryIdx) {
-		List<Item> items = itemRepository.findByProductCategoryIdx(productCategoryIdx);
-		return items.stream().map(CategoryResponseDto::new).collect(Collectors.toList());
-	}
-
+	
+	// 더미 넣고 확인
+	// 카테고리 번호 상품 조회
+//	public List<CategoryResponseDto> getItemsByProductCategoryIdx(Long productCategoryIdx) {
+//		List<Item> items = itemRepository.findByProductCategoryIdx(productCategoryIdx);
+//		return items.stream().map(CategoryResponseDto::new).collect(Collectors.toList());
+//	}
+	
+	// pk에 따라 상품 목록 조회
 	public List<CategoryResponseDto> getItems(Long productCommonIdx) {
-		// 1. 아이템 목록 먼저 조회
 		List<Item> items;
 		if (productCommonIdx < 100) {
 			items = itemRepository.findByProductCommonIdx(productCommonIdx);
@@ -41,33 +44,22 @@ public class ItemService {
 		if (items.isEmpty())
 			return new ArrayList<>();
 
-		// 3. DTO로 변환 (아이템 엔티티 하나씩 처리)
 		List<CategoryResponseDto> responseList = new ArrayList<>();
 		for (Item item : items) {
-			System.out.println(
-					"=== 서비스에서 Item 처리 중: " + item.getProductName() + " (ID: " + item.getProductIdx() + ") ===");
-			System.out.println("서비스 - Images 개수: " + (item.getImages() != null ? item.getImages().size() : "null"));
-			System.out.println("서비스 - Options 개수: " + (item.getOptions() != null ? item.getOptions().size() : "null"));
 
-			// 강제로 컬렉션 초기화 시도
 			if (item.getImages() != null) {
-				item.getImages().size(); // 강제 초기화
+				item.getImages().size(); 
 			}
 			if (item.getOptions() != null) {
-				item.getOptions().size(); // 강제 초기화
+				item.getOptions().size(); 
 			}
-
-			System.out.println("초기화 후 - Images 개수: " + (item.getImages() != null ? item.getImages().size() : "null"));
-			System.out
-					.println("초기화 후 - Options 개수: " + (item.getOptions() != null ? item.getOptions().size() : "null"));
-
-			// 이 시점에 이미지 데이터가 BatchSize 설정으로 인해 자동으로 묶여서 들어옵니다.
 			responseList.add(new CategoryResponseDto(item));
 		}
 
 		return responseList;
 	}
 
+	// 상품 상세 정보 조회 
 	@Transactional
 	public CategoryResponseDto getItem(Long productIdx) {
 		log.info("ItemService - getItem 호출: {}", productIdx);
@@ -79,14 +71,14 @@ public class ItemService {
 
 		CategoryResponseDto dto = new CategoryResponseDto(item);
 
-		// 리뷰 정보 추가
+		// 리뷰 정보
 		Double averageRating = reviewRepository.getAverageScoreByProduct(productIdx);
 		Integer reviewCount = reviewRepository.countByProductIdx(productIdx.intValue());
 
 		dto.setAverageRating(averageRating != null ? averageRating : 0.0);
 		dto.setReviewCount(reviewCount != null ? reviewCount : 0);
 
-		// 찜 개수 추가
+		// 찜 개수 
 		Integer wishlistCount = wishlistRepository.countByProductIdx(productIdx.intValue());
 		dto.setWishlistCount(wishlistCount != null ? wishlistCount : 0);
 
@@ -96,7 +88,7 @@ public class ItemService {
 		return dto;
 	}
 
-	// 베스트 상품 조회 (전체 상품 조회)
+	// 베스트 상품 조회 (현재 모든 상품, 나중 추가)
 	@Transactional
 	public List<CategoryResponseDto> getBestProducts() {
 		log.info("베스트 상품 조회");
@@ -108,10 +100,9 @@ public class ItemService {
 			return new ArrayList<>();
 		}
 
-		// DTO로 변환
 		List<CategoryResponseDto> responseList = new ArrayList<>();
 		for (Item item : items) {
-			// 강제로 컬렉션 초기화
+			
 			if (item.getImages() != null) {
 				item.getImages().size();
 			}
