@@ -18,11 +18,11 @@ public class MyOrderResponseDto {
     private final LocalDateTime ordersDate;
     private final Long ordersStatus; // 공통코드 PK
     private final Integer totalPrice;
-
+    private final String deliveryMsg;
+    
     private final DeliveryInfoDto delivery; // 배송지 정보
     private final List<OrderDetailDto> details; // 주문 상세 목록
 
-    // 변경: Memberaddress 대신 Orders에서 직접 주소 가져오기
     public MyOrderResponseDto(Orders orderEntity) {
     	
     	
@@ -30,6 +30,8 @@ public class MyOrderResponseDto {
         this.ordersDate = orderEntity.getOrdersDate();
         this.ordersStatus = orderEntity.getOrdersStatus();
         this.totalPrice = orderEntity.getTotalPrice();
+        this.deliveryMsg = orderEntity.getDeliveryMsg();
+        
 
         this.details = (orderEntity.getOrderDetails() != null)
                 ? orderEntity.getOrderDetails().stream().map(OrderDetailDto::new).collect(Collectors.toList())

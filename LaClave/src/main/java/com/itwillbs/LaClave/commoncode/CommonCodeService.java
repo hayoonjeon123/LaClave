@@ -17,4 +17,18 @@ public class CommonCodeService {
                 .map(CommonCode::getCodeLabel)
                 .orElse("-");
     }
+
+
+    
+    public String getLabelByCommonIdx(Long deliveryStatusCommonIdx) {
+
+        if (deliveryStatusCommonIdx == null) {
+            return "상태 없음";
+        }
+
+        return commonCodeRepository
+                .findById(deliveryStatusCommonIdx)
+                .map(CommonCode::getCodeLabel)
+                .orElse("상태 없음");
+    }
 }

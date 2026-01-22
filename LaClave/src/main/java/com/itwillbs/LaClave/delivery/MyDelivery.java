@@ -31,7 +31,7 @@ public class MyDelivery {
     private Integer memberIdx;
     
     @Column(name = "DELIVERY_STATUS_COMMON_IDX", nullable = false)
-    private Integer deliveryStatusCommonIdx; //공통코드 pk참조idx
+    private Long deliveryStatusCommonIdx; //공통코드 pk참조idx
 	
     @Column(name = "START_DATE", nullable = false)
     private LocalDateTime startDate; //시작 날짜
