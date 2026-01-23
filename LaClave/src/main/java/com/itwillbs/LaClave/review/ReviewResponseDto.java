@@ -1,6 +1,7 @@
 package com.itwillbs.LaClave.review;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ReviewResponseDto {
 
     private Long reviewIdx;      // 작성 완료 리뷰면 실제 reviewIdx, 작성 가능 리뷰면 0

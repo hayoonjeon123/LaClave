@@ -15,4 +15,6 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Long
 	        @Param("ordersIdx") Long ordersIdx, 
 	        @Param("productIdx") Long productIdx
 	    );
+	 
+
 }

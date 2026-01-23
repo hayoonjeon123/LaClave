@@ -15,7 +15,8 @@ public interface ReviewService {
 	// 상품 정보와 리뷰 조회
 	List<MyReviewResponseDTO> getMyReviews(Long productIdx);
 	
-	public List<ReviewResponseDto> getWritableReviews(Long memberIdx);
+	List<ReviewResponseDto> getWritableReviews(Long memberIdx);
+
 
 	Double getProductAverageScore(Long productIdx);
 

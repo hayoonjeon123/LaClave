@@ -54,20 +54,30 @@ public class ReviewController {
 		return ResponseEntity.ok(myReviews);
 	}
 	
-    /**
-     * 2️⃣ 작성 가능 리뷰 조회 (마이페이지)
-     * - 아직 리뷰 작성하지 않은 주문 상품 목록
-     */
-    @GetMapping("/writable")
-    public ResponseEntity<List<ReviewResponseDto>> getWritableReviews(
-            @AuthenticationPrincipal CustomUserDetails user) {
-
-        Long memberIdx = user.getMemberIdx();
-        List<ReviewResponseDto> writable = reviewService.getWritableReviews(memberIdx);
-
-        return ResponseEntity.ok(writable);
-    }
-	
+//	@Override
+//	public List<MyReviewResponseDTO> getWritableReviews(Long memberIdx) {
+//
+//	    List<OrdersDetail> orderDetails =
+//	            ordersRepository.findUnreviewedDetailsByMember(memberIdx);
+//
+//	    return orderDetails.stream()
+//	        .map(detail -> MyReviewResponseDTO.builder()
+//	                .reviewIdx(0L)
+//	                .productIdx(detail.getProduct().getProductIdx())
+//	                .productName(detail.getProduct().getProductName())
+//	                .imageUrl("")
+//	                .optionInfo(
+//	                    "색상: " + detail.getColorCode() +
+//	                    ", 사이즈: " + detail.getSizeCode()
+//	                )
+//	                .content("")
+//	                .score(0)
+//	                .ordersIdx(detail.getOrder().getOrdersIdx())
+//	                .build()
+//	        )
+//	        .collect(Collectors.toList());
+//	}
+//	
 
 	// http://localhost:8080/api/review/product/{productIdx}
 	// 상품별 리뷰 목록
