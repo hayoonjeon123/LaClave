@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SearchItemDto {
     private Long productIdx;
-    
+
     private String productName;
-    
+
     private int productPrice;
-    
-    private int productDiscountRate;
-    
+
     private String mainImageUrl;
 }

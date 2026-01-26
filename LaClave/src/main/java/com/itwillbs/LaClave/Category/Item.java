@@ -46,8 +46,8 @@ public class Item {
     @Column(name = "PRODUCT_COMMON_IDX")
     private Long productCommonIdx;
 
-    @Column(name = "PRODUCT_CATEGORY_IDX", insertable = false, updatable = false)
-    private Long productCategoryIdx;
+    @Column(name = "PRODUCT_SUBCATEGORY_IDX", insertable = false, updatable = false)
+    private Long productSubcategoryIdx;
 
     @Column(name = "STATUS_COMMON_IDX", nullable = false)
     private Long statusCommonIdx;
@@ -55,29 +55,8 @@ public class Item {
     @Column(name = "PRODUCT_NAME", nullable = false, length = 200)
     private String productName;
 
-    @Column(name = "PRODUCT_SHORT_DESC", length = 500)
-    private String productShortDesc;
-
-    @Column(name = "PRODUCT_DETAIL_DESC", columnDefinition = "CLOB")
-    private String productDetailDesc;
-
-    @Column(name = "PRODUCT_SIZE_GUIDE", columnDefinition = "CLOB")
-    private String productSizeGuide;
-
-    @Column(name = "PRODUCT_MATERIAL", length = 200)
-    private String productMaterial;
-
-    @Column(name = "TEXTURE_INFO", length = 200)
-    private String productTextureInfo;
-
     @Column(name = "PRODUCT_PRICE", nullable = false)
     private int productPrice;
-
-    @Column(name = "DISCOUNT_RATE", nullable = false)
-    private int productDiscountRate = 0;
-
-    @Column(name = "STOCK_QTY", nullable = false)
-    private int productStockQty;
 
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private java.time.LocalDateTime createdAt;
@@ -88,14 +67,10 @@ public class Item {
     @Column(name = "STYLE_TAGS", nullable = false)
     private String styleTags;
 
-    @Lob
-    @Column(name = "PRODUCT_VECTOR")
-    private String productVector;
-
     // 카테고리와의 연결
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name = "PRODUCT_CATEGORY_IDX")
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+    @JoinColumn(name = "PRODUCT_SUBCATEGORY_IDX")
     private Category category;
 
     // 옵션테이블 연결
@@ -106,9 +81,4 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ItemImage> images = new LinkedHashSet<>();
 
-    // 더미 넣고 확인
-//    //이미지 테이블 연결 
-//    public Set<ItemImage> getImages() {
-//        return images;
-//    }
 }

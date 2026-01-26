@@ -32,7 +32,6 @@ public class SearchController {
                     item.getProductIdx(),
                     item.getProductName(),
                     item.getProductPrice(),
-                    item.getProductDiscountRate(),
                     mainImageUrl);
         }).collect(Collectors.toList());
 
