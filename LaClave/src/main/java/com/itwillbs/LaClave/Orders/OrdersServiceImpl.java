@@ -45,13 +45,18 @@ public class OrdersServiceImpl implements OrdersService {
 
         // ⭐ 공통코드 변환
         result.forEach(order -> {
+
+            // 상품 옵션 변환
             order.getDetails().forEach(detail -> {
-                detail.setColorName(
-                    commonCodeService.getLabel(detail.getColorCode())
-                );
-                detail.setSizeName(
-                    commonCodeService.getLabel(detail.getSizeCode())
-                );
+                detail.setColorName(commonCodeService.getLabel(detail.getColorCode()));
+                detail.setSizeName(commonCodeService.getLabel(detail.getSizeCode()));
+            });
+
+            // 결제 방식(payWay) 등 결제 관련 코드 변환
+            order.getPayInfo().ifPresent(pay -> {
+                pay.setPayWayName(pay.getPayWay() != null ? commonCodeService.getLabel(pay.getPayWay().longValue()) : "-");
+                pay.setPayStatusName(pay.getPayStatus() != null ? commonCodeService.getLabel(pay.getPayStatus().longValue()) : "-");
+                pay.setPayTypeName(pay.getPayType() != null ? commonCodeService.getLabel(pay.getPayType().longValue()) : "-");
             });
         });
 

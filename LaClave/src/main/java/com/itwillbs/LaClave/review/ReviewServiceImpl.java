@@ -185,8 +185,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	}
 	
-	
-	//리뷰 수정
+	//리뷰수정
 	@Transactional
 	public void updateReview(
 	        CustomUserDetails user,
@@ -197,16 +196,43 @@ public class ReviewServiceImpl implements ReviewService {
 	    Review review = reviewRepository.findById(reviewIdx)
 	            .orElseThrow(() -> new IllegalArgumentException("리뷰 없음"));
 
-	    // 🔒 작성자 검증 (member 기준으로 통일)
+	    // 🔒 작성자 검증
 	    if (!review.getMember().getMemberIdx().equals(user.getMemberIdx())) {
 	        throw new IllegalStateException("수정 권한이 없습니다.");
 	    }
 
+	    // 1️⃣ 리뷰 내용 업데이트
 	    review.update(request.getScore(), request.getContent());
 	    review.setUpdatedAt(LocalDateTime.now());
 
-	    
+	    // 2️⃣ 이미지가 새로 들어온 경우 처리
+	    if (image != null && !image.isEmpty()) {
+
+	        // 기존 이미지 삭제 (DB만 삭제, 로컬/서버 파일 삭제도 가능)
+	        imageRepository.findFirstByTargetCodeAndTargetTypeAndTargetIdx(
+	                "REVIEW", "img_04", review.getReviewIdx()
+	        ).ifPresent(oldImage -> {
+	            imageRepository.delete(oldImage);
+
+	            // 로컬 파일도 삭제하고 싶으면 주석 해제
+	            // File file = new File("C:/upload2/review/" + Paths.get(oldImage.getImageUrl()).getFileName());
+	            // if (file.exists()) file.delete();
+	        });
+
+	        // 새 이미지 업로드
+	        String imageUrl = imageUploadService.upload(image);
+
+	        Image reviewImage = Image.builder()
+	                .targetCode("REVIEW")
+	                .targetType("img_04")
+	                .targetIdx(review.getReviewIdx())
+	                .imageUrl(imageUrl)
+	                .build();
+
+	        imageRepository.save(reviewImage);
+	    }
 	}
+	
 	
 	
 	// 리뷰 삭제
