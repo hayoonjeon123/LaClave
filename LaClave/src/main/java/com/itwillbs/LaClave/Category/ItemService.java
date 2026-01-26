@@ -138,4 +138,5 @@ public class ItemService {
 	public Double getAverageScore(Long productIdx) {
 		return reviewRepository.getAverageScoreByProduct(productIdx);
 	}
+	
 }
