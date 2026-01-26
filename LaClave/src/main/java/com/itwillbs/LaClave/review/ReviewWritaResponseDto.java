@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewResponseDto {
+public class ReviewWritaResponseDto {
 
     private Long reviewIdx;      // 작성 완료 리뷰면 실제 reviewIdx, 작성 가능 리뷰면 0
     private Long productIdx;

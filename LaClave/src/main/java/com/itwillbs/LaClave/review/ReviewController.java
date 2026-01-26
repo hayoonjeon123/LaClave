@@ -53,8 +53,7 @@ public class ReviewController {
 
 		return ResponseEntity.ok(myReviews);
 	}
-	
-//	@Override
+//	@GetMapping
 //	public List<MyReviewResponseDTO> getWritableReviews(Long memberIdx) {
 //
 //	    List<OrdersDetail> orderDetails =
@@ -77,7 +76,20 @@ public class ReviewController {
 //	        )
 //	        .collect(Collectors.toList());
 //	}
-//	
+	
+    // 작성 가능 리뷰 목록 조회
+    @GetMapping("/writable")
+    public ResponseEntity<List<ReviewWritaResponseDto>> getWritableReviews(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long memberIdx = userDetails.getMember().getMemberIdx();
+
+        List<ReviewWritaResponseDto> result =
+                reviewService.getWritableReviews(memberIdx);
+
+        return ResponseEntity.ok(result);
+    }
+	
 
 	// http://localhost:8080/api/review/product/{productIdx}
 	// 상품별 리뷰 목록
@@ -116,7 +128,9 @@ public class ReviewController {
 		
 		return ResponseEntity.ok().build();
 	}
-
+	
+	
+	//리뷰 수정
 	@PutMapping("/{reviewIdx}")
 	public ResponseEntity<Void> updateReview(
 	    @AuthenticationPrincipal CustomUserDetails user,
@@ -128,7 +142,7 @@ public class ReviewController {
 	    return ResponseEntity.ok().build();
 	}
 	
-	
+	//리뷰 삭제
 	@DeleteMapping("/{reviewIdx}")
 	public ResponseEntity<Void> deleteReview(@AuthenticationPrincipal CustomUserDetails user,
 	        @PathVariable("reviewIdx") Integer reviewIdx) {

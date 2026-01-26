@@ -8,24 +8,45 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
-	// 내가쓴 리뷰 목록
-	List<Review> findAllByMemberIdxAndStatus(Long memberIdx, String status);
+    List<Review> findAllByMember_MemberIdxAndStatus(Long memberIdx, String status);
 
-	// 상품별 리뷰 목록 조회
-	List<Review> findByProductIdxAndStatus(Long productIdx, String status);
+    List<Review> findByProduct_ProductIdxAndStatus(Long productIdx, String status);
 
-	// 상품별 평균 점수 조회
-	@Query("SELECT ROUND(AVG(r.score), 1) FROM Review r WHERE r.productIdx = :productIdx AND r.status = 'ACTIVE'")
-	Double getAverageScoreByProduct(@Param("productIdx") Long productIdx);
+    @Query("""
+        SELECT AVG(r.score)
+        FROM Review r
+        WHERE r.product.productIdx = :productIdx
+          AND r.status = 'ACTIVE'
+    """)
+    Double getAverageScoreByProduct(@Param("productIdx") Long productIdx);
 
-	// 상품별 리뷰 개수 조회
-	@Query("SELECT COUNT(r) FROM Review r WHERE r.productIdx = :productIdx AND r.status = 'ACTIVE'")
-	Integer countByProductIdx(@Param("productIdx") Integer productIdx);
+    @Query("""
+        SELECT COUNT(r)
+        FROM Review r
+        WHERE r.product.productIdx = :productIdx
+          AND r.status = 'ACTIVE'
+    """)
+    Long countActiveReviewsByProduct(@Param("productIdx") Long productIdx);
 
-	List<Review> findByProductIdx(Integer productIdx);
-
-	boolean existsByMember_MemberIdxAndOrdersIdxAndProductIdx(
-			Long memberIdx,
-			Integer ordersIdx,
-			Integer productIdx);
+    boolean existsByMember_MemberIdxAndOrdersIdxAndProduct_ProductIdx(
+        Long memberIdx,
+        Integer ordersIdx,
+        Long productIdx
+    );
+    
+    @Query("""
+    	    SELECT COUNT(r)
+    	    FROM Review r
+    	    WHERE r.product.productIdx = :productIdx
+    	      AND r.status = 'ACTIVE'
+    	""")
+    	Integer countByProductIdx(@Param("productIdx") Long productIdx);
+    
+    @Query("""
+    	    SELECT r
+    	    FROM Review r
+    	    WHERE r.product.productIdx = :productIdx
+    	""")
+    	List<Review> findByProductIdx(@Param("productIdx") Integer productIdx);
 }
+

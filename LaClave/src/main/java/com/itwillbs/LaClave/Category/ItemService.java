@@ -73,7 +73,7 @@ public class ItemService {
 
 		// 리뷰 정보
 		Double averageRating = reviewRepository.getAverageScoreByProduct(productIdx);
-		Integer reviewCount = reviewRepository.countByProductIdx(productIdx.intValue());
+		Integer reviewCount = reviewRepository.countByProductIdx(productIdx);
 
 		dto.setAverageRating(averageRating != null ? averageRating : 0.0);
 		dto.setReviewCount(reviewCount != null ? reviewCount : 0);

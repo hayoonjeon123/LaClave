@@ -8,22 +8,24 @@ import com.itwillbs.LaClave.security.CustomUserDetails;
 
 public interface ReviewService {
 
-//	List<Review> getReviewBymember(Long memberIdx);
-	// 상품 별 리뷰 목록 조회
-	List<Review> getReviewByProduct(Long productIdx, String status);
+    // 상품별 리뷰 목록
+    List<Review> getReviewByProduct(Long productIdx, String status);
 
-	// 상품 정보와 리뷰 조회
-	List<MyReviewResponseDTO> getMyReviews(Long productIdx);
-	
-	List<ReviewResponseDto> getWritableReviews(Long memberIdx);
+    // ✅ 내가 쓴 리뷰 목록 (member 기준)
+    List<MyReviewResponseDTO> getMyReviews(Long memberIdx);
 
+    // 작성 가능한 리뷰
+    List<ReviewWritaResponseDto> getWritableReviews(Long memberIdx);
 
-	Double getProductAverageScore(Long productIdx);
+    // 상품별 평균 별점
+    Double getProductAverageScore(Long productIdx);
 
-	void createReview(CustomUserDetails user, ReviewCreateRequest dto, MultipartFile image);
+    // 리뷰 작성
+    void createReview(CustomUserDetails user, ReviewCreateRequest dto, MultipartFile image);
 
-	void updateReview(CustomUserDetails user, Integer reviewIdx, ReviewUpdateRequest request, MultipartFile image);
+    // 리뷰 수정
+    void updateReview(CustomUserDetails user, Integer reviewIdx, ReviewUpdateRequest request, MultipartFile image);
 
-	void deleteReview(CustomUserDetails user, Integer reviewIdx);
-
+    // 리뷰 삭제
+    void deleteReview(CustomUserDetails user, Integer reviewIdx);
 }
