@@ -21,6 +21,7 @@ public class MyReviewResponseDTO {
     private Long productIdx;
     private String productName;
     private String imageUrl; // 상품 대표 이미지
+    private String reviewImageUrl;  // 리뷰 이미지 추가
 
     // 구매 옵션 정보 (예: "Color: Black / Size: L")
     private String optionInfo;

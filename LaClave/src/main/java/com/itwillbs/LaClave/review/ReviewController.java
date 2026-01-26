@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.itwillbs.LaClave.Cart.CartRequestDto;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -117,16 +118,16 @@ public class ReviewController {
 //    }
 //   
 	// 리뷰 작성하기
-	@PostMapping( consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Void> createReview(@AuthenticationPrincipal CustomUserDetails user,
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Void> createReview(
+	        @AuthenticationPrincipal CustomUserDetails user,
 
-			@RequestPart("review") ReviewCreateRequest dto,
-			@RequestPart(value = "image", required = false) MultipartFile image) {
-		reviewService.createReview(user, dto, image);
-		log.info("로그인 사용자 memberIdx = {}", user.getMemberIdx());
-	    System.out.println("로그인 사용자 memberIdx = " + user.getMemberIdx()); // 확인용
-		
-		return ResponseEntity.ok().build();
+	        @Valid @RequestPart("review") ReviewCreateRequest dto,
+	        @RequestPart(value = "image", required = false) MultipartFile image) {
+
+	    reviewService.createReview(user, dto, image);
+	    log.info("로그인 사용자 memberIdx = {}", user.getMemberIdx());
+	    return ResponseEntity.ok().build();
 	}
 	
 	

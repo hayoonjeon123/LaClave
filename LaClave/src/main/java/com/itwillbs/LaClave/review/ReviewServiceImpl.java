@@ -20,6 +20,9 @@ import com.itwillbs.LaClave.Orders.OrdersDetail;
 import com.itwillbs.LaClave.Orders.OrdersDetailRepository;
 import com.itwillbs.LaClave.Orders.OrdersRepository;
 import com.itwillbs.LaClave.commoncode.CommonCodeService;
+import com.itwillbs.LaClave.image.Image;
+import com.itwillbs.LaClave.image.ImageRepository;
+import com.itwillbs.LaClave.image.ImageUploadService;
 import com.itwillbs.LaClave.inquiry.InquiryCreateRequest;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
@@ -36,8 +39,9 @@ public class ReviewServiceImpl implements ReviewService {
 	private final OrdersDetailRepository ordersDetailRepository;
 	private final MemberRepository memberRepository;
 	private final OrdersRepository ordersRepository;
+	private final ImageRepository imageRepository;
 	private final CommonCodeService commonCodeService;
-	
+	private final ImageUploadService imageUploadService;
 	
 	
 	//상품별 리뷰 조회
@@ -51,6 +55,8 @@ public class ReviewServiceImpl implements ReviewService {
 		return avg != null ? avg : 0.0; // 리뷰 평점이 없으면 0.0 반환
 	}
 	
+	
+	// 내가쓴 리뷰 조회
 	@Override
 	@Transactional(readOnly = true)
 	public List<MyReviewResponseDTO> getMyReviews(Long memberIdx) {
@@ -62,6 +68,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	        Item item = review.getProduct();
 
+	        // 1️⃣ 주문 옵션 정보
 	        OrdersDetail detail = ordersDetailRepository
 	            .findByOrdersIdxAndProductIdx(
 	                review.getOrdersIdx().longValue(),
@@ -77,23 +84,35 @@ public class ReviewServiceImpl implements ReviewService {
 	                commonCodeService.getLabel(detail.getSizeCode());
 	        }
 
-	        String imageUrl = (item != null && !item.getImages().isEmpty())
-	            ? item.getImages().iterator().next().getUrl()
-	            : "default_image_url";
+	        // 상품 대표 이미지
+	        String productImageUrl = !item.getImages().isEmpty() ? 
+	            item.getImages().iterator().next().getUrl() : "default_image_url";
 
+	        // 리뷰 이미지 이름만 가져오기
+	        String reviewImageName = imageRepository
+	            .findFirstByTargetCodeAndTargetTypeAndTargetIdx("REVIEW", "img_04", review.getReviewIdx())
+	            .map(Image::getImageUrl)
+	            .orElse(null);
+
+
+	        // 4️⃣ DTO 반환
 	        return MyReviewResponseDTO.builder()
 	            .reviewIdx(review.getReviewIdx())
 	            .productIdx(item.getProductIdx())
 	            .productName(item.getProductName())
-	            .imageUrl(imageUrl)
+	            .imageUrl(productImageUrl)   // 상품 대표 이미지
+	            .reviewImageUrl(reviewImageName) // ✅ 여기에 리뷰 이미지 넣기
 	            .optionInfo(optionInfo)
 	            .content(review.getContent())
 	            .score(review.getScore())
 	            .ordersIdx(review.getOrdersIdx())
+	            .createdAt(review.getCreatedAt()) // 리뷰 작성일
 	            .build();
 
 	    }).collect(Collectors.toList());
 	}
+	
+	
 	// 작성 가능 리뷰
 	@Override
 	public List<ReviewWritaResponseDto> getWritableReviews(Long memberIdx) {
@@ -147,6 +166,23 @@ public class ReviewServiceImpl implements ReviewService {
 	    );
 
 	    reviewRepository.save(review);
+	    
+	    // 4️⃣ 이미지가 있을 경우만 저장
+	    if (image != null && !image.isEmpty()) {
+
+	        // 👉 실제로는 S3 / 로컬 업로드 서비스 분리 추천
+	        String imageUrl = imageUploadService.upload(image);
+
+	        Image reviewImage = Image.builder()
+	        	    .targetCode("REVIEW")          // 무엇에 대한 이미지인지
+	        	    .targetType("img_04")          // 용도 (리뷰 이미지)
+	        	    .targetIdx(review.getReviewIdx())
+	        	    .imageUrl(imageUrl)
+	        	    .build();
+
+	        imageRepository.save(reviewImage);
+	    }
+
 	}
 	
 	
@@ -168,11 +204,8 @@ public class ReviewServiceImpl implements ReviewService {
 
 	    review.update(request.getScore(), request.getContent());
 	    review.setUpdatedAt(LocalDateTime.now());
-//
-//	    if (image != null && !image.isEmpty()) {
-//	        String imageUrl = upload(image); // 구현 필요
-//	        review.updateImage(imageUrl);
-//	    }
+
+	    
 	}
 	
 	
