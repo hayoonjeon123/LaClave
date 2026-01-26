@@ -10,17 +10,18 @@ import org.springframework.data.repository.query.Param;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-	//카테고리 번호 조회
+    // 카테고리 번호 조회
     @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
-    List<Item> findByProductCategoryIdx(Long productCategoryIdx);
-    
+    List<Item> findByProductSubcategoryIdx(Long productSubcategoryIdx);
+
     // 공통코드 조회
     @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
     List<Item> findByProductCommonIdx(Long productCommonIdx);
 
-     // 더미 넣고 확인
-//   @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
-//   Optional<Item> findById(Long productIdx);
+    // 더미 넣고 확인
+    // @EntityGraph(attributePaths = { "images", "options", "options.colorCategory",
+    // "options.sizeCategory" })
+    // Optional<Item> findById(Long productIdx);
 
     @EntityGraph(attributePaths = { "images", "options", "options.colorCategory", "options.sizeCategory" })
     List<Item> findAll();
@@ -35,7 +36,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i " +
             "WHERE i.productName LIKE %:keyword% " +
             "OR i.styleTags LIKE %:keyword% " +
-            "OR i.productCategoryIdx IN (SELECT c.commonIdx FROM Category c WHERE c.codeDesc LIKE %:keyword%) " +
+            "OR i.productSubcategoryIdx IN (SELECT c.commonIdx FROM Category c WHERE c.codeDesc LIKE %:keyword%) " +
             "OR i.productCommonIdx IN (SELECT c.commonIdx FROM Category c WHERE c.codeDesc LIKE %:keyword%)")
     List<Item> searchByKeyword(@Param("keyword") String keyword);
 }

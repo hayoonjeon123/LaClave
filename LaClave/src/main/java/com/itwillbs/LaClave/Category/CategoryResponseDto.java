@@ -33,29 +33,29 @@ public class CategoryResponseDto {
 
     private double averageRating;
 
-    private String mainImageUrl; 
+    private String mainImageUrl;
 
-    private List<String> detailImages; 
+    private List<String> detailImages;
 
-    private String productDetailDesc; 
+    private String productDetailDesc;
 
-    private String productShortDesc; 
+    private String productShortDesc;
 
-    private String productMaterial; 
+    private String productMaterial;
 
-    private int reviewCount; 
+    private int reviewCount;
 
-    private int wishlistCount; 
+    private int wishlistCount;
 
     // 카테고리 항목 가져오기
     public CategoryResponseDto(Item item) {
         this.productIdx = item.getProductIdx();
         this.productName = item.getProductName();
         this.productPrice = item.getProductPrice();
-        this.discount = item.getProductDiscountRate();
-        this.productDetailDesc = item.getProductDetailDesc();
-        this.productShortDesc = item.getProductShortDesc();
-        this.productMaterial = item.getProductMaterial();
+        this.discount = 0; // 또는 테이블에 맞게 수정
+        this.productDetailDesc = "";
+        this.productShortDesc = "";
+        this.productMaterial = "";
 
         // 리뷰 관련 (
         this.averageRating = 0.0;
@@ -66,7 +66,7 @@ public class CategoryResponseDto {
             List<String> allUrls = new ArrayList<>();
             for (ItemImage img : item.getImages()) {
                 String url = img.getUrl();
-                log.info("이미지 URL:" , url);
+                log.info("이미지 URL:", url);
                 if (url != null && !url.isEmpty()) {
                     allUrls.add(url);
                 }
@@ -74,27 +74,28 @@ public class CategoryResponseDto {
             if (!allUrls.isEmpty()) {
                 this.mainImageUrl = allUrls.get(0);
                 this.detailImages = allUrls;
-                log.info("메인 이미지 설정됨::" , this.mainImageUrl);
+                log.info("메인 이미지 설정됨::", this.mainImageUrl);
             }
         } else {
             log.info("이미지 없음");
         }
 
-     // 색상 처리
-        this.colors = extractAttribute(item, opt -> 
-            opt.getColorCategory() != null ? 
-            (opt.getColorCategory().getCodeDesc() != null && opt.getColorCategory().getCodeDesc().startsWith("#") ? 
-             opt.getColorCategory().getCodeDesc() : opt.getColorCategory().getCode()) : null);
-        
-        this.colorCommonIdx = extractAttribute(item, opt -> 
-            opt.getColorCategory() != null ? opt.getColorCategory().getCommonIdx() : null);
+        // 색상 처리
+        this.colors = extractAttribute(item, opt -> opt.getColorCategory() != null
+                ? (opt.getColorCategory().getCodeDesc() != null && opt.getColorCategory().getCodeDesc().startsWith("#")
+                        ? opt.getColorCategory().getCodeDesc()
+                        : opt.getColorCategory().getCode())
+                : null);
+
+        this.colorCommonIdx = extractAttribute(item,
+                opt -> opt.getColorCategory() != null ? opt.getColorCategory().getCommonIdx() : null);
 
         // 사이즈 처리
-        this.sizes = extractAttribute(item, opt -> 
-            opt.getSizeCategory() != null ? opt.getSizeCategory().getCode() : null);
-        
-        this.sizeCommonIdx = extractAttribute(item, opt -> 
-            opt.getSizeCategory() != null ? opt.getSizeCategory().getCommonIdx() : null);
+        this.sizes = extractAttribute(item,
+                opt -> opt.getSizeCategory() != null ? opt.getSizeCategory().getCode() : null);
+
+        this.sizeCommonIdx = extractAttribute(item,
+                opt -> opt.getSizeCategory() != null ? opt.getSizeCategory().getCommonIdx() : null);
     }
 
     // extractSizes, extractNames, extractIdxs 합침

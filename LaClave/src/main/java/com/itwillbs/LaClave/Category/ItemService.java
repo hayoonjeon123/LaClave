@@ -22,23 +22,26 @@ public class ItemService {
 	private final ItemRepository itemRepository;
 
 	private final ReviewRepository reviewRepository;
-	
+
 	private final com.itwillbs.LaClave.wishlist.WishlistRepository wishlistRepository;
-	
+
 	// 더미 넣고 확인
 	// 카테고리 번호 상품 조회
-//	public List<CategoryResponseDto> getItemsByProductCategoryIdx(Long productCategoryIdx) {
-//		List<Item> items = itemRepository.findByProductCategoryIdx(productCategoryIdx);
-//		return items.stream().map(CategoryResponseDto::new).collect(Collectors.toList());
-//	}
-	
+	// public List<CategoryResponseDto> getItemsByProductCategoryIdx(Long
+	// productCategoryIdx) {
+	// List<Item> items =
+	// itemRepository.findByProductCategoryIdx(productCategoryIdx);
+	// return
+	// items.stream().map(CategoryResponseDto::new).collect(Collectors.toList());
+	// }
+
 	// pk에 따라 상품 목록 조회
 	public List<CategoryResponseDto> getItems(Long productCommonIdx) {
 		List<Item> items;
 		if (productCommonIdx < 100) {
 			items = itemRepository.findByProductCommonIdx(productCommonIdx);
 		} else {
-			items = itemRepository.findByProductCategoryIdx(productCommonIdx);
+			items = itemRepository.findByProductSubcategoryIdx(productCommonIdx);
 		}
 
 		if (items.isEmpty())
@@ -48,10 +51,10 @@ public class ItemService {
 		for (Item item : items) {
 
 			if (item.getImages() != null) {
-				item.getImages().size(); 
+				item.getImages().size();
 			}
 			if (item.getOptions() != null) {
-				item.getOptions().size(); 
+				item.getOptions().size();
 			}
 			responseList.add(new CategoryResponseDto(item));
 		}
@@ -59,7 +62,7 @@ public class ItemService {
 		return responseList;
 	}
 
-	// 상품 상세 정보 조회 
+	// 상품 상세 정보 조회
 	@Transactional
 	public CategoryResponseDto getItem(Long productIdx) {
 		log.info("ItemService - getItem 호출: {}", productIdx);
@@ -78,7 +81,7 @@ public class ItemService {
 		dto.setAverageRating(averageRating != null ? averageRating : 0.0);
 		dto.setReviewCount(reviewCount != null ? reviewCount : 0);
 
-		// 찜 개수 
+		// 찜 개수
 		Integer wishlistCount = wishlistRepository.countByProductIdx(productIdx.intValue());
 		dto.setWishlistCount(wishlistCount != null ? wishlistCount : 0);
 
@@ -102,7 +105,7 @@ public class ItemService {
 
 		List<CategoryResponseDto> responseList = new ArrayList<>();
 		for (Item item : items) {
-			
+
 			if (item.getImages() != null) {
 				item.getImages().size();
 			}
