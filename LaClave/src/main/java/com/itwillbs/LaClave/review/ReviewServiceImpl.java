@@ -90,7 +90,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	        // 리뷰 이미지 이름만 가져오기
 	        String reviewImageName = imageRepository
-	            .findFirstByTargetCodeAndTargetTypeAndTargetIdx("REVIEW", "img_04", review.getReviewIdx())
+	            .findFirstByTargetCodeAndTargetTypeAndTargetIdx("img_04","REVIEW", review.getReviewIdx())
 	            .map(Image::getImageUrl)
 	            .orElse(null);
 
@@ -174,8 +174,8 @@ public class ReviewServiceImpl implements ReviewService {
 	        String imageUrl = imageUploadService.upload(image);
 
 	        Image reviewImage = Image.builder()
-	        	    .targetCode("REVIEW")          // 무엇에 대한 이미지인지
-	        	    .targetType("img_04")          // 용도 (리뷰 이미지)
+	        	    .targetCode("img_04")          // 무엇에 대한 이미지인지
+	        	    .targetType("REVIEW")          // 용도 (리뷰 이미지)
 	        	    .targetIdx(review.getReviewIdx())
 	        	    .imageUrl(imageUrl)
 	        	    .build();
@@ -210,7 +210,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	        // 기존 이미지 삭제 (DB만 삭제, 로컬/서버 파일 삭제도 가능)
 	        imageRepository.findFirstByTargetCodeAndTargetTypeAndTargetIdx(
-	                "REVIEW", "img_04", review.getReviewIdx()
+	        		"img_04", "REVIEW", review.getReviewIdx()
 	        ).ifPresent(oldImage -> {
 	            imageRepository.delete(oldImage);
 
@@ -223,8 +223,8 @@ public class ReviewServiceImpl implements ReviewService {
 	        String imageUrl = imageUploadService.upload(image);
 
 	        Image reviewImage = Image.builder()
-	                .targetCode("REVIEW")
-	                .targetType("img_04")
+	                .targetCode("img_04")
+	                .targetType("REVIEW")
 	                .targetIdx(review.getReviewIdx())
 	                .imageUrl(imageUrl)
 	                .build();

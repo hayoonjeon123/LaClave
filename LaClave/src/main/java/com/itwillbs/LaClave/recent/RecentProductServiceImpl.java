@@ -1,5 +1,6 @@
 package com.itwillbs.LaClave.recent;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,43 +16,44 @@ public class RecentProductServiceImpl  implements RecentProductService{
 	private final RecentProductRepository recentProductRepository;
 	
 	@Override
-	public List<RecentProduct> getRecentProductsBymember(Integer memberIdx){
-		return recentProductRepository.findByMemberIdxOrderByViewedAtDesc(memberIdx);
+	public List<RecentProductDto> getRecentProductsBymember(Long memberIdx) {
+	    return recentProductRepository.findRecentProductsWithPrice(memberIdx);
 	}
-	
 
-    // 회원 최근 본 상품 조회
-    @Transactional(readOnly = true)
-    public List<RecentProductDto> getRecentProducts(Integer memberIdx) {
-        return recentProductRepository
-                .findTop5ByMemberIdxOrderByViewedAtDesc(memberIdx)
-                .stream()
-                .map(r -> new RecentProductDto(r.getProductIdx(), r.getViewedAt()))
-                .collect(Collectors.toList());
+	
+    // ✅ 최근 본 상품 등록 / 갱신
+    public void addOrUpdateRecent(Long memberIdx, Long productIdx) {
+
+        RecentProduct recent = recentProductRepository
+                .findByMemberIdxAndProductIdx(memberIdx, productIdx)
+                .orElseGet(() -> {
+                    RecentProduct r = new RecentProduct();
+                    r.setMemberIdx(memberIdx);
+                    r.setProductIdx(productIdx);
+                    return r;
+                });
+
+        recent.setViewedAt(LocalDateTime.now());
+        recentProductRepository.save(recent); // ✅ Entity만 save
     }
 	
-    // 최근 본 상품 등록/업데이트
+    @Transactional(readOnly = true)
+    public List<RecentProductDto> getRecentProducts(Long memberIdx) {
+        return recentProductRepository.findRecentProductsWithPrice(memberIdx);
+    }
+    
     @Transactional
-    public void addOrUpdateRecent(Integer memberIdx, Integer productIdx) {
-        // 이미 존재하는지 확인
-        recentProductRepository.findByMemberIdxOrderByViewedAtDesc(memberIdx).stream()
-            .filter(r -> r.getProductIdx().equals(productIdx))
-            .findFirst()
+    public void addRecentProduct(Long memberIdx, Long productIdx) {
+        recentProductRepository
+            .findByMemberIdxAndProductIdx(memberIdx, productIdx)
             .ifPresentOrElse(
-                r -> {
-                    // 기존 상품이면 viewedAt 갱신
-                    r.setViewedAt(java.time.LocalDateTime.now());
-                    recentProductRepository.save(r);
-                },
-                () -> {
-                    // 새 상품이면 추가
-                    RecentProduct newRecent = new RecentProduct();
-                    newRecent.setMemberIdx(memberIdx);
-                    newRecent.setProductIdx(productIdx);
-                    newRecent.setViewedAt(java.time.LocalDateTime.now());
-                    recentProductRepository.save(newRecent);
-                }
+                recent -> recent.updateViewedAt(),
+                () -> recentProductRepository.save(
+                    RecentProduct.create(memberIdx, productIdx)
+                )
             );
     }
-	
+    
+    
+    
 }

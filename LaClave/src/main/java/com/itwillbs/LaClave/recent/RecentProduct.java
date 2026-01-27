@@ -23,13 +23,28 @@ public class RecentProduct {
 	    private Integer recentIdx;
 
 	    @Column(name = "MEMBER_IDX", nullable = false)
-	    private Integer memberIdx;
+	    private Long memberIdx;
 
 	    @Column(name = "PRODUCT_IDX", nullable = false)
-	    private Integer productIdx;
+	    private Long productIdx;
 
 	    @Column(name = "VIEWED_AT", nullable = false)
 	    private LocalDateTime viewedAt;
+	    
+
+	    /* 생성 메서드 */
+	    public static RecentProduct create(Long memberIdx, Long productIdx) {
+	        RecentProduct rp = new RecentProduct();
+	        rp.memberIdx = memberIdx;
+	        rp.productIdx = productIdx;
+	        rp.viewedAt = LocalDateTime.now();
+	        return rp;
+	    }
+
+	    /* 최근 본 시간 갱신 */
+	    public void updateViewedAt() {
+	        this.viewedAt = LocalDateTime.now();
+	    }
 	
 	
 }

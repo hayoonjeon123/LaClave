@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 
 
-@Data
+@Getter
 @AllArgsConstructor
 public class RecentProductDto {
-    private Integer productIdx;
+    private Long productIdx;
+    private String productName;
+    private int price;
     private LocalDateTime viewedAt;
 }
