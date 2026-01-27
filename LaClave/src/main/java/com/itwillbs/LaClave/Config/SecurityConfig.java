@@ -42,7 +42,7 @@ public class SecurityConfig {
 								"/api/orders/create", "/api/orders/**",
 								"/orders/**",
 								"/api/payment/**", "/payment/**",
-								"/api/ai/**", "/ai/**", "/api/myDelivery/**")
+								"/api/ai/**", "/ai/**", "/api/myDelivery/**","/images/**")
 						.permitAll()
 						.anyRequest().authenticated())
 				.formLogin(form -> form

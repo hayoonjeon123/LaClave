@@ -39,7 +39,7 @@ public class ItemImage {
     @Column(name = "TARGET_TYPE")
     private String targetType; 
 
-    @Column(name = "IMAGE_URL") 
+    @Column(name = "IMAGE_URL", length = 1000) 
     private String url;
 
     // Item과의 연결
@@ -47,7 +47,16 @@ public class ItemImage {
     @JoinColumn(name = "TARGET_IDX", referencedColumnName = "PRODUCT_IDX")
     private Item item;
 
-    // @ManyToOne
-    // @JoinColumn(name = "REVIEW_IDX") // DB에 추가한 컬럼명과 일치시켜주세요
-    // private Review review;
+//    @ManyToOne
+//    @JoinColumn(name = "REVIEW_IDX") // DB에 추가한 컬럼명과 일치시켜주세요
+//    private Review review;
+    
+    public static ItemImage createItemImage(String url, String targetCode, String targetType, Item item) {
+        ItemImage itemImage = new ItemImage();
+        itemImage.setUrl(url);
+        itemImage.setTargetCode(targetCode);
+        itemImage.setTargetType(targetType);
+        itemImage.setItem(item);
+        return itemImage;
+    }
 }

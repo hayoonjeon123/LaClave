@@ -10,7 +10,7 @@ import lombok.extern.log4j.Log4j2;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/review/**")
-                .addResourceLocations("file:/C:/LaClave/uploads/review/");
+        registry.addResourceHandler("/uploads/review/**", "/images/**")
+                .addResourceLocations("file:/C:/LaClave/uploads/review/", "file:///C:/image/");
     }
 }
