@@ -2,7 +2,7 @@ package com.itwillbs.LaClave.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.itwillbs.LaClave.Member.Member;
+import com.itwillbs.LaClave.member.Member;
 
 import java.util.Collection;
 import java.util.Collections;

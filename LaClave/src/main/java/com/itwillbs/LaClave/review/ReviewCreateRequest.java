@@ -1,6 +1,6 @@
 package com.itwillbs.LaClave.review;
 
-import com.itwillbs.LaClave.Category.Item;
+import com.itwillbs.LaClave.category.Item;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.Config;
+package com.itwillbs.LaClave.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

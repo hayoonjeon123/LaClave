@@ -17,9 +17,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 
-import com.itwillbs.LaClave.Cart.ItemImage;
-import com.itwillbs.LaClave.Category.Item;
-import com.itwillbs.LaClave.Member.Member;
+import com.itwillbs.LaClave.cart.ItemImage;
+import com.itwillbs.LaClave.category.Item;
+import com.itwillbs.LaClave.member.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

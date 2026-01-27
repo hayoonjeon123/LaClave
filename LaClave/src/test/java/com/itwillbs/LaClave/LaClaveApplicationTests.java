@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.itwillbs.LaClave.Orders.Orders;
-import com.itwillbs.LaClave.Orders.OrdersRepository;
+import com.itwillbs.LaClave.orders.Orders;
+import com.itwillbs.LaClave.orders.OrdersRepository;
 
 @SpringBootTest
 class LaClaveApplicationTests {

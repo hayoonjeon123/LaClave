@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.itwillbs.LaClave.Member.Member;
+import com.itwillbs.LaClave.member.Member;
 
 public interface PointRepository extends JpaRepository<Point, Long> {
 	

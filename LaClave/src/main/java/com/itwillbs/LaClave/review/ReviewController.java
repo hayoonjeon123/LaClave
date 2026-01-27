@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itwillbs.LaClave.Cart.CartRequestDto;
+import com.itwillbs.LaClave.cart.CartRequestDto;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import jakarta.validation.Valid;

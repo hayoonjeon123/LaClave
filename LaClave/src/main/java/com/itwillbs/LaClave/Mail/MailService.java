@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.Mail;
+package com.itwillbs.LaClave.mail;
 
 import java.util.HashMap;
 import java.util.Map;

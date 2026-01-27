@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.PayMent;
+package com.itwillbs.LaClave.payment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itwillbs.LaClave.Member.Member;
-import com.itwillbs.LaClave.Member.MemberRepository;
-import com.itwillbs.LaClave.Member.MemberService;
-import com.itwillbs.LaClave.Orders.Orders;
-import com.itwillbs.LaClave.Orders.OrdersService;
+import com.itwillbs.LaClave.member.Member;
+import com.itwillbs.LaClave.member.MemberRepository;
+import com.itwillbs.LaClave.member.MemberService;
+import com.itwillbs.LaClave.orders.Orders;
+import com.itwillbs.LaClave.orders.OrdersService;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;

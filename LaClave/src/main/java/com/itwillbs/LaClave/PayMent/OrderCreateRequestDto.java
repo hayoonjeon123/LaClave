@@ -1,11 +1,11 @@
-package com.itwillbs.LaClave.PayMent;
+package com.itwillbs.LaClave.payment;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.itwillbs.LaClave.Member.Member;
-import com.itwillbs.LaClave.Orders.Orders;
+import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
+import com.itwillbs.LaClave.orders.Orders;
 
 import groovy.transform.builder.Builder;
 import lombok.Data;

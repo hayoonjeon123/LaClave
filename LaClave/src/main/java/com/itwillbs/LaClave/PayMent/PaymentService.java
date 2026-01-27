@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.PayMent;
+package com.itwillbs.LaClave.payment;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.itwillbs.LaClave.Member.Member;
-import com.itwillbs.LaClave.Orders.Orders;
-import com.itwillbs.LaClave.Orders.OrdersDetail;
-import com.itwillbs.LaClave.Orders.OrdersRepository;
+import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.memberaddress.MemberAddressRepository;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
+import com.itwillbs.LaClave.orders.Orders;
+import com.itwillbs.LaClave.orders.OrdersDetail;
+import com.itwillbs.LaClave.orders.OrdersRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

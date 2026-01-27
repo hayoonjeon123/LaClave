@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 
-import com.itwillbs.LaClave.Category.Item;
-import com.itwillbs.LaClave.Member.Member;
+import com.itwillbs.LaClave.category.Item;
+import com.itwillbs.LaClave.member.Member;
 
 @Entity
 @Table(name = "POINT")

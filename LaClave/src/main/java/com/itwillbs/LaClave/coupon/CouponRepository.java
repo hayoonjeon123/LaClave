@@ -3,7 +3,8 @@ package com.itwillbs.LaClave.coupon;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.itwillbs.LaClave.Member.Member;
+
+import com.itwillbs.LaClave.member.Member;
 
 
 

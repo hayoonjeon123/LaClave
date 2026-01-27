@@ -1,7 +1,7 @@
-package com.itwillbs.LaClave.PayMent;
+package com.itwillbs.LaClave.payment;
 
-import com.itwillbs.LaClave.Orders.Orders;
-import com.itwillbs.LaClave.Orders.OrdersDetail;
+import com.itwillbs.LaClave.orders.Orders;
+import com.itwillbs.LaClave.orders.OrdersDetail;
 
 import lombok.Data;
 

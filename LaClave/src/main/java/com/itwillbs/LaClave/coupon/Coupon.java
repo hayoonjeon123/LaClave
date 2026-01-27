@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 
-import com.itwillbs.LaClave.Member.Member;
+import com.itwillbs.LaClave.member.Member;
 
 @Entity
 @Table(name = "COUPON")
