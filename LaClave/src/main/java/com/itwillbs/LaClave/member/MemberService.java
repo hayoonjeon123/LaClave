@@ -1,5 +1,9 @@
 package com.itwillbs.LaClave.member;
 
+import com.itwillbs.LaClave.memberaddress.MemberAddressRepository;
+import com.itwillbs.LaClave.memberaddress.Memberaddress;
+import com.itwillbs.LaClave.commoncode.CommonCodeService; // This might be needed if I see it used elsewhere, but let's stick to what's there
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -8,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.google.gson.Gson;
 
@@ -25,8 +27,8 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 
 	private final PasswordEncoder passwordEncoder;
-
 	private final AiProfileRepository aiProfileRepository;
+	private final MemberAddressRepository memberAddressRepository;
 
 	// 1. 중복 체크 공통 로직
 	public boolean existsByMemberId(String memberId) {
@@ -48,7 +50,7 @@ public class MemberService {
 			throw new RuntimeException("이미 사용 중인 이메일입니다.");
 		}
 
-		// DTO -> Entity 변환 및 저장
+		// DTO -> Entity 변환
 		Member member = Member.builder()
 				.memberId(dto.getMemberId())
 				.memberPw(passwordEncoder.encode(dto.getMemberPw())) // 암호화 포함
@@ -69,7 +71,27 @@ public class MemberService {
 				.memberRole("ROLE_USER")
 				.build();
 
+		// 엔티티 저장
 		Member savedMember = memberRepository.save(member);
+		log.info("회원 기본 정보 저장 완료: idx={}", savedMember.getMemberIdx());
+
+		// 기본 배송지 정보 MEMBER_ADDRESS 테이블에 저장
+		try {
+			Memberaddress defaultAddr = Memberaddress.builder()
+					.memberIdx(savedMember.getMemberIdx())
+					.recipientName(savedMember.getMemberName())
+					.addressName("기본 배송지")
+					.phone("010-0000-0000")
+					.postCode(savedMember.getPostCode())
+					.address(savedMember.getAddress())
+					.addressDetail(savedMember.getAddressDetail())
+					.build();
+			memberAddressRepository.save(defaultAddr);
+			log.info("기본 배송지 정보 저장 완료: idx={}", savedMember.getMemberIdx());
+		} catch (Exception e) {
+			log.error("배송지 저장 중 오류 발생: {}", e.getMessage());
+			throw new RuntimeException("배송지 정보를 저장하는 중 오류가 발생했습니다: " + e.getMessage());
+		}
 
 		// AI 정보 저장
 		AiProfile aiProfile = new AiProfile();
@@ -128,7 +150,12 @@ public class MemberService {
 				.address(member.getAddress())
 				.addressDetail(member.getAddressDetail())
 				.point(member.getPoint())
+				.phone(memberAddressRepository.findByMemberIdxOrderByAddressIdxDesc(member.getMemberIdx())
+						.stream().findFirst().map(addr -> addr.getPhone()).orElse("010-0000-0000"))
+				.addrIdx(memberAddressRepository.findByMemberIdxOrderByAddressIdxDesc(member.getMemberIdx())
+						.stream().findFirst().map(addr -> addr.getAddressIdx()).orElse(null))
 				.build();
+
 	}
 
 	private String generateRandomNickname() {

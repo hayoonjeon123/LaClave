@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.Config;
+package com.itwillbs.LaClave.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +30,7 @@ public class SecurityConfig {
 				}))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(
+								"/search/**", "/api/search/**", "/error",
 								"/login", "/signup", "/loginProc",
 								"/email-send", "/email-verify", "/check-id", "/check-email",
 								"/find-id", "/find-pw",

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itwillbs.LaClave.security.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 

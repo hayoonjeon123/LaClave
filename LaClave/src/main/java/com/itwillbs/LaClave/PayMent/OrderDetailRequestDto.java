@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.PayMent;
+package com.itwillbs.LaClave.payment;
 
 import com.itwillbs.LaClave.orders.Orders;
 import com.itwillbs.LaClave.orders.OrdersDetail;
@@ -25,8 +25,6 @@ public class OrderDetailRequestDto {
                 .sizeCode(Long.parseLong(String.valueOf(this.sizeCode)))
                 .quantity(Long.parseLong(String.valueOf(this.quantity)))
                 .price(Long.parseLong(String.valueOf(this.price)))
-//                .discountPrice(this.discountPrice != null ? this.discountPrice : 0)
-                // totalPrice는 DB에서 가상 열로 자동 계산됨
                 .build();
     }
 }

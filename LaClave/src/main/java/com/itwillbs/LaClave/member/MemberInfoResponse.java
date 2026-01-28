@@ -22,4 +22,6 @@ public class MemberInfoResponse {
     private String address;
     private String addressDetail;
     private Integer point;
+    private String phone;
+    private Long addrIdx;
 }

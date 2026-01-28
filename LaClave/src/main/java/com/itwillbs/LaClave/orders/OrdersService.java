@@ -2,10 +2,11 @@ package com.itwillbs.LaClave.orders;
 
 import java.util.List;
 
+import com.itwillbs.LaClave.config.CustomUserDetails;
 import com.itwillbs.LaClave.member.Member;
-import com.itwillbs.LaClave.PayMent.OrderCreateRequestDto;
-import com.itwillbs.LaClave.PayMent.PaymentApprovalRequestDto;
-import com.itwillbs.LaClave.security.CustomUserDetails;
+import com.itwillbs.LaClave.payment.OrderCreateRequestDto;
+import com.itwillbs.LaClave.payment.PaymentApprovalRequestDto;
+
 
 public interface OrdersService {
 	

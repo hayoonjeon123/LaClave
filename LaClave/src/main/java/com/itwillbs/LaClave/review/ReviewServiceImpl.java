@@ -15,6 +15,7 @@ import com.itwillbs.LaClave.category.Item;
 import com.itwillbs.LaClave.category.ItemRepository;
 import com.itwillbs.LaClave.category.ProductOption;
 import com.itwillbs.LaClave.commoncode.CommonCodeService;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 import com.itwillbs.LaClave.image.Image;
 import com.itwillbs.LaClave.image.ImageRepository;
 import com.itwillbs.LaClave.image.ImageUploadService;
@@ -24,7 +25,6 @@ import com.itwillbs.LaClave.member.MemberRepository;
 import com.itwillbs.LaClave.orders.OrdersDetail;
 import com.itwillbs.LaClave.orders.OrdersDetailRepository;
 import com.itwillbs.LaClave.orders.OrdersRepository;
-import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

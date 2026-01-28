@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.LaClave.cart.CartRequestDto;
-import com.itwillbs.LaClave.security.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

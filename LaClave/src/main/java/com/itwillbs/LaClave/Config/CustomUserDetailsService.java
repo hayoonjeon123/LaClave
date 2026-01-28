@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.Config;
+package com.itwillbs.LaClave.config;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.member.MemberRepository;
-import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 

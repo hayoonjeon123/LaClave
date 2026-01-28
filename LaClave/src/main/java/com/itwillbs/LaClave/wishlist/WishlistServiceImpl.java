@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwillbs.LaClave.cart.ItemImage;
 import com.itwillbs.LaClave.category.Item;
 import com.itwillbs.LaClave.category.ItemRepository;
-import com.itwillbs.LaClave.security.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

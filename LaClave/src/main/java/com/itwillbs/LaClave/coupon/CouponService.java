@@ -2,7 +2,7 @@ package com.itwillbs.LaClave.coupon;
 
 import java.util.List;
 
-import com.itwillbs.LaClave.security.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 public interface CouponService {
 	

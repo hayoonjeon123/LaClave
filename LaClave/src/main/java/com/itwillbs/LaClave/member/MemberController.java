@@ -2,12 +2,9 @@ package com.itwillbs.LaClave.member;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
@@ -16,12 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.itwillbs.LaClave.Mail.MailService;
-import com.itwillbs.LaClave.security.CustomUserDetails;
-
+import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.mail.MailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -33,9 +27,13 @@ import lombok.extern.log4j.Log4j2;
 public class MemberController {
 
     private final MemberService memberService;
+    
     private final BCryptPasswordEncoder passwordEncoder;
+    
     private final ModelMapper modelMapper;
+    
     private final MemberRepository memberRepository;
+    
     private final MailService mailService;
 
     // 회원가입

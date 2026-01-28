@@ -2,7 +2,7 @@ package com.itwillbs.LaClave.wishlist;
 
 import java.util.List;
 
-import com.itwillbs.LaClave.security.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 public interface WishlistService {
     List<WishlistResponseDto> getWishlistBymember(Long memberIdx);

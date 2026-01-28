@@ -12,12 +12,11 @@ import com.itwillbs.LaClave.image.ImageRepository;
 import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.memberaddress.MemberAddressRepository;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
-import com.itwillbs.LaClave.PayMent.OrderCreateRequestDto;
-import com.itwillbs.LaClave.PayMent.PayMent;
-import com.itwillbs.LaClave.PayMent.PaymentApprovalRequestDto;
-import com.itwillbs.LaClave.PayMent.PaymentRepository;
-import com.itwillbs.LaClave.security.CustomUserDetails;
-
+import com.itwillbs.LaClave.payment.OrderCreateRequestDto;
+import com.itwillbs.LaClave.payment.PayMent;
+import com.itwillbs.LaClave.payment.PaymentApprovalRequestDto;
+import com.itwillbs.LaClave.payment.PaymentRepository;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 
 @Service

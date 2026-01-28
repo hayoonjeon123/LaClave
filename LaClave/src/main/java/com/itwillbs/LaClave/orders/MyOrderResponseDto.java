@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.itwillbs.LaClave.PayMent.PayMent;
+import com.itwillbs.LaClave.payment.PayMent;
+
 
 
 @Data
@@ -20,7 +21,6 @@ public class MyOrderResponseDto {
     private final Long ordersStatus; // 공통코드 PK
     private final Integer totalPrice;
     private final String deliveryMsg;
-
     private final DeliveryInfoDto delivery; // 배송지 정보
     private final List<OrderDetailDto> details; // 주문 상세 목록
     private final Optional<PayMentInfoDto> payInfo; // 결제 정보

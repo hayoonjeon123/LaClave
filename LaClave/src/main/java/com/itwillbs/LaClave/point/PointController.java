@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itwillbs.LaClave.config.CustomUserDetails;
 import com.itwillbs.LaClave.coupon.CouponService;
-import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
