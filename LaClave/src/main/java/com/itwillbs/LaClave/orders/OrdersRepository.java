@@ -32,13 +32,16 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>{
     	""")
     	List<OrdersDetail> findUnreviewedDetailsByMember(@Param("memberIdx") Long memberIdx);
     
-	 @Query("""
-			    SELECT od
-			    FROM OrdersDetail od
-			    JOIN od.order o
-			    WHERE o.member.memberIdx = :memberIdx
-			""")
-			List<OrdersDetail> findOrderDetailsByMember(@Param("memberIdx") Long memberIdx);
+    @Query(value = """
+    	    SELECT *
+    	    FROM orders
+    	    WHERE member_idx = :memberIdx
+    	      AND orders_status = :ordersStatus
+    	""", nativeQuery = true)
+    	List<Orders> findAllByMemberIdxAndOrdersStatusNative(
+    	    @Param("memberIdx") Long memberIdx,
+    	    @Param("ordersStatus") Long ordersStatus
+    	);
 }
 
 

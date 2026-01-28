@@ -3,8 +3,8 @@ package com.itwillbs.LaClave.orders;
 import java.util.List;
 
 import com.itwillbs.LaClave.member.Member;
-import com.itwillbs.LaClave.payment.OrderCreateRequestDto;
-import com.itwillbs.LaClave.payment.PaymentApprovalRequestDto;
+import com.itwillbs.LaClave.PayMent.OrderCreateRequestDto;
+import com.itwillbs.LaClave.PayMent.PaymentApprovalRequestDto;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
 public interface OrdersService {

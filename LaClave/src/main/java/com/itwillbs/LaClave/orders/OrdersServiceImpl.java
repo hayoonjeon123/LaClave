@@ -7,13 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwillbs.LaClave.commoncode.CommonCodeService;
+import com.itwillbs.LaClave.image.Image;
+import com.itwillbs.LaClave.image.ImageRepository;
 import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.memberaddress.MemberAddressRepository;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
-import com.itwillbs.LaClave.payment.OrderCreateRequestDto;
-import com.itwillbs.LaClave.payment.PayMent;
-import com.itwillbs.LaClave.payment.PaymentApprovalRequestDto;
-import com.itwillbs.LaClave.payment.PaymentRepository;
+import com.itwillbs.LaClave.PayMent.OrderCreateRequestDto;
+import com.itwillbs.LaClave.PayMent.PayMent;
+import com.itwillbs.LaClave.PayMent.PaymentApprovalRequestDto;
+import com.itwillbs.LaClave.PayMent.PaymentRepository;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,8 @@ public class OrdersServiceImpl implements OrdersService {
     private final PaymentRepository paymentRepository;
     
     private final CommonCodeService commonCodeService;
+    
+    private final ImageRepository imageRepository;
 
     // 주문 내역 조회
     @Override
@@ -36,27 +40,45 @@ public class OrdersServiceImpl implements OrdersService {
     public List<MyOrderResponseDto> getMyOrderList(CustomUserDetails user) {
 
         Long memberIdx = user.getMemberIdx();
+        Long COMPLETED_STATUS = 74L;
 
-        List<Orders> orders = ordersRepository.findAllByMemberIdxNative(memberIdx);
+        List<Orders> orders = ordersRepository.findAllByMemberIdxAndOrdersStatusNative(memberIdx,COMPLETED_STATUS);
 
         List<MyOrderResponseDto> result = orders.stream()
                 .map(MyOrderResponseDto::new)
                 .collect(Collectors.toList());
 
+
         // ⭐ 공통코드 변환
         result.forEach(order -> {
 
-            // 상품 옵션 변환
             order.getDetails().forEach(detail -> {
+
+                // 옵션명
                 detail.setColorName(commonCodeService.getLabel(detail.getColorCode()));
                 detail.setSizeName(commonCodeService.getLabel(detail.getSizeCode()));
+
+                // ⭐ 상품 대표 이미지
+                String productImageUrl = imageRepository
+                	    .findFirstByTargetCodeAndTargetTypeAndTargetIdx(
+                	        "img_01",                                // targetCode
+                	        "PRODUCT",                              // targetType
+                	        detail.getProductIdx().intValue()       // 🔥 타입 맞추기
+                	    )
+                	    .map(Image::getImageUrl)
+                	    .orElse("default_image_url");
+
+                detail.setProductImageUrl(productImageUrl);
             });
 
-            // 결제 방식(payWay) 등 결제 관련 코드 변환
+            // 결제 코드 변환
             order.getPayInfo().ifPresent(pay -> {
-                pay.setPayWayName(pay.getPayWay() != null ? commonCodeService.getLabel(pay.getPayWay().longValue()) : "-");
-                pay.setPayStatusName(pay.getPayStatus() != null ? commonCodeService.getLabel(pay.getPayStatus().longValue()) : "-");
-                pay.setPayTypeName(pay.getPayType() != null ? commonCodeService.getLabel(pay.getPayType().longValue()) : "-");
+                pay.setPayWayName(pay.getPayWay() != null
+                    ? commonCodeService.getLabel(pay.getPayWay().longValue()) : "-");
+//                pay.setPayStatusName(pay.getPayStatus() != null
+//                    ? commonCodeService.getLabel(pay.getPayStatus().longValue()) : "-");       
+                pay.setPayTypeName(pay.getPayType() != null
+                    ? commonCodeService.getLabel(pay.getPayType().longValue()) : "-");
             });
         });
 

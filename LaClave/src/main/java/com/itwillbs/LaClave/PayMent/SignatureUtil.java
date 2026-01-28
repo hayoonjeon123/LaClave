@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.payment;
+package com.itwillbs.LaClave.PayMent;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

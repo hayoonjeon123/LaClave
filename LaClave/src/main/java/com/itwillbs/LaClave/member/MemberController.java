@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itwillbs.LaClave.mail.MailService;
+import com.itwillbs.LaClave.Mail.MailService;
 import com.itwillbs.LaClave.security.CustomUserDetails;
 
 import jakarta.validation.Valid;

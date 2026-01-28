@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.itwillbs.LaClave.payment.PayMent;
+import com.itwillbs.LaClave.PayMent.PayMent;
 
 
 @Data
 public class MyOrderResponseDto {
 
     private final Long ordersIdx;
+    private String orderNo;
     private final LocalDateTime ordersDate;
     private final Long ordersStatus; // 공통코드 PK
     private final Integer totalPrice;
@@ -27,6 +28,7 @@ public class MyOrderResponseDto {
 
     public MyOrderResponseDto(Orders orderEntity) {
         this.ordersIdx = orderEntity.getOrdersIdx();
+        this.orderNo = orderEntity.getOrderNo();
         this.ordersDate = orderEntity.getOrdersDate();
         this.ordersStatus = orderEntity.getOrdersStatus();
         this.totalPrice = orderEntity.getTotalPrice();
@@ -61,6 +63,8 @@ class OrderDetailDto {
     private final Long sizeCode;
     private String colorName;
     private String sizeName;
+    private String productImageUrl; // ⭐ 추가
+
 
     public OrderDetailDto(OrdersDetail detail) {
         this.productIdx = detail.getProductIdx();
@@ -70,6 +74,7 @@ class OrderDetailDto {
         this.totalPrice = detail.getTotalPrice();
         this.colorCode = detail.getColorCode();
         this.sizeCode = detail.getSizeCode();
+       
     }
 
     // Service에서 주입용
@@ -80,6 +85,11 @@ class OrderDetailDto {
     public void setSizeName(String sizeName) {
         this.sizeName = sizeName;
     }
+
+	public void setProductImageUrl(String productImageUrl) {
+		this.productImageUrl = productImageUrl;
+		
+	}
 }
 
 @Getter

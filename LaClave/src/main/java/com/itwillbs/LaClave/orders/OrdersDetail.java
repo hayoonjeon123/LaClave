@@ -68,4 +68,6 @@ public class OrdersDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_IDX", insertable = false, updatable = false)
     private Item product;
+    
+ 
 }
