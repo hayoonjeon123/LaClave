@@ -1,4 +1,4 @@
-//package com.itwillbs.LaClave.AI;
+//package com.itwillbs.LaClave.ai;
 //
 //import java.util.*;
 //import java.util.stream.Collectors;
