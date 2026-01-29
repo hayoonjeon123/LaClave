@@ -14,7 +14,7 @@ import com.itwillbs.LaClave.config.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/my") // 프록시가 /api를 제거하므로
+@RequestMapping("/api/my") // 프록시가 /api를 제거하므로
 @RequiredArgsConstructor
 public class OrdersController {
 
