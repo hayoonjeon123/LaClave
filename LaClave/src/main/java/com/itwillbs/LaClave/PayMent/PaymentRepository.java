@@ -1,5 +1,4 @@
-package com.itwillbs.LaClave.PayMent;
-
+package com.itwillbs.LaClave.payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

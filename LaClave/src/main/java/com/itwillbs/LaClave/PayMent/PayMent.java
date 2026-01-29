@@ -1,5 +1,4 @@
-package com.itwillbs.LaClave.PayMent;
-
+package com.itwillbs.LaClave.payment;
 import java.time.LocalDateTime;
 import java.util.List;
 

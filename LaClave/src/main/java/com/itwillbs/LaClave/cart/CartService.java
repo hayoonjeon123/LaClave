@@ -169,6 +169,23 @@ public class CartService {
             throw new RuntimeException("삭제 권한이 없습니다.");
         }
 
-        cartItemRepository.delete(cartItem);
+    cartItemRepository.delete(cartItem);
+    }
+
+    // 장바구니 수량 수정
+    @Transactional
+    public void updateCartItemQuantity(Long cartItemIdx, int quantity, String memberId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemIdx)
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+
+        // 회원 소유한 장바구니 품목인지 확인
+        if (!cartItem.getCart().getMemberIdx().equals(member.getMemberIdx())) {
+            throw new RuntimeException("수정 권한이 없습니다.");
+        }
+
+        cartItem.setQuantity(quantity);
     }
 }

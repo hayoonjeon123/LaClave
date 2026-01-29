@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itwillbs.LaClave.Config.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 public interface ReviewService {
 

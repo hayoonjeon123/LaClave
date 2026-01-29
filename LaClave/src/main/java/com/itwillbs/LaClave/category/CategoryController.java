@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.log4j.Log4j2;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 @Log4j2
 public class CategoryController {
 	private final ItemService itemService;
@@ -27,7 +27,7 @@ public class CategoryController {
 	}
 
 	// 상품 상세 조회
-	@GetMapping({ "/product/{productIdx}", "/api/product/{productIdx}" })
+	@GetMapping("/product/{productIdx}")
 	public CategoryResponseDto getProductDetail(@PathVariable("productIdx") Long productIdx) {
 		log.info("상품 상세 조회 요청 - ID: {}", productIdx);
 		return itemService.getItem(productIdx);

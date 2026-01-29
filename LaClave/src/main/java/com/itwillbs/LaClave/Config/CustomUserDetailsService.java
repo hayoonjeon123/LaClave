@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.Config;
+package com.itwillbs.LaClave.config;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

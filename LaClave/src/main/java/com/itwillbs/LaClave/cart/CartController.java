@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping({ "/cart", "/api/cart" })
+@RequestMapping("/api/cart")
 @RequiredArgsConstructor
 public class CartController {
 
@@ -59,5 +59,18 @@ public class CartController {
 		cartService.deleteCartItem(cartItemIdx, userDetails.getUsername());
 
 		return ResponseEntity.ok("삭제되었습니다.");
+	}
+
+	// 장바구니 수량 수정
+	@PostMapping("/update")
+	public ResponseEntity<String> updateCartItem(@RequestBody java.util.Map<String, Object> payload,
+			@AuthenticationPrincipal UserDetails userDetails) {
+
+		Long cartItemIdx = Long.valueOf(payload.get("cartItemIdx").toString());
+		Integer quantity = Integer.valueOf(payload.get("quantity").toString());
+
+		cartService.updateCartItemQuantity(cartItemIdx, quantity, userDetails.getUsername());
+
+		return ResponseEntity.ok("수정되었습니다.");
 	}
 }

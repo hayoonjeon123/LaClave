@@ -1,5 +1,4 @@
-package com.itwillbs.LaClave.PayMent;
-
+package com.itwillbs.LaClave.payment;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itwillbs.LaClave.Config.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.member.MemberRepository;
 import com.itwillbs.LaClave.orders.Orders;

@@ -2,7 +2,7 @@ package com.itwillbs.LaClave.memberaddress;
 
 import java.util.List;
 
-import com.itwillbs.LaClave.Config.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 public interface MemberAddressService {
 

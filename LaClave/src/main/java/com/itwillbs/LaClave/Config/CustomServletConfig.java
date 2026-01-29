@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.Config;
+package com.itwillbs.LaClave.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

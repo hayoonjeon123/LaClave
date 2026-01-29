@@ -15,7 +15,7 @@ import com.itwillbs.LaClave.category.Item;
 import com.itwillbs.LaClave.category.ItemRepository;
 import com.itwillbs.LaClave.category.ProductOption;
 import com.itwillbs.LaClave.commoncode.CommonCodeService;
-import com.itwillbs.LaClave.Config.CustomUserDetails;
+import com.itwillbs.LaClave.config.CustomUserDetails;
 import com.itwillbs.LaClave.image.Image;
 import com.itwillbs.LaClave.image.ImageRepository;
 import com.itwillbs.LaClave.image.ImageUploadService;

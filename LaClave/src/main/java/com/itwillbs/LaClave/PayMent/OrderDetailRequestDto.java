@@ -1,5 +1,4 @@
-package com.itwillbs.LaClave.PayMent;
-
+package com.itwillbs.LaClave.payment;
 import com.itwillbs.LaClave.orders.Orders;
 import com.itwillbs.LaClave.orders.OrdersDetail;
 
