@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Log4j2
 public class MemberController {
@@ -111,7 +111,7 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/info")
+    @GetMapping({"/info", "/member/info"})
     public ResponseEntity<MemberInfoResponse> getMemberInfo(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.status(401).build();
@@ -120,7 +120,7 @@ public class MemberController {
     }
 
     // 회원 정보수정
-    @PutMapping("/update-info")
+    @PutMapping("/member/update-info")
     public String updateMemberInfo(
             @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody MemberUpdateDto dto) {
@@ -130,7 +130,7 @@ public class MemberController {
     }
 
     // 비밀번호 수정
-    @PutMapping("/update-password")
+    @PutMapping("/member/update-password")
     public ResponseEntity<String> updatePassword(
             @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody PasswordUpdateDto dto) {
@@ -140,7 +140,7 @@ public class MemberController {
     }
 
     // 회원 탈퇴
-    @PutMapping("/withdraw")
+    @PutMapping("/member/withdraw")
     public ResponseEntity<String> withdrawMember(
             @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody WithdrawRequestDto dto) {

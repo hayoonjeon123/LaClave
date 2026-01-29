@@ -1,4 +1,4 @@
-//package com.itwillbs.LaClave.ai;
+//package com.itwillbs.LaClave.AI;
 //
 //import java.util.*;
 //import java.util.stream.Collectors;
@@ -10,7 +10,7 @@
 //
 //import com.itwillbs.LaClave.category.Item;
 //import com.itwillbs.LaClave.category.ItemRepository;
-//import com.itwillbs.LaClave.config.CustomUserDetails;
+//import com.itwillbs.LaClave.Config.CustomUserDetails;
 //import com.itwillbs.LaClave.member.AiProfile;
 //import com.itwillbs.LaClave.member.AiProfileRepository;
 //
@@ -18,7 +18,7 @@
 //import lombok.extern.slf4j.Slf4j;
 //
 //@RestController
-//@RequestMapping("/ai")
+//@RequestMapping("/api/orders")
 //@RequiredArgsConstructor
 //@Slf4j
 //public class AiController {
@@ -127,6 +127,3 @@
 //        private List<Map<String, String>> images;
 //    }
 //}
-
-
-

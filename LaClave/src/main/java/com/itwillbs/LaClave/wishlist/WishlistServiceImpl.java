@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwillbs.LaClave.cart.ItemImage;
+import com.itwillbs.LaClave.image.Image;
 import com.itwillbs.LaClave.category.Item;
 import com.itwillbs.LaClave.category.ItemRepository;
 import com.itwillbs.LaClave.config.CustomUserDetails;
@@ -39,7 +39,7 @@ public class WishlistServiceImpl implements WishlistService {
                     String imageUrl = "/images/no-image.png";
                     if (item != null && item.getImages() != null && !item.getImages().isEmpty()) {
                         // 첫 번째 유효한 이미지 URL 찾기
-                        for (ItemImage img : item.getImages()) {
+                        for (Image img : item.getImages()) {
                             if (img.getUrl() != null && !img.getUrl().isEmpty()) {
                                 imageUrl = img.getUrl();
                                 break;
@@ -79,7 +79,7 @@ public class WishlistServiceImpl implements WishlistService {
         wishlistRepository.findByMemberIdxAndProductIdx(memberIdx, productIdx)
                 .ifPresent(wishlist -> {
                     wishlistRepository.delete(wishlist);
-                    wishlistRepository.flush(); 
+                    wishlistRepository.flush();
                 });
     }
 

@@ -17,7 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 
-import com.itwillbs.LaClave.cart.ItemImage;
+import com.itwillbs.LaClave.image.Image;
 import com.itwillbs.LaClave.category.Item;
 import com.itwillbs.LaClave.member.Member;
 
@@ -29,7 +29,8 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "REVIEW")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -73,7 +74,7 @@ public class Review {
     /* ===== 생성 메서드 ===== */
     public static Review create(
             Member member,
-            Item product,   
+            Item product,
             Integer ordersIdx,
             Double score,
             String content) {

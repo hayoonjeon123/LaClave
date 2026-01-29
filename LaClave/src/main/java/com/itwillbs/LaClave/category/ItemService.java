@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwillbs.LaClave.cart.ItemImage;
+import com.itwillbs.LaClave.image.Image;
 import com.itwillbs.LaClave.review.Review;
 import com.itwillbs.LaClave.review.ReviewRepository;
 
