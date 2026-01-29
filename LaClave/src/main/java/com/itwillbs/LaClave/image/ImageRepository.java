@@ -16,6 +16,7 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     	    String targetCode,
     	    String targetType,
     	    Integer targetIdx
+    	    
     	);
 
 }

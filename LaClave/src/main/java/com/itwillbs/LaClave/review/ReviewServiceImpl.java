@@ -15,7 +15,7 @@ import com.itwillbs.LaClave.category.Item;
 import com.itwillbs.LaClave.category.ItemRepository;
 import com.itwillbs.LaClave.category.ProductOption;
 import com.itwillbs.LaClave.commoncode.CommonCodeService;
-import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.Config.CustomUserDetails;
 import com.itwillbs.LaClave.image.Image;
 import com.itwillbs.LaClave.image.ImageRepository;
 import com.itwillbs.LaClave.image.ImageUploadService;
@@ -67,6 +67,8 @@ public class ReviewServiceImpl implements ReviewService {
 	    return reviews.stream().map(review -> {
 
 	        Item item = review.getProduct();
+	        
+	        
 
 	        // 1️⃣ 주문 옵션 정보
 	        OrdersDetail detail = ordersDetailRepository
@@ -112,25 +114,41 @@ public class ReviewServiceImpl implements ReviewService {
 	    }).collect(Collectors.toList());
 	}
 	
-	
-	// 작성 가능 리뷰
+	//작성가능 리뷰조회
 	@Override
 	public List<ReviewWritaResponseDto> getWritableReviews(Long memberIdx) {
-	    List<OrdersDetail> orderDetails = ordersRepository.findUnreviewedDetailsByMember(memberIdx);
+	    List<OrdersDetail> orderDetails =
+	        ordersRepository.findUnreviewedDetailsByMember(memberIdx);
 
 	    return orderDetails.stream()
-	        .map(detail -> new ReviewWritaResponseDto(
-	                0L, // reviewIdx 없음
-	                detail.getProduct().getProductIdx(),
-	                detail.getProduct().getProductName(),
-	                "",
-	                "색상: " + detail.getColorCode() + ", 사이즈: " + detail.getSizeCode(),
-	                "",
-	                0,
-	                detail.getOrder().getOrdersIdx()
-	        ))
-	        .collect(Collectors.toList());
+	    	    .map(detail -> {
+
+	    	        Long productIdx = detail.getProduct().getProductIdx();
+
+	    	        String productImageUrl = imageRepository
+	    	            .findFirstByTargetCodeAndTargetTypeAndTargetIdx(
+	    	                "img_01",
+	    	                "PRODUCT",
+	    	                productIdx.intValue()
+	    	            )
+	    	            .map(Image::getImageUrl)
+	    	            .orElse("default_image_url");
+
+	    	        return ReviewWritaResponseDto.builder()
+	    	            .reviewIdx(0L)
+	    	            .productIdx(productIdx)
+	    	            .productName(detail.getProduct().getProductName())
+	    	            .productImageUrl(productImageUrl)   // ⭐⭐⭐ 여기!!!
+	    	            .optionInfo("색상: " + detail.getColorCode()
+	    	                       + ", 사이즈: " + detail.getSizeCode())
+	    	            .content("")
+	    	            .score(0)
+	    	            .ordersIdx(detail.getOrder().getOrdersIdx())
+	    	            .build();
+	    	    })
+	    	    .collect(Collectors.toList());
 	}
+
 	
 	
 	

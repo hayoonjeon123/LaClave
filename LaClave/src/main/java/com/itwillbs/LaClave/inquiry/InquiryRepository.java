@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.Config.CustomUserDetails;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long>{
 	

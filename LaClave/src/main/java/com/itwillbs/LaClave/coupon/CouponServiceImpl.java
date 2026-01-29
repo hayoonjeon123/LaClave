@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.Config.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 @Service

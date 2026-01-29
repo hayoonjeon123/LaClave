@@ -2,7 +2,7 @@ package com.itwillbs.LaClave.inquiry;
 
 import java.util.List;
 
-import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.Config.CustomUserDetails;
 
 public interface InquiryService {
 

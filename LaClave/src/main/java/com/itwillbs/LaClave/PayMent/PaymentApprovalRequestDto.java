@@ -1,4 +1,4 @@
-package com.itwillbs.LaClave.payment;
+package com.itwillbs.LaClave.PayMent;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.itwillbs.LaClave.member.Member;
-import com.itwillbs.LaClave.payment.PayMent;
+import com.itwillbs.LaClave.PayMent.PayMent;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

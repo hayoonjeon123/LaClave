@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.LaClave.cart.CartRequestDto;
-import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.Config.CustomUserDetails;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,29 +54,7 @@ public class ReviewController {
 
 		return ResponseEntity.ok(myReviews);
 	}
-//	@GetMapping
-//	public List<MyReviewResponseDTO> getWritableReviews(Long memberIdx) {
-//
-//	    List<OrdersDetail> orderDetails =
-//	            ordersRepository.findUnreviewedDetailsByMember(memberIdx);
-//
-//	    return orderDetails.stream()
-//	        .map(detail -> MyReviewResponseDTO.builder()
-//	                .reviewIdx(0L)
-//	                .productIdx(detail.getProduct().getProductIdx())
-//	                .productName(detail.getProduct().getProductName())
-//	                .imageUrl("")
-//	                .optionInfo(
-//	                    "색상: " + detail.getColorCode() +
-//	                    ", 사이즈: " + detail.getSizeCode()
-//	                )
-//	                .content("")
-//	                .score(0)
-//	                .ordersIdx(detail.getOrder().getOrdersIdx())
-//	                .build()
-//	        )
-//	        .collect(Collectors.toList());
-//	}
+
 	
     // 작성 가능 리뷰 목록 조회
     @GetMapping("/writable")

@@ -2,7 +2,7 @@ package com.itwillbs.LaClave.wishlist;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.Config.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

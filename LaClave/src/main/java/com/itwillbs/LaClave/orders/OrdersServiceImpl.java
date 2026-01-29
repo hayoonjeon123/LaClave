@@ -12,11 +12,11 @@ import com.itwillbs.LaClave.image.ImageRepository;
 import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.memberaddress.MemberAddressRepository;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
-import com.itwillbs.LaClave.payment.OrderCreateRequestDto;
-import com.itwillbs.LaClave.payment.PayMent;
-import com.itwillbs.LaClave.payment.PaymentApprovalRequestDto;
-import com.itwillbs.LaClave.payment.PaymentRepository;
-import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.PayMent.OrderCreateRequestDto;
+import com.itwillbs.LaClave.PayMent.PayMent;
+import com.itwillbs.LaClave.PayMent.PaymentApprovalRequestDto;
+import com.itwillbs.LaClave.PayMent.PaymentRepository;
+import com.itwillbs.LaClave.Config.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -62,7 +62,7 @@ public class OrdersServiceImpl implements OrdersService {
                 	    .findFirstByTargetCodeAndTargetTypeAndTargetIdx(
                 	        "img_01",                                // targetCode
                 	        "PRODUCT",                              // targetType
-                	        detail.getProductIdx().intValue()       // 🔥 타입 맞추기
+                	        detail.getProductIdx().intValue()      
                 	    )
                 	    .map(Image::getImageUrl)
                 	    .orElse("default_image_url");

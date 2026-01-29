@@ -19,10 +19,7 @@ public class RecentProductServiceImpl  implements RecentProductService{
 	private final RecentProductRepository recentProductRepository;
 	private final ImageRepository imageRepository;
 	
-	@Override
-	public List<RecentProductDto> getRecentProductsBymember(Long memberIdx) {
-	    return recentProductRepository.findRecentProductsWithPrice(memberIdx);
-	}
+
 
 	
     // ✅ 최근 본 상품 등록 / 갱신
@@ -40,9 +37,10 @@ public class RecentProductServiceImpl  implements RecentProductService{
         recent.setViewedAt(LocalDateTime.now());
         recentProductRepository.save(recent); // ✅ Entity만 save
     }
-	// 최근본상품 조회?
+
+    @Override
     @Transactional(readOnly = true)
-    public List<RecentProductDto> getRecentProducts(Long memberIdx) {
+    public List<RecentProductDto> getRecentProductsBymember(Long memberIdx) {
 
         List<RecentProductDto> list =
             recentProductRepository.findRecentProductsWithPrice(memberIdx);
@@ -50,12 +48,12 @@ public class RecentProductServiceImpl  implements RecentProductService{
         list.forEach(dto -> {
             String imageUrl = imageRepository
                 .findFirstByTargetCodeAndTargetTypeAndTargetIdx(
-                    "img_01",                    // targetCode
-                    "PRODUCT",                  // targetType
+                    "img_01",
+                    "PRODUCT",
                     dto.getProductIdx().intValue()
                 )
                 .map(Image::getImageUrl)
-                .orElse("default_image_url");
+                .orElse(null);
 
             dto.setProductImageUrl(imageUrl);
         });

@@ -18,7 +18,7 @@ public class ReviewWritaResponseDto {
     private Long reviewIdx;      // 작성 완료 리뷰면 실제 reviewIdx, 작성 가능 리뷰면 0
     private Long productIdx;
     private String productName;
-    private String imageUrl;
+    private String productImageUrl; 
     private String optionInfo;   // 색상/사이즈 정보
     private String content;      // 작성 완료 리뷰면 내용, 작성 가능 리뷰면 ""
     private int score;           // 작성 완료 리뷰면 별점, 작성 가능 리뷰면 0
