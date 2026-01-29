@@ -1,4 +1,4 @@
-//package com.itwillbs.LaClave.AI;
+//package com.itwillbs.LaClave.ai;
 //
 //import java.util.*;
 //import java.util.stream.Collectors;
@@ -10,7 +10,7 @@
 //
 //import com.itwillbs.LaClave.category.Item;
 //import com.itwillbs.LaClave.category.ItemRepository;
-//import com.itwillbs.LaClave.Config.CustomUserDetails;
+//import com.itwillbs.LaClave.config.CustomUserDetails;
 //import com.itwillbs.LaClave.member.AiProfile;
 //import com.itwillbs.LaClave.member.AiProfileRepository;
 //
@@ -127,3 +127,6 @@
 //        private List<Map<String, String>> images;
 //    }
 //}
+
+
+
