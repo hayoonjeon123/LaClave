@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import com.itwillbs.LaClave.cart.ItemImage;
+import com.itwillbs.LaClave.image.Image;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -67,7 +67,7 @@ public class CategoryResponseDto {
             String foundMainUrl = null;
             log.info("--- 상품 [{}] 이미지 로딩 시작 ---", item.getProductName());
 
-            for (ItemImage img : item.getImages()) {
+            for (Image img : item.getImages()) {
                 String url = img.getUrl();
                 String targetType = img.getTargetType();
                 String targetCode = img.getTargetCode();

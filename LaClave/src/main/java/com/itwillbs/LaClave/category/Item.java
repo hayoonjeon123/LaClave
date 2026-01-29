@@ -9,7 +9,7 @@ import org.hibernate.annotations.BatchSize;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.itwillbs.LaClave.cart.ItemImage;
+import com.itwillbs.LaClave.image.Image;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -78,6 +78,6 @@ public class Item {
 
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<ItemImage> images = new LinkedHashSet<>();
+    private Set<Image> images = new LinkedHashSet<>();
 
 }
