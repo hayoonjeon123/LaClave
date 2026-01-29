@@ -18,7 +18,7 @@
 //import lombok.extern.slf4j.Slf4j;
 //
 //@RestController
-//@RequestMapping("/ai")
+//@RequestMapping("/api/orders")
 //@RequiredArgsConstructor
 //@Slf4j
 //public class AiController {
