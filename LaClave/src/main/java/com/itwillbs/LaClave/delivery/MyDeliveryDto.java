@@ -17,13 +17,16 @@ public class MyDeliveryDto {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    
 
     private String trackingNo;
     private String courier;
+    private String productImageUrl;
 
     public static MyDeliveryDto fromEntity(
             MyDelivery delivery,
-            String deliveryStatusLabel
+            String deliveryStatusLabel,
+            String productImageUrl 
     ) {
         return MyDeliveryDto.builder()
                 .deliveryIdx(delivery.getDeliveryIdx())
@@ -34,6 +37,7 @@ public class MyDeliveryDto {
                 .endDate(delivery.getEndDate())
                 .trackingNo(delivery.getTrackingNO())
                 .courier(delivery.getCourier())
+                .productImageUrl(productImageUrl)
                 .build();
     }
 }

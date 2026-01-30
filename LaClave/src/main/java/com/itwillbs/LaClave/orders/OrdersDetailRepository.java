@@ -16,5 +16,6 @@ public interface OrdersDetailRepository extends JpaRepository<OrdersDetail, Long
 	        @Param("productIdx") Long productIdx
 	    );
 	 
+	   Optional<OrdersDetail> findFirstByOrder_OrdersIdxOrderByOrdersDetailIdxAsc(Long ordersIdx);
 
 }

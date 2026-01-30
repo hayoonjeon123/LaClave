@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.itwillbs.LaClave.delivery.DeliveryRepository;
+import com.itwillbs.LaClave.delivery.MyDelivery;
 import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.memberaddress.MemberAddressRepository;
 import com.itwillbs.LaClave.memberaddress.Memberaddress;
@@ -24,6 +26,7 @@ public class PaymentService {
 
     private final OrdersRepository ordersRepository;
     private final MemberAddressRepository memberAddressRepository;
+    private final DeliveryRepository deliveryRepository;
 
     // 주문 생성
     public String createOrder(Member member, OrderCreateRequestDto dto) {
@@ -37,6 +40,7 @@ public class PaymentService {
                 .collect(Collectors.toList());
         
         order.setOrderDetails(details);
+        
 
         return ordersRepository.save(order).getOrderNo();
     }
@@ -45,4 +49,6 @@ public class PaymentService {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) 
                + "-" + UUID.randomUUID().toString().substring(0, 8);
     }
+    
+
 }

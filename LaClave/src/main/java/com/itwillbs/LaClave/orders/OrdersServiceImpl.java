@@ -1,5 +1,6 @@
 package com.itwillbs.LaClave.orders;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,9 @@ import com.itwillbs.LaClave.payment.PayMent;
 import com.itwillbs.LaClave.payment.PaymentApprovalRequestDto;
 import com.itwillbs.LaClave.payment.PaymentRepository;
 import com.itwillbs.LaClave.config.CustomUserDetails;
+import com.itwillbs.LaClave.delivery.DeliveryRepository;
+import com.itwillbs.LaClave.delivery.MyDelivery;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,6 +36,13 @@ public class OrdersServiceImpl implements OrdersService {
     private final CommonCodeService commonCodeService;
     
     private final ImageRepository imageRepository;
+    
+    private final DeliveryRepository deliveryRepository;
+    
+    
+    private String generateTrackingNo() {
+        return "TN" + System.currentTimeMillis();
+    }
 
     // 주문 내역 조회
     @Override
@@ -120,8 +131,32 @@ public class OrdersServiceImpl implements OrdersService {
             // 저장 후 주문번호 반환
             Orders savedOrder = ordersRepository.save(order);
             System.out.println("주문 저장 완료 - orderIdx: " + savedOrder.getOrdersIdx());
+            
+            
+            ordersRepository.flush(); // ordersIdx 확보
+
+            System.out.println("주문 저장 완료 - orderIdx: " + savedOrder.getOrdersIdx());
+            
+            
+
+            // 🔥 배송 생성 (여기가 핵심)
+            MyDelivery delivery = new MyDelivery();
+            delivery.setOrderIdx(savedOrder.getOrdersIdx());
+            delivery.setMemberIdx(member.getMemberIdx().intValue());
+            delivery.setDeliveryStatusCommonIdx(79L);
+            delivery.setStartDate(LocalDateTime.now());
+            delivery.setCourier("CJ대한통운");
+            delivery.setUpdatedAt(LocalDateTime.now());
+            delivery.setTrackingNO(generateTrackingNo());
+
+            System.out.println("🔥 배송 저장 직전");
+            deliveryRepository.save(delivery);
+            deliveryRepository.flush();
+            System.out.println("🔥 배송 저장 완료");
 
             return savedOrder.getOrderNo();
+
+            
         } catch (Exception e) {
             System.err.println("=== 주문 생성 실패 ===");
             System.err.println("에러 메시지: " + e.getMessage());
@@ -182,5 +217,8 @@ public class OrdersServiceImpl implements OrdersService {
         return java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"))
                 + "-" + java.util.UUID.randomUUID().toString().substring(0, 8);
     }
+    
+    
+    
 
 }

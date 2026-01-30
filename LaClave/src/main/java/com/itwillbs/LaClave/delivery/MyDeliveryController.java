@@ -3,12 +3,13 @@ package com.itwillbs.LaClave.delivery;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.itwillbs.LaClave.config.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,17 +24,22 @@ public class MyDeliveryController {
 
 	
 	
-//	  @GetMapping("/member/{memberIdx}")
-//	    public List<MyDelivery> getMyDeliveryList(
-//	            @PathVariable("memberIdx") Long memberIdx ,@AuthenticationPrincipal CustomUserDetails user) {
-//
-//	        log.info("마이페이지 배송 목록 조회 memberIdx={}", memberIdx);
-//	        return myDeliveryService.getMyDeliveryListByMember(memberIdx);
-//	    }
+	// 회원별 배송 조회 (로그인 사용자 기준)
+	@GetMapping("/member")
+	public List<MyDelivery> getMyDeliveryList(@AuthenticationPrincipal CustomUserDetails user) {
+	    // CustomUserDetails에서 memberIdx 꺼내서 조회
+	    return myDeliveryService.getMyDeliveryListByMember(user.getMemberIdx());
+	}
+	  
+	  
     @GetMapping("/{orderIdx}/delivery")
     public ResponseEntity<List<MyDeliveryDto>> getDeliveryByOrder(
             @PathVariable("orderIdx") Long orderIdx
     ) {
+    	log.info("조회할 orderIdx={}", orderIdx);
+    	List<MyDeliveryDto> list = myDeliveryService.getDeliveryByOrder(orderIdx);
+    	log.info("조회 결과={}", list);
+    	
         return ResponseEntity.ok(
             myDeliveryService.getDeliveryByOrder(orderIdx)
         );

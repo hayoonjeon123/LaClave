@@ -133,14 +133,16 @@ public class ReviewServiceImpl implements ReviewService {
 	    	            )
 	    	            .map(Image::getImageUrl)
 	    	            .orElse("default_image_url");
-
+	    	        String optionInfo =
+	    	        	    "색상 : " + commonCodeService.getLabel(detail.getColorCode()) +
+	    	        	    " / 사이즈 : " + commonCodeService.getLabel(detail.getSizeCode());
+	    	        
 	    	        return ReviewWritaResponseDto.builder()
 	    	            .reviewIdx(0L)
 	    	            .productIdx(productIdx)
 	    	            .productName(detail.getProduct().getProductName())
 	    	            .productImageUrl(productImageUrl)   // ⭐⭐⭐ 여기!!!
-	    	            .optionInfo("색상: " + detail.getColorCode()
-	    	                       + ", 사이즈: " + detail.getSizeCode())
+	    	            .optionInfo(optionInfo) 
 	    	            .content("")
 	    	            .score(0)
 	    	            .ordersIdx(detail.getOrder().getOrdersIdx())

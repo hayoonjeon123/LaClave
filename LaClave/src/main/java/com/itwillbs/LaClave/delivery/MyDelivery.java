@@ -2,6 +2,8 @@ package com.itwillbs.LaClave.delivery;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.Formula;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Table(name = "MY_DELIVERY")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class MyDelivery {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,7 @@ public class MyDelivery {
 	
     @Column(name = "ORDER_IDX", nullable = false)//주문 FK
     private Long orderIdx;
+    
 	
     @Column(name = "MEMBER_IDX", nullable = false)
     private Integer memberIdx;
@@ -47,6 +50,10 @@ public class MyDelivery {
     @Column(name = "UPDATED_AT")
     
 	private LocalDateTime updatedAt; // 업데이트 날짜
+    
+    
+    @Formula("(select o.order_no from orders o where o.orders_idx = order_idx)")
+    private String orderNo;
 	
 
 }
