@@ -29,14 +29,12 @@ public class CategoryController {
 	// 상품 상세 조회
 	@GetMapping("/product/{productIdx}")
 	public CategoryResponseDto getProductDetail(@PathVariable("productIdx") Long productIdx) {
-		log.info("상품 상세 조회 요청 - ID: {}", productIdx);
 		return itemService.getItem(productIdx);
 	}
 
 	// 베스트 상품 조회
 	@GetMapping("/products/best")
 	public List<CategoryResponseDto> getBestProducts() {
-		log.info("베스트 상품 조회 요청");
 		return itemService.getBestProducts();
 	}
 

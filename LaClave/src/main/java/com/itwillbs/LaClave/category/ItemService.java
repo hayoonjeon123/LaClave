@@ -25,16 +25,6 @@ public class ItemService {
 
 	private final com.itwillbs.LaClave.wishlist.WishlistRepository wishlistRepository;
 
-	// 더미 넣고 확인
-	// 카테고리 번호 상품 조회
-	// public List<CategoryResponseDto> getItemsByProductCategoryIdx(Long
-	// productCategoryIdx) {
-	// List<Item> items =
-	// itemRepository.findByProductCategoryIdx(productCategoryIdx);
-	// return
-	// items.stream().map(CategoryResponseDto::new).collect(Collectors.toList());
-	// }
-
 	// pk에 따라 상품 목록 조회
 	public List<CategoryResponseDto> getItems(Long productCommonIdx) {
 		List<Item> items;
@@ -65,12 +55,8 @@ public class ItemService {
 	// 상품 상세 정보 조회
 	@Transactional
 	public CategoryResponseDto getItem(Long productIdx) {
-		log.info("ItemService - getItem 호출: {}", productIdx);
 		Item item = itemRepository.findById(productIdx)
 				.orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다. (ID: " + productIdx + ")"));
-
-		log.info("ItemService - 상품 조회 성공: {}, 옵션 개수: {}", item.getProductName(),
-				item.getOptions() != null ? item.getOptions().size() : 0);
 
 		CategoryResponseDto dto = new CategoryResponseDto(item);
 
@@ -84,17 +70,12 @@ public class ItemService {
 		// 찜 개수
 		Integer wishlistCount = wishlistRepository.countByProductIdx(productIdx.intValue());
 		dto.setWishlistCount(wishlistCount != null ? wishlistCount : 0);
-
-		log.info("ItemService - DTO 변환 완료: {}, 평균평점: {}, 리뷰수: {}, 찜수: {}",
-				dto.getProductName(), dto.getAverageRating(), dto.getReviewCount(), dto.getWishlistCount());
-
 		return dto;
 	}
 
 	// 베스트 상품 조회 (현재 모든 상품, 나중 추가)
 	@Transactional
 	public List<CategoryResponseDto> getBestProducts() {
-		log.info("베스트 상품 조회");
 
 		// 모든 상품 조회
 		List<Item> items = itemRepository.findAll();
@@ -115,7 +96,6 @@ public class ItemService {
 			responseList.add(new CategoryResponseDto(item));
 		}
 
-		log.info("베스트 상품 조회 완료: {} 개", responseList.size());
 		return responseList;
 	}
 

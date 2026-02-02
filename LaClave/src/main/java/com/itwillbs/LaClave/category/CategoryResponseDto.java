@@ -75,7 +75,7 @@ public class CategoryResponseDto {
                 log.info("이미지 확인 - URL: {}, 타입: {}, 코드: {}", url, targetType, targetCode);
 
                 // 1. 리뷰 사진(img_04 또는 REVIEW 코드)은 상품 관련 페이지에서 제외
-                if ("img_04".equals(targetType) || "REVIEW".equals(targetCode)) {
+                if ("REVIEW".equals(targetType) || "img_04".equals(targetCode)) {
                     log.info("리뷰 사진이므로 제외됨");
                     continue;
                 }
@@ -87,13 +87,10 @@ public class CategoryResponseDto {
                     }
 
                     // 2. img_01(대표 사진)이면 메인 이미지로 우선 지정
-                    if ("img_01".equals(targetType)) {
+                    if ("img_01".equals(targetCode)) {
                         foundMainUrl = url;
                         log.info("대표 사진(img_01) 발견: {}", url);
                     }
-
-                    // 3. 리뷰가 아닌 모든 이미지는 상세/상품 이미지 목록에 추가
-                    allUrls.add(url);
                 }
             }
 

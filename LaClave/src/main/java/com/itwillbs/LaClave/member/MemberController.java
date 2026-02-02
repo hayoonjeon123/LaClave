@@ -39,7 +39,6 @@ public class MemberController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody MemberDTO dto, BindingResult bindingResult) {
-        log.info("회원가입 시도 아이디: {}", dto.getMemberId());
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors().get(0).getDefaultMessage());
@@ -95,7 +94,6 @@ public class MemberController {
     // 1. 인증번호 발송 버튼 클릭 시 (아이디 찾기/가입 공용)
     @PostMapping("/email-send")
     public ResponseEntity<?> sendEmail(@RequestBody MemberDTO dto) {
-        log.info("인증번호 발송 요청: {}", dto.getEmail());
         mailService.sendAuthCode(dto.getEmail());
         return ResponseEntity.ok("인증번호가 발송되었습니다.");
     }

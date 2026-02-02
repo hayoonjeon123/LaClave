@@ -11,6 +11,7 @@ import com.itwillbs.LaClave.category.ProductOption;
 import com.itwillbs.LaClave.member.Member;
 import com.itwillbs.LaClave.member.MemberRepository;
 
+import com.itwillbs.LaClave.image.Image;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -129,11 +130,45 @@ public class CartService {
             Category color = categoryRepository.findById(item.getColorCode()).orElse(null);
             Category size = categoryRepository.findById(item.getSizeCode()).orElse(null);
 
-            String imageUrl = "";
+            String imageUrl = "/images/no-image.png";
             if (product != null && product.getImages() != null && !product.getImages().isEmpty()) {
-                imageUrl = product.getImages().iterator().next().getUrl();
-            }
+                String foundMainUrl = null;
+                for (Image img : product.getImages()) {
+                    String url = img.getUrl();
+                    if (url == null || url.isEmpty()) continue;
 
+                    String targetType = img.getTargetType();
+                    String targetCode = img.getTargetCode();
+
+                    // 1. 리뷰 이미지 필터링 (대소문자 무시 + URL 포함 여부 체크)
+                    if ("REVIEW".equalsIgnoreCase(targetType) || 
+                        "img_04".equalsIgnoreCase(targetCode) || 
+                        url.toLowerCase().contains("/review/") ||
+                        url.toLowerCase().contains("_review")) {
+                        continue;
+                    }
+
+                    // /images/ 접두사 처리
+                    if (!url.startsWith("http") && !url.startsWith("/images/")) {
+                        url = "/images/" + url;
+                    }
+
+                    // 2. img_01(대표 이미지) 우선 순위
+                    if ("img_01".equalsIgnoreCase(targetCode)) {
+                        foundMainUrl = url;
+                        break; // 대표 이미지 찾으면 즉시 종료
+                    }
+                    
+                    // 3. 대표 이미지가 없으면 첫 번째 유효한 상품 이미지를 보관
+                    if (foundMainUrl == null) {
+                        foundMainUrl = url;
+                    }
+                }
+                
+                if (foundMainUrl != null) {
+                    imageUrl = foundMainUrl;
+                }
+            }
             CartResponseDto dto = CartResponseDto.builder()
                     .cartItemIdx(item.getCartItemIdx())
                     .productIdx(item.getProductIdx())
