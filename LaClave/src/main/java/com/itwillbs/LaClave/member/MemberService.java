@@ -60,7 +60,7 @@ public class MemberService {
 				.address(dto.getAddress())
 				.addressDetail(dto.getAddressDetail())
 				.marketingAgree(dto.getMarketingAgree())
-				.memberStatus(1)
+				.memberStatus(3)
 				.point(0)
 				.mailAuthStatus(1) // 이메일 인증 통과 상태로 가입
 				.nickname(generateRandomNickname())
@@ -70,9 +70,7 @@ public class MemberService {
 				.build();
 
 		Member savedMember = memberRepository.save(member);
-		log.info("회원 기본 정보 저장 완료: idx={}", savedMember.getMemberIdx());
 
-		// 기본 배송지 정보 MEMBER_ADDRESS 테이블에 저장
 		try {
 			Memberaddress defaultAddr = Memberaddress.builder()
 					.memberIdx(savedMember.getMemberIdx())
@@ -84,9 +82,7 @@ public class MemberService {
 					.addressDetail(savedMember.getAddressDetail())
 					.build();
 			memberAddressRepository.save(defaultAddr);
-			log.info("기본 배송지 정보 저장 완료: idx={}", savedMember.getMemberIdx());
 		} catch (Exception e) {
-			log.error("배송지 저장 중 오류 발생: {}", e.getMessage());
 			throw new RuntimeException("배송지 정보를 저장하는 중 오류가 발생했습니다: " + e.getMessage());
 		}
 
@@ -103,8 +99,8 @@ public class MemberService {
 	}
 
 	// 아이디 비번찾기
-	private Member getMemberIfValid(String memberId, String memberName, String email) {
-		if (memberId == null) {
+	public Member getMemberIfValid(String memberId, String memberName, String email) {
+		if (memberId == null || memberId.trim().isEmpty()) {
 			return memberRepository.findByMemberNameAndEmail(memberName, email)
 					.orElseThrow(() -> new RuntimeException("일치하는 정보가 없습니다."));
 		} else {
@@ -113,16 +109,20 @@ public class MemberService {
 		}
 	}
 
-	// 아이디 찾기 
+	// 이메일 발송 전 회원 존재 여부 확인
+	public void validateMemberForEmail(MemberDTO dto) {
+		getMemberIfValid(dto.getMemberId(), dto.getMemberName(), dto.getEmail());
+	}
+
+	// 아이디 찾기
 	public String findId(String memberName, String email) {
 		log.info("아이디 찾기 시도: name={}, email={}", memberName, email);
 		return getMemberIfValid(null, memberName.trim(), email.trim()).getMemberId();
 	}
 
-	//비밀번호 찾기
+	// 비밀번호 찾기
 	@Transactional
 	public String findPw(String memberId, String memberName, String email) {
-		log.info("비밀번호 찾기 시도: id={}, name={}, email={}", memberId, memberName, email);
 		Member member = getMemberIfValid(memberId.trim(), memberName.trim(), email.trim());
 
 		String tempPw = UUID.randomUUID().toString().substring(0, 8);
@@ -134,6 +134,9 @@ public class MemberService {
 		Member member = memberRepository.findByMemberId(memberId)
 				.orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
+		Memberaddress latestAddr = memberAddressRepository.findByMemberIdxOrderByAddressIdxDesc(member.getMemberIdx())
+				.stream().findFirst().orElse(null);
+
 		return MemberInfoResponse.builder()
 				.memberName(member.getMemberName())
 				.memberId(member.getMemberId())
@@ -144,12 +147,9 @@ public class MemberService {
 				.address(member.getAddress())
 				.addressDetail(member.getAddressDetail())
 				.point(member.getPoint())
-				.phone(memberAddressRepository.findByMemberIdxOrderByAddressIdxDesc(member.getMemberIdx())
-						.stream().findFirst().map(addr -> addr.getPhone()).orElse("010-0000-0000"))
-				.addrIdx(memberAddressRepository.findByMemberIdxOrderByAddressIdxDesc(member.getMemberIdx())
-						.stream().findFirst().map(addr -> addr.getAddressIdx()).orElse(null))
+				.phone(latestAddr != null ? latestAddr.getPhone() : "010-0000-0000")
+				.addrIdx(latestAddr != null ? latestAddr.getAddressIdx() : null)
 				.build();
-
 	}
 
 	private String generateRandomNickname() {
@@ -158,7 +158,7 @@ public class MemberService {
 
 		String adj = adjectives[(int) (Math.random() * adjectives.length)];
 		String noun = nouns[(int) (Math.random() * nouns.length)];
-		int randomNumber = (int) (Math.random() * 9999) + 1000; 
+		int randomNumber = (int) (Math.random() * 9999) + 1000;
 
 		return adj + noun + randomNumber;
 	}

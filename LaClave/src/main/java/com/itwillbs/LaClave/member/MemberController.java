@@ -90,14 +90,27 @@ public class MemberController {
         }
     }
 
-    // 1. 인증번호 발송 버튼 클릭 시 (아이디 찾기/가입 공용)
+    // 이메일 인증 
     @PostMapping("/email-send")
     public ResponseEntity<?> sendEmail(@RequestBody MemberDTO dto) {
-        mailService.sendAuthCode(dto.getEmail());
+        if (dto.getMemberName() != null && !dto.getMemberName().trim().isEmpty()) {
+            try {
+                MemberDTO trimmedDto = MemberDTO.builder()
+                        .memberName(dto.getMemberName().trim())
+                        .email(dto.getEmail().trim())
+                        .memberId(dto.getMemberId() != null ? dto.getMemberId().trim() : null)
+                        .build();
+                memberService.validateMemberForEmail(trimmedDto);
+            } catch (RuntimeException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }
+        
+        mailService.sendAuthCode(dto.getEmail().trim());
         return ResponseEntity.ok("인증번호가 발송되었습니다.");
     }
 
-    // 2. 인증번호 확인 버튼 클릭 시
+    // 인증번호 확인
     @PostMapping("/email-verify")
     public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> request) {
         boolean isOk = mailService.verifyCode(request.get("email"), request.get("authCode"));

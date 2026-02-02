@@ -48,6 +48,6 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return member.getMemberStatus() != null
-            && member.getMemberStatus() == 3;
+            && (member.getMemberStatus() == 1 || member.getMemberStatus() == 3);
     }
 }
