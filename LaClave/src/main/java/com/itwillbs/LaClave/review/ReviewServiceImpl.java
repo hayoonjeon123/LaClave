@@ -141,7 +141,7 @@ public class ReviewServiceImpl implements ReviewService {
 	    	            .reviewIdx(0L)
 	    	            .productIdx(productIdx)
 	    	            .productName(detail.getProduct().getProductName())
-	    	            .productImageUrl(productImageUrl)   // ⭐⭐⭐ 여기!!!
+	    	            .productImageUrl(productImageUrl)
 	    	            .optionInfo(optionInfo) 
 	    	            .content("")
 	    	            .score(0)

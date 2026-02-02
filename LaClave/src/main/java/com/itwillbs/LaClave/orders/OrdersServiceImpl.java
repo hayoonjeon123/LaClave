@@ -52,7 +52,7 @@ public class OrdersServiceImpl implements OrdersService {
         Long memberIdx = user.getMemberIdx();
         Long COMPLETED_STATUS = 74L;
 
-        List<Orders> orders = ordersRepository.findAllByMemberIdxAndOrdersStatusNative(memberIdx,COMPLETED_STATUS);
+        List<Orders> orders = ordersRepository.findAllByMemberIdxAndOrdersStatusOrderByOrdersDateDesc(memberIdx,COMPLETED_STATUS);
 
         List<MyOrderResponseDto> result = orders.stream()
                 .map(MyOrderResponseDto::new)

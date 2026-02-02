@@ -14,7 +14,7 @@ public interface DeliveryRepository extends JpaRepository<MyDelivery, Long>{
 	List<MyDelivery> findByOrderIdxIn(List<Long> orderIdxList);
 	
 	// 회원별 배송 조회 
-     List<MyDelivery> findByMemberIdx(Long memberIdx);
+     List<MyDelivery> findByMemberIdxOrderByStartDateDesc(Long memberIdx);
      
      /**
       * 주문별 배송 이력 조회 (최신순)

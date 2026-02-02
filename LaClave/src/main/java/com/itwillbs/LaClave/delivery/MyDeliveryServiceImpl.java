@@ -31,7 +31,7 @@ public class MyDeliveryServiceImpl implements MyDeliveryService{
     // 회원별 배송 내역 조회 예시
      @Override
      public List<MyDelivery> getMyDeliveryListByMember(Long memberIdx) {
-         return deliveryRepository.findByMemberIdx(memberIdx);
+         return deliveryRepository.findByMemberIdxOrderByStartDateDesc(memberIdx);
      }
      
      @Override

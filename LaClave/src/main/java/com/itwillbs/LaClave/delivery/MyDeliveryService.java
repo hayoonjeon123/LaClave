@@ -11,8 +11,4 @@ public interface MyDeliveryService {
 	
 	List<MyDeliveryDto> getDeliveryByOrder(Long orderIdx);
 
-	
-	
-	
-
 }

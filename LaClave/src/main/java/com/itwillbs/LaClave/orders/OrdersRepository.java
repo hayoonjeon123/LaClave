@@ -37,8 +37,9 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer>{
     	    FROM orders
     	    WHERE member_idx = :memberIdx
     	      AND orders_status = :ordersStatus
+    	         ORDER BY orders_date DESC
     	""", nativeQuery = true)
-    	List<Orders> findAllByMemberIdxAndOrdersStatusNative(
+    	List<Orders> findAllByMemberIdxAndOrdersStatusOrderByOrdersDateDesc(
     	    @Param("memberIdx") Long memberIdx,
     	    @Param("ordersStatus") Long ordersStatus
     	);
