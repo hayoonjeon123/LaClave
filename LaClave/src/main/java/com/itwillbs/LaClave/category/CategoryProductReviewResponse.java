@@ -20,7 +20,6 @@ public class CategoryProductReviewResponse {
     private List<ReviewDetail> reviewList; 
 
    
-    // 리뷰 한 건의 정보를 담을 내부 클래스
     @Data
     public static class ReviewDetail {
         private Integer reviewIdx;
@@ -34,15 +33,7 @@ public class CategoryProductReviewResponse {
             this.nickname = (review.getMember() != null) ? review.getMember().getNickname() : "익명";
             this.content = review.getContent();
             this.score = review.getScore();
-
-            // 이미지 URL 리스트 처리
-            // if (review.getImages() != null) {
-            // this.imageUrls = review.getImages().stream()
-            // .map(image -> image.getUrl())
-            // .collect(Collectors.toList());
-            // } else {
             this.imageUrls = new ArrayList<>();
-            // }
         }
     }
 }

@@ -63,13 +63,11 @@ public class AiController {
             }
 
             if (recommendedEntityList.isEmpty()) {
-                log.info("매칭된 상품이 없어 AI 트렌드 추천으로 대체합니다.");
                 recommendByTrend(recommendedEntityList);
             } else {
             }
 
         } else {
-            log.info("취향 정보가 없어 AI 트렌드 추천을 진행합니다.");
             recommendByTrend(recommendedEntityList);
         }
 
@@ -78,17 +76,14 @@ public class AiController {
             String mainImageUrl = null;
 
             if (item.getImages() != null && !item.getImages().isEmpty()) {
-                // img_01(대표 이미지) 우선 순위로 찾기
                 for (com.itwillbs.LaClave.image.Image img : item.getImages()) {
                     String url = img.getUrl();
                     if (url == null || url.isEmpty()) continue;
 
-                    // 리뷰 이미지는 제외
                     if ("REVIEW".equals(img.getTargetType()) || "img_04".equals(img.getTargetCode())) {
                         continue;
                     }
 
-                    // /images/ 접두사 처리
                     if (!url.startsWith("http") && !url.startsWith("/images/")) {
                         url = "/images/" + url;
                     }

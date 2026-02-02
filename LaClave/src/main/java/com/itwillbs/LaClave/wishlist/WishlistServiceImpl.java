@@ -38,12 +38,37 @@ public class WishlistServiceImpl implements WishlistService {
 
                     String imageUrl = "/images/no-image.png";
                     if (item != null && item.getImages() != null && !item.getImages().isEmpty()) {
-                        // 첫 번째 유효한 이미지 URL 찾기
+                        String foundMainUrl = null;
                         for (Image img : item.getImages()) {
-                            if (img.getUrl() != null && !img.getUrl().isEmpty()) {
-                                imageUrl = img.getUrl();
+                            String url = img.getUrl();
+                            if (url == null || url.isEmpty())
+                                continue;
+
+                            String targetType = img.getTargetType();
+                            String targetCode = img.getTargetCode();
+
+                            if ("REVIEW".equalsIgnoreCase(targetType) ||
+                                    "img_04".equalsIgnoreCase(targetCode) ||
+                                    url.toLowerCase().contains("/review/") ||
+                                    url.toLowerCase().contains("_review")) {
+                                continue;
+                            }
+
+                            if (!url.startsWith("http") && !url.startsWith("/images/")) {
+                                url = "/images/" + url;
+                            }
+
+                            if ("img_01".equalsIgnoreCase(targetCode)) {
+                                foundMainUrl = url;
                                 break;
                             }
+
+                            if (foundMainUrl == null) {
+                                foundMainUrl = url;
+                            }
+                        }
+                        if (foundMainUrl != null) {
+                            imageUrl = foundMainUrl;
                         }
                     }
 

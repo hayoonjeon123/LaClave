@@ -45,7 +45,6 @@ public class CartItem {
     @Column(name = "DISCOUNT_PRICE")
     private int discountPrice = 0;
 
-    // 가상 컬럼(VIRTUAL)은 DB에서 계산하므로 insert/update 시 제외
     @Column(name = "TOTAL_PRICE", insertable = false, updatable = false)
     private int totalPrice;
 

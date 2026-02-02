@@ -50,7 +50,7 @@ public class ChatGPTClient {
 		String systemPrompt = "너는 쇼핑몰 패션 추천 AI야. 사용자의 취향이나 요청을 듣고, " +
 				"우리 데이터베이스에서 검색할 수 있는 구체적인 상품 검색 키워드(예: 원피스, 셔츠, 슬랙스, 빈티지, 러블리 등)를 " +
 				"1개에서 3개 사이로 쉼표(,)로 구분해서 한국어로만 알려줘. " +
-				"다른 미사여구 없이 오직 단어만 반환해.";
+				"오직 단어만 반환해.";
 		roleSystem.put("content", systemPrompt);
 
 		Map<String, String> roleUser = new HashMap<>();

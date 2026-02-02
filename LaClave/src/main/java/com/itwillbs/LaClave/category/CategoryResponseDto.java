@@ -61,50 +61,34 @@ public class CategoryResponseDto {
         this.averageRating = 0.0;
         this.reviewCount = 0;
 
-        // 이미지가 있을 경우 처리
         if (item.getImages() != null && !item.getImages().isEmpty()) {
             List<String> allUrls = new ArrayList<>();
             String foundMainUrl = null;
-            log.info("--- 상품 [{}] 이미지 로딩 시작 ---", item.getProductName());
 
             for (Image img : item.getImages()) {
                 String url = img.getUrl();
                 String targetType = img.getTargetType();
                 String targetCode = img.getTargetCode();
 
-                log.info("이미지 확인 - URL: {}, 타입: {}, 코드: {}", url, targetType, targetCode);
 
-                // 1. 리뷰 사진(img_04 또는 REVIEW 코드)은 상품 관련 페이지에서 제외
                 if ("REVIEW".equals(targetType) || "img_04".equals(targetCode)) {
-                    log.info("리뷰 사진이므로 제외됨");
                     continue;
                 }
 
                 if (url != null && !url.isEmpty()) {
-                    // /images/ 접두사 처리
                     if (!url.startsWith("http") && !url.startsWith("/images/")) {
                         url = "/images/" + url;
                     }
 
-                    // 2. img_01(대표 사진)이면 메인 이미지로 우선 지정
                     if ("img_01".equals(targetCode)) {
                         foundMainUrl = url;
-                        log.info("대표 사진(img_01) 발견: {}", url);
                     }
                 }
             }
 
-            // 최종 메인 이미지 결정: img_01을 최우선으로, 없으면 리스트의 첫 번째 이미지 사용
             this.mainImageUrl = (foundMainUrl != null) ? foundMainUrl : (!allUrls.isEmpty() ? allUrls.get(0) : null);
             this.detailImages = allUrls;
-
-            log.info("최종 결정된 메인 이미지: {}", this.mainImageUrl);
-            log.info("수집된 상세 이미지 개수: {}", allUrls.size());
-            log.info("--- 이미지 로딩 종료 ---");
-        } else {
-            log.info("해당 상품에 등록된 이미지가 전혀 없습니다.");
-        }
-
+        } 
         // 색상 처리
         this.colors = extractAttribute(item, opt -> opt.getColorCategory() != null
                 ? (opt.getColorCategory().getCodeDesc() != null && opt.getColorCategory().getCodeDesc().startsWith("#")

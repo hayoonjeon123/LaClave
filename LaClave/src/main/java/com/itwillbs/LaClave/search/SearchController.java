@@ -23,7 +23,6 @@ public class SearchController {
 
     @GetMapping
     public ResponseEntity<List<CategoryResponseDto>> search(ItemSearchCondition condition) {
-        log.info("검색 요청 도달 - 키워드: {}", condition.getKeyword());
         List<Item> items = searchService.searchItems(condition);
 
         List<CategoryResponseDto> dtos = items.stream()

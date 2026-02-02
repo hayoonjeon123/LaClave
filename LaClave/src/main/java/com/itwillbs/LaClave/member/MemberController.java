@@ -83,7 +83,6 @@ public class MemberController {
     @PostMapping("/find-pw")
     public ResponseEntity<?> findPw(@RequestBody MemberDTO dto) {
         try {
-            // 아이디, 이름, 이메일 모두 사용
             String tempPw = memberService.findPw(dto.getMemberId(), dto.getMemberName(), dto.getEmail());
             return ResponseEntity.ok("임시 비밀번호가 발급되었습니다: [" + tempPw + "]");
         } catch (RuntimeException e) {

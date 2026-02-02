@@ -29,7 +29,6 @@ public class ChatGPTService {
 		String contentText = "";
 		
 		try {
-			// 문자열 (JSON) -> 트리 구조로 파싱
 			JsonNode root = mapper.readTree(result);
 			contentText = root.path("choices")
 							  .path(0)
